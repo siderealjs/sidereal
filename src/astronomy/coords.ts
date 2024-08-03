@@ -1,18 +1,24 @@
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 
-export const calcCoordsRelativeOrbital = (E, e, r) => {
+export const calcCoordsOrbital = (
+  E: number,
+  r: number,
+  orbitalParams: OrbitalParams
+) => {
+  // eccentricita
+  const { e } = orbitalParams;
   // Calcola le coordinate nel piano orbitale
   const x = r * (Math.cos(E) - e);
   const y = r * Math.sqrt(1 - e * e) * Math.sin(E);
 
-  // Ritorna un oggetto con le coordinate x, y, e z
+  // Ritorna un oggetto con le coordinate x, y
   return {
-    xRel: x,
-    yRel: y,
+    xOrb: x,
+    yOrb: y,
   };
 };
 
-export const convertCoordsRelativeOrbitalToHeliocentricOrbital = (
+export const convertCoordsOrbitalToEclipticSTRONZA = (
   xRel: number,
   yRel: number,
   orbitalParams: OrbitalParams
@@ -30,22 +36,7 @@ export const convertCoordsRelativeOrbitalToHeliocentricOrbital = (
     zOrb: z_ecl,
   };
 
-  // // Calcolo di cos(omega + v) e sin(omega + v)
-  // const cosOmegaPlusV = Math.cos(omegaPlusV);
-  // const sinOmegaPlusV = Math.sin(omegaPlusV);
 
-  // // Calcolo di cos(i) e sin(i)
-  // const cosI = Math.cos(i);
-  // const sinI = Math.sin(i);
-
-  // // Calcolo delle coordinate nel sistema heliocentrico
-  // const xOrb =
-  //   xRel * (Math.cos(Ω) * cosOmegaPlusV - Math.sin(Ω) * sinOmegaPlusV * cosI);
-  // const yOrb =
-  //   xRel * (Math.sin(Ω) * cosOmegaPlusV + Math.cos(Ω) * sinOmegaPlusV * cosI);
-  // const zOrb = yRel * (sinOmegaPlusV * sinI);
-
-  // return { xOrb, yOrb, zOrb };
 };
 
 export const convertCoordsOrbitalToEcliptic = (
@@ -101,11 +92,9 @@ export const convertCoordsEclipticToEquatorial = (
   return { xEq, yEq, zEq };
 };
 
-
-
 function convertiRAinOrari(rad) {
   // Converti RA da radianti a gradi
-  const gradi = rad * 180 / Math.PI;
+  const gradi = (rad * 180) / Math.PI;
 
   // Converti gradi in ore
   let ore = Math.floor(gradi / 15);
@@ -116,45 +105,49 @@ function convertiRAinOrari(rad) {
   ore = (ore + 24) % 24;
   // Assicurati che minuti e secondi siano nel range 0-59
   if (secondi === 60) {
-      secondi = 0;
-      minuti++;
+    secondi = 0;
+    minuti++;
   }
   if (minuti === 60) {
-      minuti = 0;
-      ore++;
+    minuti = 0;
+    ore++;
   }
 
-  return `${ore.toString().padStart(2, '0')}h ${minuti.toString().padStart(2, '0')}m ${secondi.toString().padStart(2, '0')}s`;
+  return `${ore.toString().padStart(2, "0")}h ${minuti
+    .toString()
+    .padStart(2, "0")}m ${secondi.toString().padStart(2, "0")}s`;
 }
 
 /**
-* Converte un valore in radianti in un formato gradi, minuti e secondi.
-* @param {number} rad - Valore in radianti.
-* @returns {string} - Formato "+dd° mm’ ss”".
-*/
+ * Converte un valore in radianti in un formato gradi, minuti e secondi.
+ * @param {number} rad - Valore in radianti.
+ * @returns {string} - Formato "+dd° mm’ ss”".
+ */
 function convertiDECinGradi(rad) {
   // Converti DEC da radianti a gradi
-  const gradi = rad * 180 / Math.PI;
-  
+  const gradi = (rad * 180) / Math.PI;
+
   // Determina il segno per il formato
-  const segno = gradi >= 0 ? '+' : '-';
+  const segno = gradi >= 0 ? "+" : "-";
   const gradiAssoluti = Math.abs(gradi);
-  
+
   // Calcola gradi, minuti e secondi
   const gradiInt = Math.floor(gradiAssoluti);
   const minuti = Math.floor((gradiAssoluti - gradiInt) * 60);
   const secondi = Math.round(((gradiAssoluti - gradiInt) * 60 - minuti) * 60);
 
-  return `${segno}${gradiInt.toString().padStart(2, '0')}° ${minuti.toString().padStart(2, '0')}’ ${secondi.toString().padStart(2, '0')}”`;
+  return `${segno}${gradiInt.toString().padStart(2, "0")}° ${minuti
+    .toString()
+    .padStart(2, "0")}’ ${secondi.toString().padStart(2, "0")}”`;
 }
 
 /**
-* Calcola la Declinazione (DEC) e l'Ascensione Retta (RA) e converte in formato leggibile.
-* @param {number} x_eq - Coordinata x nel sistema equatoriale.
-* @param {number} y_eq - Coordinata y nel sistema equatoriale.
-* @param {number} z_eq - Coordinata z nel sistema equatoriale.
-* @returns {Object} - Oggetto contenente RA e DEC nel formato leggibile.
-*/
+ * Calcola la Declinazione (DEC) e l'Ascensione Retta (RA) e converte in formato leggibile.
+ * @param {number} x_eq - Coordinata x nel sistema equatoriale.
+ * @param {number} y_eq - Coordinata y nel sistema equatoriale.
+ * @param {number} z_eq - Coordinata z nel sistema equatoriale.
+ * @returns {Object} - Oggetto contenente RA e DEC nel formato leggibile.
+ */
 export function calcolaRADEC(x_eq, y_eq, z_eq) {
   // Calcola il raggio
   const r = Math.sqrt(x_eq * x_eq + y_eq * y_eq + z_eq * z_eq);
@@ -167,16 +160,16 @@ export function calcolaRADEC(x_eq, y_eq, z_eq) {
 
   // Correggi RA se è negativo
   if (RA < 0) {
-      RA += 2 * Math.PI;
+    RA += 2 * Math.PI;
   }
 
-  console.log('prima di formattare, ', RA, DEC);
+  console.log("prima di formattare, ", RA, DEC);
   // Converti RA e DEC in formato leggibile
   const raFormattato = convertiRAinOrari(RA);
   const decFormattato = convertiDECinGradi(DEC);
 
   return {
-      RA: raFormattato,
-      DEC: decFormattato
+    RA: raFormattato,
+    DEC: decFormattato,
   };
 }
