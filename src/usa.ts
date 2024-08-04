@@ -1,86 +1,98 @@
 import { Constants, CelestialBody } from "./index";
 
-const mars = new CelestialBody("mars");
+const mars = new CelestialBody("earth");
 const todayx = new Date("2024-08-04");
 const today = new Date("2024-08-04");
 
-console.log(todayx, today);
+//console.log(todayx, today);
 
 const ephemerisMars = mars.getEphemerisAtDate(today);
 
 console.log(ephemerisMars);
 
-// Funzione per calcolare le coordinate eclittiche di Marte
-function calculateEclipticCoordinates(a, e, i, Ω, ω, v) {
-    // Converti i gradi in radianti
-    const toRadians = degrees => degrees * (Math.PI / 180);
-    
-    // Parametri orbitali in radianti
-    const i_rad = toRadians(i); // Inclinazione
-    const Ω_rad = toRadians(Ω); // Longitudine dell'ascendente nodo
-    const ω_rad = toRadians(ω); // Argomento del periastro
-    const v_rad = toRadians(v); // Anomalia vera
-    
-    // Calcolo della distanza radiale
-    const r = a * (1 - e * e) / (1 + e * Math.cos(v_rad));
-    
-    // Coordinate nel piano orbitale
-    const x_orbit = r * (Math.cos(ω_rad + v_rad));
-    const y_orbit = r * (Math.sin(ω_rad + v_rad));
-    
-    // Coordinate eclittiche
-    const x_ecl = x_orbit * (Math.cos(Ω_rad) - Math.sin(Ω_rad) * Math.sin(i_rad)) 
-                 - y_orbit * (Math.cos(Ω_rad) * Math.sin(i_rad) * Math.sin(ω_rad + v_rad) + Math.sin(Ω_rad) * Math.cos(i_rad));
-    const y_ecl = x_orbit * (Math.sin(Ω_rad) * Math.cos(i_rad) + Math.cos(Ω_rad) * Math.sin(i_rad) * Math.sin(ω_rad + v_rad)) 
-                 + y_orbit * (Math.sin(Ω_rad) * Math.cos(i_rad) - Math.cos(Ω_rad) * Math.sin(i_rad) * Math.sin(ω_rad + v_rad));
-    const z = x_orbit * (Math.sin(i_rad) * Math.sin(ω_rad + v_rad))
-             + y_orbit * (Math.sin(i_rad) * Math.cos(ω_rad + v_rad));
-    
-    return { x: x_ecl, y: y_ecl, z };
+
+
+   // Convert degrees to radians
+   function degToRad(deg) {
+    return deg * (Math.PI / 180);
 }
 
-// Funzione per convertire le coordinate eclittiche in RA e DEC direttamente
-function eclipticToRADEC(x_ecl, y_ecl, z, ε) {
-  // Calcolo delle coordinate equatoriali usando l'obliquità ε
-  const x_eq = x_ecl;
-  const y_eq = y_ecl * Math.cos(ε) - z * Math.sin(ε);
-  const z_eq = y_ecl * Math.sin(ε) + z * Math.cos(ε);
-
-
-  console.log('COORDS equatr TUTTA', x_eq, y_eq, z_eq)
-
-  // Ascensione retta e declinazione
-  const ra = Math.atan2(y_eq, x_eq); // Ascensione retta in radianti
-  const dec = Math.atan2(z_eq, Math.sqrt(x_eq * x_eq + y_eq * y_eq)); // Declinazione in radianti
-
-  console.log("ra e dec", ra, dec);
-  // Converti in gradi
-  const toDegrees = (radians) => radians * (180 / Math.PI);
-
-  return { ra: toDegrees(ra), dec: toDegrees(dec) };
+// Convert radians to degrees
+function radToDeg(rad) {
+    return rad * (180 / Math.PI);
 }
 
-// Parametri orbitali di Marte
-const a = 1.523679; // Semiasse maggiore in AU
-const e = 0.0934; // Eccentricità
-const i = 1.8497; // Inclinazione in gradi
-const Ω = 49.558; // Longitudine dell'ascendente nodo in gradi
-const ω = 286.502; // Argomento del periastro in gradi
-const v = 55.0418073079899; // Anomalia vera in gradi
+function calculateMarsRAandDEC(v_mars, E_mars, a_mars, e_mars, i_mars, w_mars, N_mars, v_earth, E_earth, a_earth, e_earth, i_earth, w_earth, N_earth) {
 
-// Costante per l'obliquità dell'eclittica
-const ε = 0.40911; // Obliquità dell'eclittica in radianti
+    // Constants
+    const epsilon = degToRad(23.43928); // Obliquity of the ecliptic
 
-// Calcolo delle coordinate eclittiche
-const eclipticCoords = calculateEclipticCoordinates(a, e, i, Ω, ω, v);
-console.log("Coordinate eclittiche:", eclipticCoords);
+    // Calculate distances
+    const r_mars = a_mars * (1 - e_mars * Math.cos(E_mars));
+    const r_earth = a_earth * (1 - e_earth * Math.cos(E_earth));
 
-// Calcolo delle coordinate RA e DEC
-const raDecCoords = eclipticToRADEC(
-  eclipticCoords.x,
-  eclipticCoords.y,
-  eclipticCoords.z,
-  ε
-);
-console.log("Ascensione Reatta (RA):", raDecCoords.ra.toFixed(4), "°");
-console.log("Declinazione (DEC):", raDecCoords.dec.toFixed(4), "°");
+    // Calculate heliocentric coordinates in the orbital plane
+    const X_orb_mars = r_mars * Math.cos(v_mars);
+    const Y_orb_mars = r_mars * Math.sin(v_mars);
+    const Z_orb_mars = 0;
+
+    const X_orb_earth = r_earth * Math.cos(v_earth);
+    const Y_orb_earth = r_earth * Math.sin(v_earth);
+    const Z_orb_earth = 0;
+
+    // Convert orbital plane coordinates to ecliptic coordinates
+    function orbitalToEcliptic(X_orb, Y_orb, Z_orb, i, w, N) {
+        const cos_w = Math.cos(w);
+        const sin_w = Math.sin(w);
+        const cos_i = Math.cos(i);
+        const sin_i = Math.sin(i);
+        const cos_N = Math.cos(N);
+        const sin_N = Math.sin(N);
+
+        const X_ecl = (cos_N * cos_w - sin_N * sin_w * cos_i) * X_orb - (cos_N * sin_w + sin_N * cos_w * cos_i) * Y_orb;
+        const Y_ecl = (sin_N * cos_w + cos_N * sin_w * cos_i) * X_orb - (sin_N * sin_w - cos_N * cos_w * cos_i) * Y_orb;
+        const Z_ecl = (sin_w * sin_i) * X_orb + (cos_w * sin_i) * Y_orb;
+
+        return { X_ecl, Y_ecl, Z_ecl };
+    }
+
+    const marsEcl = orbitalToEcliptic(X_orb_mars, Y_orb_mars, Z_orb_mars, degToRad(i_mars), degToRad(w_mars), degToRad(N_mars));
+    const earthEcl = orbitalToEcliptic(X_orb_earth, Y_orb_earth, Z_orb_earth, degToRad(i_earth), degToRad(w_earth), degToRad(N_earth));
+
+    // Calculate geocentric coordinates of Mars
+    const Xg = marsEcl.X_ecl - earthEcl.X_ecl;
+    const Yg = marsEcl.Y_ecl - earthEcl.Y_ecl;
+    const Zg = marsEcl.Z_ecl - earthEcl.Z_ecl;
+
+    // Convert geocentric ecliptic coordinates to equatorial coordinates
+    const Xe = Xg;
+    const Ye = Yg * Math.cos(epsilon) - Zg * Math.sin(epsilon);
+    const Ze = Yg * Math.sin(epsilon) + Zg * Math.cos(epsilon);
+
+    // Calculate RA and DEC
+    const RA = radToDeg(Math.atan2(Ye, Xe));
+    const DEC = radToDeg(Math.asin(Ze / Math.sqrt(Xe * Xe + Ye * Ye + Ze * Ze)));
+
+    return { RA: Math.atan2(Ye, Xe), DEC: Math.asin(Ze / Math.sqrt(Xe * Xe + Ye * Ye + Ze * Ze)) };
+}
+
+
+
+const v_mars = 0.9517  // Example value, in degrees
+const E_mars = 0.8775  // Example value, in degrees
+const a_mars = 1.523679;       // Semimajor axis of Mars, in AU
+const e_mars = 0.0934;         // Eccentricity of Mars
+const i_mars = 1.850;          // Inclination of Mars's orbit, in degrees
+const w_mars = 286.5;      // Argument of perihelion of Mars, in degrees
+const N_mars = 49.57854;         // Longitude of ascending node of Mars, in degrees
+
+const v_earth = 3.65 // Example value, in degrees
+const E_earth = 3.658  // Example value, in degrees
+const a_earth = 1.000001018;   // Semimajor axis of Earth, in AU
+const e_earth = 0.0167086;     // Eccentricity of Earth
+const i_earth = 0.00005;       // Inclination of Earth's orbit, in degrees
+const w_earth = 114.20783;  // Argument of perihelion of Earth, in degrees
+const N_earth = -11.26064;   
+
+const result = calculateMarsRAandDEC(v_mars, E_mars, a_mars, e_mars, i_mars, w_mars, N_mars, v_earth, E_earth, a_earth, e_earth, i_earth, w_earth, N_earth);
+console.log(`RA: ${result.RA.toFixed(2)} rad, DEC: ${result.DEC.toFixed(2)} rad`);
