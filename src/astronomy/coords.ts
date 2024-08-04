@@ -171,9 +171,13 @@ export function calculateCoordinates(r, v, orbitalParams) {
 
 // };
 
-export const orbitalCoordsWithTrueAnomaly = (v, r) => {
-  const xOrb = r * Math.cos(v);
-  const yOrb = r * Math.sin(v);
+export const orbitalCoordsWithTrueAnomaly = (v, r, orbitalParams) => {
+  // const xOrb = r * Math.cos(v);
+  // const yOrb = r * Math.sin(v);
+  const { e, ω, a, Ω, i } = orbitalParams;
+
+  const xOrb = r * Math.cos(ω + v);
+  const yOrb = r * Math.sin(ω + v);
 
   return { xOrb, yOrb };
 };

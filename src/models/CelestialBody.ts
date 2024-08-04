@@ -33,21 +33,23 @@ export default class CelestialBody {
   public getEphemerisAtDate(date: Date) {
     const { v, r } = calcAnomalyAndRadiusAtDate(date, this.orbitalParams);
 
-    const { xOrb, yOrb } = orbitalCoordsWithTrueAnomaly(v, r);
+    const { xOrb, yOrb } = orbitalCoordsWithTrueAnomaly(v, r, this.orbitalParams);
     console.log("orb coord with true anomaly", xOrb, yOrb);
 
-    const ec1 = convertCoordsOrbitalToEcliptic(xOrb, yOrb, this.orbitalParams);
-    console.log("ECLIP, ", ec1);
-
+    const { xEcl, yEcl, zEcl } = convertCoordsOrbitalToEcliptic(xOrb, yOrb, this.orbitalParams);
+    
     const fdd = convertCoordsOrbitalToEcliptic2(xOrb, yOrb, this.orbitalParams);
     console.log("ECLIP2, ", fdd);
 
-    const { xEcl, yEcl, zEcl } = transformToEcliptic4(xOrb, yOrb, this.orbitalParams);
+    const ec1 = transformToEcliptic4(xOrb, yOrb, this.orbitalParams);
     const jj = transformToEcliptic(
       xOrb,
       yOrb,
       this.orbitalParams
     );
+
+    console.log("ECLIP, ", ec1);
+
     console.log("ECLIP3", jj);
 
     console.log("ECLIP4, ", xEcl, yEcl, zEcl);
@@ -57,8 +59,10 @@ export default class CelestialBody {
     console.log("RADEC DIRECT", dirette);
 
     const {xEq, yEq, zEq} = convertCoordsEclipticToEquatorial(xEcl, yEcl, zEcl);
+    console.log('coordinate equatr stepbystep', xEq, yEq, zEq)
     const d = calcolaRADEC(xEq, yEq, zEq);
 
+    console.log('dd', d)
     console.log(d)
 
     // DEC DEVE FARE 0.3725 radians radians
