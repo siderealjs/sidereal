@@ -1,3 +1,4 @@
+import { convertRadsToHMS, convertRadToDMS } from "../utils/angles";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 
 // usata
@@ -23,58 +24,6 @@ export const convertCoordsEclipticToEquatorial = (
     zEq: z_eq,
   };
 };
-
-// TODO: sistema
-function convertiRAinOrari(rad: number) {
-  // Converti RA da radianti a gradi
-  const gradi = (1 * rad * 180) / Math.PI;
-
-  // Converti gradi in ore
-  let ore = Math.floor(gradi / 15);
-  let minuti = Math.floor((gradi % 15) * 4);
-  let secondi = Math.round(((gradi % 15) * 4 - minuti) * 60);
-
-  // Assicurati che ore siano nel range 0-23
-  ore = (ore + 24) % 24;
-  // Assicurati che minuti e secondi siano nel range 0-59
-  if (secondi === 60) {
-    secondi = 0;
-    minuti++;
-  }
-  if (minuti === 60) {
-    minuti = 0;
-    ore++;
-  }
-
-  return `${ore.toString().padStart(2, "0")}h ${minuti
-    .toString()
-    .padStart(2, "0")}m ${secondi.toString().padStart(2, "0")}s`;
-}
-
-/**
- * Converte un valore in radianti in un formato gradi, minuti e secondi.
- * @param {number} rad - Valore in radianti.
- * @returns {string} - Formato "+dd° mm’ ss”".
- */
-function convertiDECinGradi(radians) {
-  const degrees = -1 * radians * (180 / Math.PI);
-
-  // Ottieni il segno e il valore assoluto dei gradi
-  const sign = degrees < 0 ? "-" : "+";
-  const absDegrees = Math.abs(degrees);
-
-  // Ottieni i gradi, minuti e secondi
-  const intDegrees = Math.floor(absDegrees);
-  const minutes = (absDegrees - intDegrees) * 60;
-  const intMinutes = Math.floor(minutes);
-  const seconds = (minutes - intMinutes) * 60;
-
-  // Formatta i minuti e i secondi come numeri interi
-  const formattedMinutes = intMinutes.toString().padStart(2, "0");
-  const formattedSeconds = seconds.toFixed(2).toString().padStart(2, "0");
-
-  return `${sign}${intDegrees}° ${formattedMinutes}' ${formattedSeconds}"`;
-}
 
 /**
  * Calcola la Declinazione (DEC) e l'Ascensione Retta (RA) e converte in formato leggibile.
@@ -103,8 +52,8 @@ export function calcolaRADEC(x_eq, y_eq, z_eq) {
 
   console.log("prima di formattare, ", RA, DEC);
   // Converti RA e DEC in formato leggibile
-  const raFormattato = convertiRAinOrari(RA);
-  const decFormattato = convertiDECinGradi(DEC);
+  const raFormattato = convertRadsToHMS(RA);
+  const decFormattato = convertRadToDMS(DEC);
 
   return {
     RA: raFormattato,
@@ -115,7 +64,6 @@ export function calcolaRADEC(x_eq, y_eq, z_eq) {
 export const calcCoordsHCOrbital = (v: number, r: number) => {
   const xOrb = r * Math.cos(v);
   const yOrb = r * Math.sin(v);
-  //console.log('INTERNO ORB', xOrb, yOrb)
 
   return { xOrb, yOrb };
 };
