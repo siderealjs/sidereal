@@ -24,30 +24,31 @@ export const convertCoordsEclipticToEquatorial = (
   };
 };
 
-function convertiRAinOrari(rad) {
+function convertiRAinOrari(radians) {
   // Converti RA da radianti a gradi
-  const gradi = (1 * rad * 180) / Math.PI;
+  const hours = -1 * radians * (12 / Math.PI);
 
-  // Converti gradi in ore
-  let ore = Math.floor(gradi / 15);
-  let minuti = Math.floor((gradi % 15) * 4);
-  let secondi = Math.round(((gradi % 15) * 4 - minuti) * 60);
+  // Ottieni il segno e il valore assoluto delle ore
+  const sign = hours < 0 ? '-' : '+';
+  const absHours = Math.abs(hours);
 
-  // Assicurati che ore siano nel range 0-23
-  ore = (ore + 24) % 24;
-  // Assicurati che minuti e secondi siano nel range 0-59
-  if (secondi === 60) {
-    secondi = 0;
-    minuti++;
-  }
-  if (minuti === 60) {
-    minuti = 0;
-    ore++;
+  // Ottieni le ore, minuti e secondi
+  const intHours = Math.floor(absHours);
+  const minutes = (absHours - intHours) * 60;
+  const intMinutes = Math.floor(minutes);
+  const seconds = (minutes - intMinutes) * 60;
+
+  // Funzione per aggiungere zeri iniziali
+  function padZero(value, length) {
+    return String(value).padStart(length, '0');
   }
 
-  return `${ore.toString().padStart(2, "0")}h ${minuti
-    .toString()
-    .padStart(2, "0")}m ${secondi.toString().padStart(2, "0")}s`;
+  // Formatta le ore, i minuti e i secondi come numeri interi
+  const formattedHours = padZero(intHours, 2);
+  const formattedMinutes = padZero(intMinutes, 2);
+  const formattedSeconds = seconds.toFixed(2).toString().padStart(2, '0');
+
+  return `${sign}${formattedHours}h ${formattedMinutes}m ${formattedSeconds}s`;
 }
 
 /**
@@ -112,10 +113,10 @@ export function calcolaRADEC(x_eq, y_eq, z_eq) {
   // Normalizza RA a [0, 2π)
   RA = (RA + 2 * Math.PI) % (2 * Math.PI);
 
-  // Correggi RA se è negativo
-  if (RA < 0) {
-    RA += 2 * Math.PI;
-  }
+  // // Correggi RA se è negativo
+  // if (RA < 0) {
+  //   RA += 2 * Math.PI;
+  // }
 
   console.log("prima di formattare, ", RA, DEC);
   // Converti RA e DEC in formato leggibile
@@ -248,10 +249,6 @@ export const ecliptictToRaDec = (x_e, y_e, z_e) => {
     z_e * Math.cos(epsilon) + y_e * Math.sin(epsilon),
     Math.sqrt(x_e * x_e + (y_e * Math.cos(epsilon) - z_e * Math.sin(epsilon)) ** 2)
   );
-
-  if (α < 0) {
-    α += 2 * Math.PI;
-  }
 
   // Convertire RA e DEC da radianti a gradi se necessario
   let α_degrees = convertiRAinOrari(α);

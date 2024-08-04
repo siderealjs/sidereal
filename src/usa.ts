@@ -1,11 +1,13 @@
 import {Constants, CelestialBody} from './index'
 
 
-console.log(Constants.G)
 
 
 const mars = new CelestialBody('mars');
-const today = new Date();
+const todayx = new Date('2024-08-04');
+const today = new Date('2024-08-04');
+
+console.log(todayx, today)
 
 const ephemerisMars = mars.getEphemerisAtDate(today);
 

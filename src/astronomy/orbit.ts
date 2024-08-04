@@ -8,7 +8,7 @@ import {
 export const calcAnomalyAndRadiusAtDate = (
   givenDate: Date,
   orbitalParams: OrbitalParams
-): { E: number; r: number } => {
+): { v: number; r: number } => {
   const { M0, a, e, n } = orbitalParams;
 
   // Calcolare l'anomalia media attuale
@@ -31,7 +31,7 @@ export const calcAnomalyAndRadiusAtDate = (
   const r = (a * (1 - e * e)) / (1 + e * Math.cos(v));
   console.log("006:: radial r,", r);
 
-  return { E, r };
+  return { E, v, r };
 };
 
 export function calculateRAandDEC(r, nu, orbitalParams) {

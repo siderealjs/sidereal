@@ -1,6 +1,65 @@
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 
+export const calcCoordsOrbital = (
+  E: number,
+  r: number,
+  orbitalParams: OrbitalParams
+) => {
+  // eccentricita
+  const { e } = orbitalParams;
+  // Calcola le coordinate nel piano orbitale
+  const x = r * (Math.cos(E) - e);
+  const y = r * Math.sqrt(1 - e * e) * Math.sin(E);
 
+  // Ritorna un oggetto con le coordinate x, y
+  return {
+    xOrb: x,
+    yOrb: y,
+  };
+};
+
+export const convertCoordsOrbitalToEclipticSTRONZA = (
+  xRel: number,
+  yRel: number,
+  orbitalParams: OrbitalParams
+) => {
+  const { i, ω } = orbitalParams;
+
+  const x_ecl = xRel * Math.cos(ω) - yRel * (Math.sin(ω) * Math.cos(i));
+  const y_ecl = xRel * Math.sin(ω) + yRel * (Math.cos(ω) * Math.cos(i));
+  const z_ecl = yRel * Math.sin(i);
+
+  // Ritorna un oggetto con le coordinate x, y, e z nel sistema eclittico
+  return {
+    xOrb: x_ecl,
+    yOrb: y_ecl,
+    zOrb: z_ecl,
+  };
+};
+
+export const convertCoordsOrbitalToEcliptic = (
+  xOrb: number,
+  yOrb: number,
+  orbitalParams: OrbitalParams
+) => {
+  const { i, Ω, ω } = orbitalParams;
+  const xEcl =
+    xOrb *
+      (Math.cos(Ω) * Math.cos(ω) - Math.sin(Ω) * Math.sin(ω) * Math.cos(i)) -
+    yOrb *
+      (Math.sin(Ω) * Math.cos(ω) + Math.cos(Ω) * Math.sin(ω) * Math.cos(i));
+
+  const yEcl =
+    xOrb *
+      (Math.cos(Ω) * Math.sin(ω) + Math.sin(Ω) * Math.cos(ω) * Math.cos(i)) +
+    yOrb *
+      (Math.cos(Ω) * Math.cos(ω) - Math.sin(Ω) * Math.sin(ω) * Math.cos(i));
+
+  const zEcl =
+    xOrb * (Math.sin(ω) * Math.sin(i)) + yOrb * (Math.cos(ω) * Math.sin(i));
+
+  return { xEcl, yEcl, zEcl };
+};
 
 export const convertCoordsEclipticToEquatorial = (
   xEcl: number,
@@ -26,7 +85,7 @@ export const convertCoordsEclipticToEquatorial = (
 
 function convertiRAinOrari(rad) {
   // Converti RA da radianti a gradi
-  const gradi = (1 * rad * 180) / Math.PI;
+  const gradi = (rad * 180) / Math.PI;
 
   // Converti gradi in ore
   let ore = Math.floor(gradi / 15);
@@ -55,41 +114,22 @@ function convertiRAinOrari(rad) {
  * @param {number} rad - Valore in radianti.
  * @returns {string} - Formato "+dd° mm’ ss”".
  */
-function convertiDECinGradi(radians) {
+function convertiDECinGradi(rad) {
   // Converti DEC da radianti a gradi
-  // const gradi = (rad * 180) / Math.PI;
+  const gradi = (rad * 180) / Math.PI;
 
-  // // Determina il segno per il formato
-  // const segno = gradi >= 0 ? "+" : "-";
-  // const gradiAssoluti = Math.abs(gradi);
+  // Determina il segno per il formato
+  const segno = gradi >= 0 ? "+" : "-";
+  const gradiAssoluti = Math.abs(gradi);
 
-  // // Calcola gradi, minuti e secondi
-  // const gradiInt = Math.floor(gradiAssoluti);
-  // const minuti = Math.floor((gradiAssoluti - gradiInt) * 60);
-  // const secondi = Math.round(((gradiAssoluti - gradiInt) * 60 - minuti) * 60);
+  // Calcola gradi, minuti e secondi
+  const gradiInt = Math.floor(gradiAssoluti);
+  const minuti = Math.floor((gradiAssoluti - gradiInt) * 60);
+  const secondi = Math.round(((gradiAssoluti - gradiInt) * 60 - minuti) * 60);
 
-  // return `${segno}${gradiInt.toString().padStart(2, "0")}° ${minuti
-  //   .toString()
-  //   .padStart(2, "0")}’ ${secondi.toString().padStart(2, "0")}”`;
-
-
-  const degrees = -1 * radians * (180 / Math.PI);
-
-  // Ottieni il segno e il valore assoluto dei gradi
-  const sign = degrees < 0 ? '-' : '+';
-  const absDegrees = Math.abs(degrees);
-
-  // Ottieni i gradi, minuti e secondi
-  const intDegrees = Math.floor(absDegrees);
-  const minutes = (absDegrees - intDegrees) * 60;
-  const intMinutes = Math.floor(minutes);
-  const seconds = (minutes - intMinutes) * 60;
-
-  // Formatta i minuti e i secondi come numeri interi
-  const formattedMinutes = intMinutes.toString().padStart(2, '0');
-  const formattedSeconds = seconds.toFixed(2).toString().padStart(2, '0');
-
-  return `${sign}${intDegrees}° ${formattedMinutes}' ${formattedSeconds}"`;
+  return `${segno}${gradiInt.toString().padStart(2, "0")}° ${minuti
+    .toString()
+    .padStart(2, "0")}’ ${secondi.toString().padStart(2, "0")}”`;
 }
 
 /**
@@ -112,10 +152,11 @@ export function calcolaRADEC(x_eq, y_eq, z_eq) {
   // Normalizza RA a [0, 2π)
   RA = (RA + 2 * Math.PI) % (2 * Math.PI);
 
-  // Correggi RA se è negativo
-  if (RA < 0) {
-    RA += 2 * Math.PI;
-  }
+
+  // // Correggi RA se è negativo
+  // if (RA < 0) {
+  //   RA += 2 * Math.PI;
+  // }
 
   console.log("prima di formattare, ", RA, DEC);
   // Converti RA e DEC in formato leggibile
@@ -227,129 +268,68 @@ export const reverseDECandRA = (α, δ) => {
 };
 
 export const transformEquatorialToEcliptic = (xeq, yeq, zeq) => {
-  const ε = 0.40911;
+  const ε = 23.44;
 
   const xecl = xeq;
   const yecl = yeq * Math.cos(ε) - zeq * Math.sin(ε);
   const zecl = yeq * Math.sin(ε) + zeq * Math.cos(ε);
 };
 
-export const ecliptictToRaDec = (x_e, y_e, z_e) => {
-  const epsilon = 0.40911;
+///////////////////
+export const convertOrbitalToEcliptic = (x, y, orbitalParams) => {
+  const { i, Ω, ω } = orbitalParams;
 
-  // Calcolare l'ascensione retta (RA) in radianti
-  let α = Math.atan2(
-    y_e * Math.cos(epsilon) - z_e * Math.sin(epsilon),
-    x_e
-  );
-  
-  // Calcolare la declinazione (DEC) in radianti
-  let δ = Math.atan2(
-    z_e * Math.cos(epsilon) + y_e * Math.sin(epsilon),
-    Math.sqrt(x_e * x_e + (y_e * Math.cos(epsilon) - z_e * Math.sin(epsilon)) ** 2)
-  );
+  // Calcola i coseni e seni degli angoli
+  const cosΩ = Math.cos(Ω);
+  const sinΩ = Math.sin(Ω);
+  const cosi = Math.cos(i);
+  const sini = Math.sin(i);
+  const cosω = Math.cos(ω);
+  const sinω = Math.sin(ω);
 
-  if (α < 0) {
-    α += 2 * Math.PI;
+  // Matrici di rotazione
+  const R_ω = [
+    [cosω, -sinω, 0],
+    [sinω, cosω, 0],
+    [0, 0, 1],
+  ];
+
+  const R_i = [
+    [1, 0, 0],
+    [0, cosi, -sini],
+    [0, sini, cosi],
+  ];
+
+  const R_Ω = [
+    [cosΩ, -sinΩ, 0],
+    [sinΩ, cosΩ, 0],
+    [0, 0, 1],
+  ];
+
+  // Combinazione delle rotazioni
+  const R_orbit = multiplyMatrices(R_Ω, multiplyMatrices(R_i, R_ω));
+
+  // Applicare la rotazione alle coordinate orbitali
+  const x_ecl = R_orbit[0][0] * x + R_orbit[0][1] * y;
+  const y_ecl = R_orbit[1][0] * x + R_orbit[1][1] * y;
+  const z_ecl = R_orbit[2][0] * x + R_orbit[2][1] * y;
+
+  return { x: x_ecl, y: y_ecl, z: z_ecl };
+};
+
+// Funzione per moltiplicare due matrici 3x3
+const multiplyMatrices = (A, B) => {
+  const result = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ];
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      for (let k = 0; k < 3; k++) {
+        result[i][j] += A[i][k] * B[k][j];
+      }
+    }
   }
-
-  // Convertire RA e DEC da radianti a gradi se necessario
-  let α_degrees = convertiRAinOrari(α);
-  let δ_degrees = convertiDECinGradi(δ);
-
-  return { α, δ, α_degrees, δ_degrees };
+  return result;
 };
-
-
-export const convertCoordsOrbitalToEcliptic = (
-  xOrb: number,
-  yOrb: number,
-  orbitalParams: OrbitalParams
-) => {
-  const { i, Ω, ω } = orbitalParams;
-  const xEcl =
-    xOrb *
-      (Math.cos(Ω) * Math.cos(ω) - Math.sin(Ω) * Math.sin(ω) * Math.cos(i)) -
-    yOrb *
-      (Math.sin(Ω) * Math.cos(ω) + Math.cos(Ω) * Math.sin(ω) * Math.cos(i));
-
-  const yEcl =
-    xOrb *
-      (Math.cos(Ω) * Math.sin(ω) + Math.sin(Ω) * Math.cos(ω) * Math.cos(i)) +
-    yOrb *
-      (Math.cos(Ω) * Math.cos(ω) - Math.sin(Ω) * Math.sin(ω) * Math.cos(i));
-
-  const zEcl =
-    xOrb * (Math.sin(ω) * Math.sin(i)) + yOrb * (Math.cos(ω) * Math.sin(i));
-
-  return { xEcl, yEcl, zEcl };
-};
-
-export const convertCoordsOrbitalToEcliptic2 = (
-  xOrb: number,
-  yOrb: number,
-  orbitalParams: OrbitalParams
-) => {
-  const { i, Ω, ω } = orbitalParams;
-
-  const xDoublePrime = xOrb * Math.cos(ω) - yOrb * Math.sin(ω);
-  const yDoublePrime = xOrb * Math.sin(ω) + yOrb * Math.cos(ω);
-  const zDoublePrime = 0;
-
-  // Calcolare le coordinate dopo la rotazione attorno all'asse x di -i
-  const xTriplePrime = xDoublePrime;
-  const yTriplePrime = yDoublePrime * Math.cos(i) - zDoublePrime * Math.sin(i);
-  const zTriplePrime = yDoublePrime * Math.sin(i) + zDoublePrime * Math.cos(i);
-
-  // Calcolare le coordinate finali dopo la rotazione attorno all'asse z di -Ω
-  const xEcl = xTriplePrime * Math.cos(Ω) - yTriplePrime * Math.sin(Ω);
-  const yEcl = xTriplePrime * Math.sin(Ω) + yTriplePrime * Math.cos(Ω);
-  const zEcl = zTriplePrime;
-
-  return { xEcl, yEcl, zEcl };
-};
-
-export function transformToEcliptic(x, y, orbitalParams) {
-  // Converti gradi a radianti
-  const { ω, Ω, i } = orbitalParams;
-
-  
-  // Rotazione attorno all'asse z (nodo ascendente)
-  const x1 = x * Math.cos(Ω) + y * Math.sin(Ω);
-  const y1 = -x * Math.sin(Ω) + y * Math.cos(Ω);
-  const z1 = 0;
-
-  // Rotazione attorno all'asse x (inclinazione)
-  const x2 = x1;
-  const y2 = y1 * Math.cos(i) - z1 * Math.sin(i);
-  const z2 = y1 * Math.sin(i) + z1 * Math.cos(i);
-
-  // Rotazione attorno all'asse z (argomento del perielio)
-  const xE = x2 * Math.cos(ω) - y2 * Math.sin(ω);
-  const yE = x2 * Math.sin(ω) + y2 * Math.cos(ω);
-  const zE = z2;
-
-  return { xEcl: xE, yEcl: yE, zEcl: zE };
-}
-
-export function transformToEcliptic4(xOrb, yOrb, orbitalParams) {
-  // Converti gradi a radianti
-  const { ω, Ω, i } = orbitalParams;
-
-  
-  const x1 = xOrb * Math.cos(ω) - yOrb * Math.sin(ω);
-  const y1 = xOrb * Math.sin(ω) + yOrb * Math.cos(ω);
-  const z1 = 0; // z non cambia durante questa rotazione
-
-  // Rotazione attorno all'asse x di -i (inclinazione)
-  const x2 = x1;
-  const y2 = y1 * Math.cos(i) - z1 * Math.sin(i);
-  const z2 = y1 * Math.sin(i) + z1 * Math.cos(i);
-
-  // Rotazione attorno all'asse z di -Ω (nodo ascendente)
-  const xEcl = x2 * Math.cos(Ω) - y2 * Math.sin(Ω);
-  const yEcl = x2 * Math.sin(Ω) + y2 * Math.cos(Ω);
-  const zEcl = z2; // z non cambia durante questa rotazione
-
-  return { xEcl, yEcl, zEcl };
-}
