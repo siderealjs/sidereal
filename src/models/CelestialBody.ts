@@ -1,11 +1,11 @@
 import {
+  calcCoordsHCOrbitalAtDate,
   calcolaRADEC,
   convertCoordsEclipticToEquatorial,
   convertCoordsHCOrbitalToHCEcliptic,
 } from "./../astronomy/coords";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 import orbitalParams from "../data/planets.json";
-import { calcCoordsHCOrbitalAtDate } from "../astronomy/orbit";
 import { CelestialBodyName } from "../types/ObjectName.type";
 
 
