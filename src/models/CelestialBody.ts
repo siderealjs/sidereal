@@ -1,16 +1,15 @@
 import {
-  calcolaRADEC,
+  calcCoordsEclipticFromAnomaly,
+  calcCoordsHeliocentricOrbital,
   convertCoordsOrbitalToEcliptic,
-  convertCoordsOrbitalToEcliptic2,
-  ecliptictToRaDec,
-  orbitalCoordsWithTrueAnomaly,
-  transformToEcliptic,
-  transformToEcliptic4,
 } from "./../astronomy/coords";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 import orbitalParams from "../data/planets.json";
-import { convertCoordsEclipticToEquatorial } from "../astronomy/coords";
 import { calcAnomalyAndRadiusAtDate } from "../astronomy/orbit";
+import {
+  calcolaRADEC,
+  convertCoordsEclipticToEquatorial,
+} from "../astronomy/coords copy";
 
 const allbodies = {
   mars: { size: 3 },
@@ -31,39 +30,67 @@ export default class CelestialBody {
   }
 
   public getEphemerisAtDate(date: Date) {
-    const { v, r } = calcAnomalyAndRadiusAtDate(date, this.orbitalParams);
+    const earthParams = orbitalParams["earth"];
 
-    const { xOrb, yOrb } = orbitalCoordsWithTrueAnomaly(v, r, this.orbitalParams);
-    console.log("orb coord with true anomaly", xOrb, yOrb);
-
-    const { xEcl, yEcl, zEcl } = convertCoordsOrbitalToEcliptic(xOrb, yOrb, this.orbitalParams);
-    
-    const fdd = convertCoordsOrbitalToEcliptic2(xOrb, yOrb, this.orbitalParams);
-    console.log("ECLIP2, ", fdd);
-
-    const ec1 = transformToEcliptic4(xOrb, yOrb, this.orbitalParams);
-    const jj = transformToEcliptic(
-      xOrb,
-      yOrb,
+    // const { v: vEarth, r: rEarth } = calcAnomalyAndRadiusAtDate(
+    //   date,
+    //   earthParams
+    // );
+    const { v: vPlanet, r: rPlanet } = calcAnomalyAndRadiusAtDate(
+      date,
       this.orbitalParams
     );
 
-    console.log("ECLIP, ", ec1);
+    // const earthHCEcliptic = calcCoordsEclipticFromAnomaly(
+    //   rEarth,
+    //   vEarth,
+    //   earthParams
+    // );
+    const planetHCEcliptic = calcCoordsEclipticFromAnomaly(
+      rPlanet,
+      vPlanet,
+      this.orbitalParams
+    );
 
-    console.log("ECLIP3", jj);
+    console.warn('mars ecl', planetHCEcliptic);
 
-    console.log("ECLIP4, ", xEcl, yEcl, zEcl);
 
-    const dirette = ecliptictToRaDec(xEcl, yEcl, zEcl);
+    // const xGeoEclPlanet = planetHCEcliptic.xEcl - earthHCEcliptic.xEcl;
+    // const yGeoEclPlanet = planetHCEcliptic.xEcl - earthHCEcliptic.yEcl;
+    // const zGeoEclPlanet = planetHCEcliptic.xEcl - earthHCEcliptic.zEcl;
 
-    console.log("RADEC DIRECT", dirette);
+    // console.log(
+    //   "mars geocentric,",
+    //   xGeoEclPlanet,
+    //   yGeoEclPlanet,
+    //   zGeoEclPlanet
+    // );
 
-    const {xEq, yEq, zEq} = convertCoordsEclipticToEquatorial(xEcl, yEcl, zEcl);
-    console.log('coordinate equatr stepbystep', xEq, yEq, zEq)
-    const d = calcolaRADEC(xEq, yEq, zEq);
+    // const { xEq, yEq, zEq } = convertCoordsEclipticToEquatorial(
+    //   xGeoEclPlanet,
+    //   yGeoEclPlanet,
+    //   zGeoEclPlanet
+    // );
 
-    console.log('dd', d)
-    console.log(d)
+    // console.log(75, xEq, yEq, zEq);
+    // const d = calcolaRADEC(xEq, yEq, zEq);
+
+    // console.log("dd", d);
+
+    // const dirette = ecliptictToRaDec(xEcl, yEcl, zEcl);
+
+    // console.log("RADEC DIRECT", dirette);
+
+    // const { xEq, yEq, zEq } = convertCoordsEclipticToEquatorial(
+    //   xEcl,
+    //   yEcl,
+    //   zEcl
+    // );
+    // console.log("coordinate equatr stepbystep", xEq, yEq, zEq);
+    // const d = calcolaRADEC(xEq, yEq, zEq);
+
+    // console.log("dd", d);
+    // console.log(d);
 
     // DEC DEVE FARE 0.3725 radians radians
     // RA DEVE FARE 1.1913 radians

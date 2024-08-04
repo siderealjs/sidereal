@@ -2,7 +2,7 @@ import { Constants, CelestialBody } from "./index";
 
 const mars = new CelestialBody("earth");
 const todayx = new Date("2024-08-04");
-const today = new Date("2024-08-04");
+const today = new Date();
 
 //console.log(todayx, today);
 
@@ -29,6 +29,10 @@ function calculateMarsRAandDEC(v_mars, E_mars, a_mars, e_mars, i_mars, w_mars, N
 
     // Calculate distances
     const r_mars = a_mars * (1 - e_mars * Math.cos(E_mars));
+
+
+    console.log('USA ha r=', r_mars, 'e v=', v_mars);
+
     const r_earth = a_earth * (1 - e_earth * Math.cos(E_earth));
 
     // Calculate heliocentric coordinates in the orbital plane
@@ -39,6 +43,9 @@ function calculateMarsRAandDEC(v_mars, E_mars, a_mars, e_mars, i_mars, w_mars, N
     const X_orb_earth = r_earth * Math.cos(v_earth);
     const Y_orb_earth = r_earth * Math.sin(v_earth);
     const Z_orb_earth = 0;
+
+    console.log('ORB FROM USA', X_orb_mars, Y_orb_mars)
+
 
     // Convert orbital plane coordinates to ecliptic coordinates
     function orbitalToEcliptic(X_orb, Y_orb, Z_orb, i, w, N) {
@@ -59,10 +66,19 @@ function calculateMarsRAandDEC(v_mars, E_mars, a_mars, e_mars, i_mars, w_mars, N
     const marsEcl = orbitalToEcliptic(X_orb_mars, Y_orb_mars, Z_orb_mars, degToRad(i_mars), degToRad(w_mars), degToRad(N_mars));
     const earthEcl = orbitalToEcliptic(X_orb_earth, Y_orb_earth, Z_orb_earth, degToRad(i_earth), degToRad(w_earth), degToRad(N_earth));
 
+    console.warn('mars ecl usa', marsEcl);
     // Calculate geocentric coordinates of Mars
     const Xg = marsEcl.X_ecl - earthEcl.X_ecl;
     const Yg = marsEcl.Y_ecl - earthEcl.Y_ecl;
     const Zg = marsEcl.Z_ecl - earthEcl.Z_ecl;
+
+
+    console.log(
+        "mars geocentric usa",
+        Xg,
+        Yg,
+        Zg
+      );
 
     // Convert geocentric ecliptic coordinates to equatorial coordinates
     const Xe = Xg;
