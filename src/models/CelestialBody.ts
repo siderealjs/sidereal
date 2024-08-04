@@ -6,19 +6,14 @@ import {
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 import orbitalParams from "../data/planets.json";
 import { calcCoordsHCOrbitalAtDate } from "../astronomy/orbit";
+import { CelestialBodyName } from "../types/ObjectName.type";
 
-const allbodies = {
-  mars: { size: 3 },
-  earth: { size: 2 },
-  venus: {},
-  mercury: "",
-};
 
 export default class CelestialBody {
   private orbitalParams: OrbitalParams;
 
-  constructor(name: string) {
-    if (!allbodies[name]) {
+  constructor(name: CelestialBodyName) {
+    if (!orbitalParams[name]) {
       throw new Error(`non ce un oggetto chiamato ${name}`);
     }
 

@@ -1,4 +1,4 @@
-import { Constants, CelestialBody } from "./index";
+import { Constants, CelestialBody } from "../src/index";
 
 const mars = new CelestialBody("mars");
 const today = new Date("2022-04-08");

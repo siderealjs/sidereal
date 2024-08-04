@@ -1,4 +1,4 @@
-export type OrbitalParams = {
+export interface OrbitalParams {
   a: number;
   e: number;
   i: number;
