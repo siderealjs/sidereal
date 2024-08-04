@@ -1,6 +1,6 @@
 import { Constants, CelestialBody } from "./index";
 
-const mars = new CelestialBody("earth");
+const mars = new CelestialBody("mars");
 const todayx = new Date("2024-08-04");
 const today = new Date();
 
@@ -8,7 +8,6 @@ const today = new Date();
 
 const ephemerisMars = mars.getEphemerisAtDate(today);
 
-console.log(ephemerisMars);
 
 
 
@@ -31,7 +30,7 @@ function calculateMarsRAandDEC(v_mars, E_mars, a_mars, e_mars, i_mars, w_mars, N
     const r_mars = a_mars * (1 - e_mars * Math.cos(E_mars));
 
 
-    console.log('USA ha r=', r_mars, 'e v=', v_mars);
+    // console.log('USA ha r=', r_mars, 'e v=', v_mars);
 
     const r_earth = a_earth * (1 - e_earth * Math.cos(E_earth));
 
@@ -44,7 +43,8 @@ function calculateMarsRAandDEC(v_mars, E_mars, a_mars, e_mars, i_mars, w_mars, N
     const Y_orb_earth = r_earth * Math.sin(v_earth);
     const Z_orb_earth = 0;
 
-    console.log('ORB FROM USA', X_orb_mars, Y_orb_mars)
+    //console.log('ORB mars FROM USA', X_orb_mars, Y_orb_mars)
+     // console.log('ORB earth ROM USA', X_orb_earth, Y_orb_earth)
 
 
     // Convert orbital plane coordinates to ecliptic coordinates
@@ -67,6 +67,7 @@ function calculateMarsRAandDEC(v_mars, E_mars, a_mars, e_mars, i_mars, w_mars, N
     const earthEcl = orbitalToEcliptic(X_orb_earth, Y_orb_earth, Z_orb_earth, degToRad(i_earth), degToRad(w_earth), degToRad(N_earth));
 
     console.warn('mars ecl usa', marsEcl);
+    console.warn('earth ecl usa', earthEcl);
     // Calculate geocentric coordinates of Mars
     const Xg = marsEcl.X_ecl - earthEcl.X_ecl;
     const Yg = marsEcl.Y_ecl - earthEcl.Y_ecl;
@@ -85,6 +86,9 @@ function calculateMarsRAandDEC(v_mars, E_mars, a_mars, e_mars, i_mars, w_mars, N
     const Ye = Yg * Math.cos(epsilon) - Zg * Math.sin(epsilon);
     const Ze = Yg * Math.sin(epsilon) + Zg * Math.cos(epsilon);
 
+
+    console.log('USA EQUATORIALI', Xe, Ye, Ze);
+
     // Calculate RA and DEC
     const RA = radToDeg(Math.atan2(Ye, Xe));
     const DEC = radToDeg(Math.asin(Ze / Math.sqrt(Xe * Xe + Ye * Ye + Ze * Ze)));
@@ -94,8 +98,8 @@ function calculateMarsRAandDEC(v_mars, E_mars, a_mars, e_mars, i_mars, w_mars, N
 
 
 
-const v_mars = 0.9517  // Example value, in degrees
-const E_mars = 0.8775  // Example value, in degrees
+const v_mars = 0.9517  // Example value, in radians
+const E_mars = 0.8775  // Example value, in radians
 const a_mars = 1.523679;       // Semimajor axis of Mars, in AU
 const e_mars = 0.0934;         // Eccentricity of Mars
 const i_mars = 1.850;          // Inclination of Mars's orbit, in degrees

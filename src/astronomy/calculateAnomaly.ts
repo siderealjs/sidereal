@@ -40,7 +40,7 @@ export const calcMeanAnomalyAtDate = (M0: number, n: number, date: Date) => {
   const julianEpoch = new Date("2000-01-01");
   const deltaT = daysBetweenDates(julianEpoch, date);
 
-  console.log('001:: delta giorni', deltaT)
+  console.log('001:: delta giorni', deltaT, n, M0)
   // Calcola l'anomalia media
   const M = M0 + n * deltaT;
 

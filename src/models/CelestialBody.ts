@@ -32,50 +32,51 @@ export default class CelestialBody {
   public getEphemerisAtDate(date: Date) {
     const earthParams = orbitalParams["earth"];
 
-    // const { v: vEarth, r: rEarth } = calcAnomalyAndRadiusAtDate(
-    //   date,
-    //   earthParams
-    // );
+    const { v: vEarth, r: rEarth } = calcAnomalyAndRadiusAtDate(
+      date,
+      earthParams
+    );
+
     const { v: vPlanet, r: rPlanet } = calcAnomalyAndRadiusAtDate(
       date,
       this.orbitalParams
     );
 
-    // const earthHCEcliptic = calcCoordsEclipticFromAnomaly(
-    //   rEarth,
-    //   vEarth,
-    //   earthParams
-    // );
+    const earthHCEcliptic = calcCoordsEclipticFromAnomaly(
+      rEarth,
+      vEarth,
+      earthParams
+    );
     const planetHCEcliptic = calcCoordsEclipticFromAnomaly(
       rPlanet,
       vPlanet,
       this.orbitalParams
     );
 
-    console.warn('mars ecl', planetHCEcliptic);
+    console.warn("mars ecl", planetHCEcliptic);
+    console.warn("earth ecl", earthHCEcliptic);
 
+    const xGeoEclPlanet = planetHCEcliptic.xEcl - earthHCEcliptic.xEcl;
+    const yGeoEclPlanet = planetHCEcliptic.yEcl - earthHCEcliptic.yEcl;
+    const zGeoEclPlanet = planetHCEcliptic.zEcl - earthHCEcliptic.zEcl;
 
-    // const xGeoEclPlanet = planetHCEcliptic.xEcl - earthHCEcliptic.xEcl;
-    // const yGeoEclPlanet = planetHCEcliptic.xEcl - earthHCEcliptic.yEcl;
-    // const zGeoEclPlanet = planetHCEcliptic.xEcl - earthHCEcliptic.zEcl;
+    console.log(
+      "mars geocentric,",
+      xGeoEclPlanet,
+      yGeoEclPlanet,
+      zGeoEclPlanet
+    );
 
-    // console.log(
-    //   "mars geocentric,",
-    //   xGeoEclPlanet,
-    //   yGeoEclPlanet,
-    //   zGeoEclPlanet
-    // );
+    const { xEq, yEq, zEq } = convertCoordsEclipticToEquatorial(
+      xGeoEclPlanet,
+      yGeoEclPlanet,
+      zGeoEclPlanet
+    );
 
-    // const { xEq, yEq, zEq } = convertCoordsEclipticToEquatorial(
-    //   xGeoEclPlanet,
-    //   yGeoEclPlanet,
-    //   zGeoEclPlanet
-    // );
+    console.log('EQUATORIALI', xEq, yEq, zEq);
+    const d = calcolaRADEC(xEq, yEq, zEq);
 
-    // console.log(75, xEq, yEq, zEq);
-    // const d = calcolaRADEC(xEq, yEq, zEq);
-
-    // console.log("dd", d);
+    console.log("dd", d);
 
     // const dirette = ecliptictToRaDec(xEcl, yEcl, zEcl);
 

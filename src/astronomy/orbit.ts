@@ -29,9 +29,10 @@ export const calcAnomalyAndRadiusAtDate = (
   // Calcolare la distanza radiale
   //const r = a * (1 - e * Math.cos(E));
   const r = (a * (1 - e * e)) / (1 + e * Math.cos(v));
+
   console.log("006:: radial r,", r);
 
-  return { E, v, r };
+  return { v, r };
 };
 
 export function calculateRAandDEC(r, nu, orbitalParams) {
