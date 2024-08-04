@@ -1,6 +1,8 @@
-import { Constants, CelestialBody } from "../src/index";
+import AstronomyLab from "../dist/bundle.js";
 
-const mars = new CelestialBody("mars");
-const today = new Date("2022-04-08");
+console.log(AstronomyLab);
+
+const mars = new AstronomyLab.CelestialBody("mars");
+const today = new Date('2022-01-17');
 
 mars.getEphemerisAtDate(today);

@@ -1,18 +1,18 @@
-import { CartesianCoordinates3D } from "./../types/Coords.type";
 import {
   CartesianCoordinates2D,
   CartesianCoordinates3D,
 } from "../types/Coords.type";
+import Constants from "../data/constants.json";
 import { convertRadsToHMS, convertRadToDMS } from "../utils/angles";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 
 // usata
-// TODO: sposta epsilon e aggiusta commenti e naming
+// TODO: aggiusta commenti e naming
 export const convertCoordsEclipticToEquatorial = (
   eclipticCoords: CartesianCoordinates3D
 ): CartesianCoordinates3D => {
   // Converti in coordinate equatoriali
-  const epsilon = 0.4091; // inclinazione dell'eclittica in radianti
+  const epsilon = Constants.earthAxialTilt; // inclinazione dell'eclittica in radianti
 
   const { x: xEcl, y: yEcl, z: zEcl } = eclipticCoords;
   const cosEpsilon = Math.cos(epsilon);

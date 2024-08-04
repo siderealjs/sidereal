@@ -1,5 +1,5 @@
-import Constants from "./Constants";
 import CelestialBody from "./models/CelestialBody";
+import Constants from "./data/constants.json";
 
 const AstronomyLab = {
   Constants,
