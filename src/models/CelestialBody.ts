@@ -54,4 +54,8 @@ export default class CelestialBody {
 
     return d;
   }
+
+  public getMagnitude() {
+    
+  }
 }
