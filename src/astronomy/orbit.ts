@@ -1,3 +1,4 @@
+import { CartesianCoordinates2D } from "../types/Coords.type";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 import {
   calcEccentricAnomaly,
@@ -7,10 +8,10 @@ import {
 
 
 
-export const calcAnomalyAndRadiusAtDate = (
+export const calcCoordsHCOrbitalAtDate = (
   givenDate: Date,
   orbitalParams: OrbitalParams
-): { v: number; r: number } => {
+): CartesianCoordinates2D => {
   const { M0, a, e, n } = orbitalParams;
 
   // Calcolare l'anomalia media attuale
@@ -34,5 +35,10 @@ export const calcAnomalyAndRadiusAtDate = (
 
   console.log("006:: radial r,", r);
 
-  return { v, r };
+
+  const xOrb = r * Math.cos(v);
+  const yOrb = r * Math.sin(v);
+
+  return { x: xOrb, y: yOrb };
+
 };

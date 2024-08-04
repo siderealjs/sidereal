@@ -1,7 +1,11 @@
-import { calcCoordsEclipticFromAnomaly, calcolaRADEC, convertCoordsEclipticToEquatorial } from "./../astronomy/coords";
+import {
+  calcolaRADEC,
+  convertCoordsEclipticToEquatorial,
+  convertCoordsHCOrbitalToHCEcliptic,
+} from "./../astronomy/coords";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 import orbitalParams from "../data/planets.json";
-import { calcAnomalyAndRadiusAtDate } from "../astronomy/orbit";
+import { calcCoordsHCOrbitalAtDate } from "../astronomy/orbit";
 
 const allbodies = {
   mars: { size: 3 },
@@ -24,49 +28,34 @@ export default class CelestialBody {
   public getEphemerisAtDate(date: Date) {
     const earthParams = orbitalParams["earth"];
 
-    const { v: vEarth, r: rEarth } = calcAnomalyAndRadiusAtDate(
-      date,
+    const earthHCOrbital = calcCoordsHCOrbitalAtDate(date, earthParams);
+
+    const bodyHCOrbital = calcCoordsHCOrbitalAtDate(date, this.orbitalParams);
+
+    const earthHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
+      earthHCOrbital,
       earthParams
     );
 
-    const { v: vPlanet, r: rPlanet } = calcAnomalyAndRadiusAtDate(
-      date,
+    const bodyHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
+      bodyHCOrbital,
       this.orbitalParams
     );
 
-    const earthHCEcliptic = calcCoordsEclipticFromAnomaly(
-      rEarth,
-      vEarth,
-      earthParams
-    );
-    const planetHCEcliptic = calcCoordsEclipticFromAnomaly(
-      rPlanet,
-      vPlanet,
-      this.orbitalParams
-    );
+    const xGCEclPlanet = bodyHCEcliptic.x - earthHCEcliptic.x;
+    const yGCEclPlanet = bodyHCEcliptic.y - earthHCEcliptic.y;
+    const zGCEclPlanet = bodyHCEcliptic.z - earthHCEcliptic.z;
 
-    // console.warn("mars ecl", planetHCEcliptic);
-    // console.warn("earth ecl", earthHCEcliptic);
+    const bodyCGEclCoords = {
+      x: xGCEclPlanet,
+      y: yGCEclPlanet,
+      z: zGCEclPlanet,
+    };
 
-    const xGeoEclPlanet = planetHCEcliptic.xEcl - earthHCEcliptic.xEcl;
-    const yGeoEclPlanet = planetHCEcliptic.yEcl - earthHCEcliptic.yEcl;
-    const zGeoEclPlanet = planetHCEcliptic.zEcl - earthHCEcliptic.zEcl;
-
-    // console.log(
-    //   "mars geocentric,",
-    //   xGeoEclPlanet,
-    //   yGeoEclPlanet,
-    //   zGeoEclPlanet
-    // );
-
-    const { xEq, yEq, zEq } = convertCoordsEclipticToEquatorial(
-      xGeoEclPlanet,
-      yGeoEclPlanet,
-      zGeoEclPlanet
-    );
+    const equatorialCoords = convertCoordsEclipticToEquatorial(bodyCGEclCoords);
 
     // console.log("EQUATORIALI", xEq, yEq, zEq);
-    const d = calcolaRADEC(xEq, yEq, zEq);
+    const d = calcolaRADEC(equatorialCoords);
 
     console.log("dd", d);
   }

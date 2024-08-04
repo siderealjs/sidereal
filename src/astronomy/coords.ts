@@ -1,16 +1,20 @@
+import { CartesianCoordinates3D } from "./../types/Coords.type";
+import {
+  CartesianCoordinates2D,
+  CartesianCoordinates3D,
+} from "../types/Coords.type";
 import { convertRadsToHMS, convertRadToDMS } from "../utils/angles";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 
 // usata
 // TODO: sposta epsilon e aggiusta commenti e naming
 export const convertCoordsEclipticToEquatorial = (
-  xEcl: number,
-  yEcl: number,
-  zEcl: number
-) => {
+  eclipticCoords: CartesianCoordinates3D
+): CartesianCoordinates3D => {
   // Converti in coordinate equatoriali
   const epsilon = 0.4091; // inclinazione dell'eclittica in radianti
 
+  const { x: xEcl, y: yEcl, z: zEcl } = eclipticCoords;
   const cosEpsilon = Math.cos(epsilon);
   const sinEpsilon = Math.sin(epsilon);
 
@@ -19,28 +23,26 @@ export const convertCoordsEclipticToEquatorial = (
   const z_eq = sinEpsilon * yEcl + cosEpsilon * zEcl;
 
   return {
-    xEq: x_eq,
-    yEq: y_eq,
-    zEq: z_eq,
+    x: x_eq,
+    y: y_eq,
+    z: z_eq,
   };
 };
 
 /**
  * Calcola la Declinazione (DEC) e l'Ascensione Retta (RA) e converte in formato leggibile.
- * @param {number} x_eq - Coordinata x nel sistema equatoriale.
- * @param {number} y_eq - Coordinata y nel sistema equatoriale.
- * @param {number} z_eq - Coordinata z nel sistema equatoriale.
  * @returns {Object} - Oggetto contenente RA e DEC nel formato leggibile.
  */
-export function calcolaRADEC(x_eq, y_eq, z_eq) {
+export function calcolaRADEC(equatorialCoords: CartesianCoordinates3D) {
+  const { x: xEq, y: yEq, z: zEq } = equatorialCoords;
   // Calcola la distanza radiale r
-  const r = Math.sqrt(x_eq * x_eq + y_eq * y_eq + z_eq * z_eq);
+  const r = Math.sqrt(xEq * xEq + yEq * yEq + zEq * zEq);
 
   // Calcola la Declinazione (DEC) in radianti
-  const DEC = Math.asin(z_eq / r);
+  const DEC = Math.asin(zEq / r);
 
   // Calcola l'Ascensione Retta (RA) in radianti
-  let RA = Math.atan2(y_eq, x_eq);
+  let RA = Math.atan2(yEq, xEq);
 
   // Normalizza RA a [0, 2π)
   RA = (RA + 2 * Math.PI) % (2 * Math.PI);
@@ -61,15 +63,13 @@ export function calcolaRADEC(x_eq, y_eq, z_eq) {
   };
 }
 
-export const calcCoordsHCOrbital = (v: number, r: number) => {
-  const xOrb = r * Math.cos(v);
-  const yOrb = r * Math.sin(v);
-
-  return { xOrb, yOrb };
-};
-
-export function convertCoordsHCOrbitalToHCEcliptic(xOrb, yOrb, orbitalParams) {
+export function convertCoordsHCOrbitalToHCEcliptic(
+  orbitalCoords: CartesianCoordinates2D,
+  orbitalParams: OrbitalParams
+): CartesianCoordinates3D {
   const { ω, Ω, i } = orbitalParams;
+
+  const { x: xOrb, y: yOrb } = orbitalCoords;
 
   const cosω = Math.cos(ω);
   const sinω = Math.sin(ω);
@@ -92,21 +92,5 @@ export function convertCoordsHCOrbitalToHCEcliptic(xOrb, yOrb, orbitalParams) {
   const yEcl = x2 * sinΩ + y2 * cosΩ;
   const zEcl = z2; // z non cambia durante questa rotazione
 
-  return { xEcl, yEcl, zEcl };
+  return { x: xEcl, y: yEcl, z: zEcl };
 }
-
-export const calcCoordsEclipticFromAnomaly = (
-  r: number,
-  v: number,
-  orbitalParams: OrbitalParams
-) => {
-  const { xOrb, yOrb } = calcCoordsHCOrbital(v, r);
-
-  const { xEcl, yEcl, zEcl } = convertCoordsHCOrbitalToHCEcliptic(
-    xOrb,
-    yOrb,
-    orbitalParams
-  );
-
-  return { xEcl, yEcl, zEcl };
-};
