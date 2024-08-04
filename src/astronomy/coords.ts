@@ -5,7 +5,11 @@ import {
 import Constants from "../data/constants.json";
 import { convertRadsToHMS, convertRadToDMS } from "../utils/angles";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
-import { calcEccentricAnomaly, calcMeanAnomalyAtDate, calcTrueAnomaly } from "./anomaly";
+import {
+  calcEccentricAnomaly,
+  calcMeanAnomalyAtDate,
+  calcTrueAnomaly,
+} from "./anomaly";
 
 export const calcCoordsHCOrbitalAtDate = (
   givenDate: Date,
@@ -92,8 +96,14 @@ export function calcolaRADEC(equatorialCoords: CartesianCoordinates3D) {
   const decFormattato = convertRadToDMS(DEC);
 
   return {
-    RA: raFormattato,
-    DEC: decFormattato,
+    ra: {
+      rad: RA,
+      deg: raFormattato,
+    },
+    dec: {
+      rad: DEC,
+      deg: decFormattato,
+    },
   };
 }
 

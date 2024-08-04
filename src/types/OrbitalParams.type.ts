@@ -5,7 +5,7 @@ export interface OrbitalParams {
   Ω: number;
   ω: number;
   M0: number;
-  P: number;
-  T: number;
+  P?: number;
+  T?: number;
   n: number;
-};
+}

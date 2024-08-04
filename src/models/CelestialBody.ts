@@ -8,7 +8,6 @@ import { OrbitalParams } from "./../types/OrbitalParams.type";
 import orbitalParams from "../data/planets.json";
 import { CelestialBodyName } from "../types/ObjectName.type";
 
-
 export default class CelestialBody {
   private orbitalParams: OrbitalParams;
 
@@ -51,7 +50,8 @@ export default class CelestialBody {
 
     // console.log("EQUATORIALI", xEq, yEq, zEq);
     const d = calcolaRADEC(equatorialCoords);
-
     console.log("dd", d);
+
+    return d;
   }
 }

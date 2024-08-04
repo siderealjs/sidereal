@@ -55,8 +55,8 @@ describe.only("Astronomy:: Anomaly", () => {
 
       const result = calcTrueAnomaly(E, e);
 
-      // Verifica il risultato atteso. L'output specifico dipende dalla tua funzione.
-      expect(result).toBeNull(); // valore atteso (può variare in base al calcolo preciso)
+     
+      expect(result).toBe(0); 
     });
   });
 

@@ -42,10 +42,10 @@ export const calcEccentricAnomaly = (
  * @param {number} e - Orbit eccentricity (must be < 0 and >= 1)
  * @returns
  */
-export const calcTrueAnomaly = (E: number, e: number): number | null => {
+export const calcTrueAnomaly = (E: number, e: number): number => {
   if (e < 0 || e >= 1) {
     console.warn("Not valid anomaly e=", e);
-    return null;
+    return 0;
   }
 
   return (
