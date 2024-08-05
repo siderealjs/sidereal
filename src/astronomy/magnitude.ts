@@ -30,14 +30,27 @@ export function calculateQ(a) {
   return q;
 }
 
-export function calculateQemp(alpha) {
-  // Converti l'angolo da gradi a radianti
-  if (alpha > 0 && alpha <= 50) {
-    return 0.02267 * alpha - 0.0001302 * alpha * alpha;
-  } else {
-    // Calcola il valore usando l'espressione fornita
-    return 1.234 - 0.02573 * alpha + 0.0003445 * Math.pow(alpha, 2);
+export function calculateQemp(name, alpha) {
+  if (name === "venus") {
+    if (alpha > 0 && alpha <= 163.7) {
+      // Apply the first formula
+      return (
+        -1.044e-3 * alpha +
+        3.687e-4 * Math.pow(alpha, 2) -
+        2.814e-6 * Math.pow(alpha, 3) +
+        8.938e-9 * Math.pow(alpha, 4)
+      );
+    } else if (alpha > 163.7 && alpha < 179) {
+      // Apply the second formula
+      return 240.44228 - 2.81914 * alpha + 8.39034e-3 * Math.pow(alpha, 2);
+    }
+  } else if (name === "mars") {
+    // Converti l'angolo da gradi a radianti
+    if (alpha > 0 && alpha <= 50) {
+      return 0.02267 * alpha - 0.0001302 * alpha * alpha;
+    } else {
+      // Calcola il valore usando l'espressione fornita
+      return 1.234 - 0.02573 * alpha + 0.0003445 * Math.pow(alpha, 2);
+    }
   }
 }
-
-

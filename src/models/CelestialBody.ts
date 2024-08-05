@@ -99,9 +99,9 @@ export default class CelestialBody {
       2.5 * Math.log10(calculateQ(phaseAngle.degrees));
 
     const mm2 =
-      -1.601 +
+      this.orbitalParams.Hemp +
       5 * Math.log10(distanza * bodyHCOrbital.r) +
-      calculateQemp(phaseAngle.degrees);
+      calculateQemp('mars', phaseAngle.degrees);
 
     console.log("m apparent", mm);
     console.log("m apparent empt", mm2);
