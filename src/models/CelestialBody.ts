@@ -7,6 +7,11 @@ import {
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 import orbitalParams from "../data/planets.json";
 import { CelestialBodyName } from "../types/ObjectName.type";
+import {
+  calculateAlphaWikipedia,
+  calculateQ,
+  calculateQemp,
+} from "../astronomy/magnitude";
 
 export default class CelestialBody {
   private orbitalParams: OrbitalParams;
@@ -48,14 +53,57 @@ export default class CelestialBody {
 
     const equatorialCoords = convertCoordsEclipticToEquatorial(bodyCGEclCoords);
 
-    // console.log("EQUATORIALI", xEq, yEq, zEq);
     const d = calcolaRADEC(equatorialCoords);
     console.log("dd", d);
 
     return d;
   }
 
-  public getMagnitude() {
-    
+  public getMagnitude(date: Date) {
+    const earthParams = orbitalParams["earth"];
+
+    const earthHCOrbital = calcCoordsHCOrbitalAtDate(date, earthParams);
+
+    const bodyHCOrbital = calcCoordsHCOrbitalAtDate(date, this.orbitalParams);
+
+    const earthHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
+      earthHCOrbital,
+      earthParams
+    );
+
+    const bodyHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
+      bodyHCOrbital,
+      this.orbitalParams
+    );
+
+    const dx = earthHCEcliptic.x - bodyHCEcliptic.x;
+    const dy = earthHCEcliptic.y - bodyHCEcliptic.y;
+    const dz = earthHCEcliptic.z - bodyHCEcliptic.z;
+
+    // Calcola la distanza usando la formula euclidea
+    const distanza = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+    console.log("disanza oggetto-terra", distanza);
+    console.log("distanza oggetto-sole", bodyHCOrbital.r);
+
+    const phaseAngle = calculateAlphaWikipedia(
+      distanza,
+      bodyHCOrbital.r,
+      earthHCOrbital.r
+    );
+    console.log("phase angle", phaseAngle);
+
+    const mm =
+      this.orbitalParams.H +
+      5 * Math.log10(distanza * bodyHCOrbital.r) -
+      2.5 * Math.log10(calculateQ(phaseAngle.degrees));
+
+    const mm2 =
+      -1.601 +
+      5 * Math.log10(distanza * bodyHCOrbital.r) +
+      calculateQemp(phaseAngle.degrees);
+
+    console.log("m apparent", mm);
+    console.log("m apparent empt", mm2);
   }
 }

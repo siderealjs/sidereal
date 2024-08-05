@@ -8,4 +8,5 @@ export interface OrbitalParams {
   P?: number;
   T?: number;
   n: number;
+  H: number
 }

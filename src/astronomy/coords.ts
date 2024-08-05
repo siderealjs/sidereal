@@ -41,7 +41,7 @@ export const calcCoordsHCOrbitalAtDate = (
   const xOrb = r * Math.cos(v);
   const yOrb = r * Math.sin(v);
 
-  return { x: xOrb, y: yOrb };
+  return { r, x: xOrb, y: yOrb };
 };
 
 // usata
