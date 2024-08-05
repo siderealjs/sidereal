@@ -1,6 +1,6 @@
-export function calculateAlphaWikipedia(dbo, dbs, dos) {
+export function calculateAlphaWikipedia(dbo: number, dbs: number, dos: number) {
   // Calcola il coseno dell'angolo alpha
-  let cosAlpha = (dbo * dbo + dbs * dbs - dos * dos) / (2 * dbo * dbs);
+  const cosAlpha = (dbo * dbo + dbs * dbs - dos * dos) / (2 * dbo * dbs);
 
   // Assicurati che il valore di cosAlpha sia compreso tra -1 e 1 per evitare errori
   // if (cosAlpha < -1) cosAlpha = -1;
@@ -18,7 +18,7 @@ export function calculateAlphaWikipedia(dbo, dbs, dos) {
   };
 }
 
-export function calculateQ(a) {
+export function calculateQ(a: number) {
   // Converti l'angolo da gradi a radianti
   const aRadians = a * (Math.PI / 180);
 
@@ -30,7 +30,7 @@ export function calculateQ(a) {
   return q;
 }
 
-export function calculateQemp(name, alpha) {
+export function calculateQemp(name: string, alpha: number) {
   if (name === "venus") {
     if (alpha > 0 && alpha <= 163.7) {
       // Apply the first formula

@@ -1,6 +1,7 @@
 import {
   CartesianCoordinates2D,
   CartesianCoordinates3D,
+  Polar,
 } from "../types/Coords.type";
 import Constants from "../data/constants.json";
 import { convertRadsToHMS, convertRadToDMS } from "../utils/angles";
@@ -11,15 +12,37 @@ import {
   calcTrueAnomaly,
 } from "./anomaly";
 
-export const calcCoordsHCOrbitalAtDate = (
+export const calcCoordsPolarAtDate = (
   givenDate: Date,
   orbitalParams: OrbitalParams
-): CartesianCoordinates2D => {
-  const { M0, a, e, n } = orbitalParams;
+) => {
+  const { a, e, n, M0 } = orbitalParams;
 
   // Calcolare l'anomalia media attuale
-  const M = calcMeanAnomalyAtDate(M0, n, givenDate);
 
+  // const T =  0.24507871321013006;
+
+  // const M0 =
+  //     ((134.9633964 + (477198.8675055 * T +
+  //       0.0087414 * Math.pow(T, 2) +
+  //       Math.pow(T, 3) / 69699 -
+  //       Math.pow(T, 4) / 14712000)) *
+  //       (Math.PI / 180)) 
+
+
+  const M = calcMeanAnomalyAtDate(M0, n, givenDate);
+  
+  // const M =
+  // ((134.9633964 + (477198.8675055 * T +
+  //   0.0087414 * Math.pow(T, 2) +
+  //   Math.pow(T, 3) / 69699 -
+  //   Math.pow(T, 4) / 14712000)) *
+  //   (Math.PI / 180)) %
+  // (2 * Math.PI);
+
+  //const M = 2.44169933255138;
+
+  //console.log("003: normalized M:", M, M * 180 /Math.PI, Mx * 180 / Math.PI);
   console.log("003: normalized M:", M);
 
   // Calcolare l'anomalia eccentrica
@@ -31,20 +54,26 @@ export const calcCoordsHCOrbitalAtDate = (
   const v = calcTrueAnomaly(E, e);
 
   console.log("005:: true anomaly", v);
+  // deve fare 2.49999
 
   // Calcolare la distanza radiale
   //const r = a * (1 - e * Math.cos(E));
   const r = (a * (1 - e * e)) / (1 + e * Math.cos(v));
 
-  console.log("006:: radial r,", r);
+  return { v, r };
+};
+
+export const convertCoordsPolarToOrbital = (
+  polarCoords: Polar
+): CartesianCoordinates2D => {
+  const { v, r } = polarCoords;
 
   const xOrb = r * Math.cos(v);
   const yOrb = r * Math.sin(v);
 
-  return { r, x: xOrb, y: yOrb };
+  return { x: xOrb, y: yOrb };
 };
 
-// usata
 // TODO: aggiusta commenti e naming
 export const convertCoordsEclipticToEquatorial = (
   eclipticCoords: CartesianCoordinates3D
@@ -122,6 +151,7 @@ export function convertCoordsHCOrbitalToHCEcliptic(
   const cosΩ = Math.cos(Ω);
   const sinΩ = Math.sin(Ω);
 
+  // Rotate around axis z (-w). This aligns the object periapsis to its ascending node.
   const x1 = xOrb * cosω - yOrb * sinω;
   const y1 = xOrb * sinω + yOrb * cosω;
   const z1 = 0; // z non cambia durante questa rotazione

@@ -1,7 +1,7 @@
 /* eslint-disable */
 
+import { CelestialBody } from "../CelestialBody";
 import { CelestialBodyName } from "./../../types/ObjectName.type";
-import CelestialBody from "../CelestialBody";
 
 describe.only("Models:: CelestialBody,", () => {
   describe.only("getEphemerisAtDate", () => {

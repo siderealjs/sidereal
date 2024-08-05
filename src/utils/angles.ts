@@ -64,3 +64,13 @@ export const convertRadToDMS = (radians: number): string | null => {
 
   return `${sign}${intDegrees}° ${formattedMinutes}' ${formattedSeconds}"`;
 };
+
+// Converte i gradi in radianti
+export const toRadians = (degrees: number) => {
+  return degrees * (Math.PI / 180);
+};
+
+// Converte i radianti in gradi
+export const toDegrees = (radians: number) => {
+  return radians * (180 / Math.PI);
+};

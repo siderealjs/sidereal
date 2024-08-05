@@ -8,3 +8,9 @@ export type CartesianCoordinates2D = {
   x: number;
   y: number;
 };
+
+
+export type Polar = {
+  v: number,
+  r: number
+}

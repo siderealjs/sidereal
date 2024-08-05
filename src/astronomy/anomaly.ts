@@ -71,7 +71,6 @@ export const calcMeanAnomalyAtDate = (
 ): number => {
   const epochForM0 = new Date("2000-01-01");
   const deltaT = daysBetweenDates(epochForM0, date);
-
   // Calcolate mean anomaly
   const M = M0 + n * deltaT;
 
