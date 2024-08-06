@@ -20,7 +20,7 @@ export const daysSinceEpoch = (date: Date) => {
 
 
 
-const daysSinceJ1900 = (date) => {
+const daysSinceJ1900 = (date: Date) : number => {
   // Definire il giorno giuliano all'inizio del 1900
   const J1900 = 2415020.0;
 

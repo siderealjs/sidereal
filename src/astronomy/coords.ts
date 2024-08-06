@@ -21,27 +21,7 @@ export const calcCoordsPolarAtDate = (
 
   // Calcolare l'anomalia media attuale
 
-  // const T =  0.24507871321013006;
-
-  // const M0 =
-  //     ((134.9633964 + (477198.8675055 * T +
-  //       0.0087414 * Math.pow(T, 2) +
-  //       Math.pow(T, 3) / 69699 -
-  //       Math.pow(T, 4) / 14712000)) *
-  //       (Math.PI / 180))
-
   const M = calcMeanAnomalyAtDate(M0, n, givenDate);
-
-  // const M =
-  // ((134.9633964 + (477198.8675055 * T +
-  //   0.0087414 * Math.pow(T, 2) +
-  //   Math.pow(T, 3) / 69699 -
-  //   Math.pow(T, 4) / 14712000)) *
-  //   (Math.PI / 180)) %
-  // (2 * Math.PI);
-
-  //const M = 2.44169933255138;
-
   //console.log("003: normalized M:", M, M * 180 /Math.PI, Mx * 180 / Math.PI);
   console.log("003: normalized M:", M);
 
