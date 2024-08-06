@@ -74,3 +74,9 @@ export const toRadians = (degrees: number) => {
 export const toDegrees = (radians: number) => {
   return radians * (180 / Math.PI);
 };
+
+// Funzione per normalizzare l'angolo tra 0 e 360 gradi
+export const normalizeAngleD = (degrees: number) => {
+  return ((degrees % 360) + 360) % 360;
+  // return degrees % 360;
+};

@@ -119,7 +119,6 @@ export function calcolaRADEC(equatorialCoords: CartesianCoordinates3D) {
     RA += 2 * Math.PI;
   }
 
-  console.log("prima di formattare, ", RA, DEC);
   // Converti RA e DEC in formato leggibile
   const raFormattato = convertRadsToHMS(RA);
   const decFormattato = convertRadToDMS(DEC);
