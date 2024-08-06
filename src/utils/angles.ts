@@ -67,16 +67,16 @@ export const convertRadToDMS = (radians: number): string | null => {
 
 // Converte i gradi in radianti
 export const toRadians = (degrees: number) => {
-  return degrees * (Math.PI / 180);
+  return (degrees * (Math.PI / 180));
 };
 
 // Converte i radianti in gradi
 export const toDegrees = (radians: number) => {
-  return radians * (180 / Math.PI);
+  return (radians * (180 / Math.PI));
 };
 
 // Funzione per normalizzare l'angolo tra 0 e 360 gradi
 export const normalizeAngleD = (degrees: number) => {
-  return ((degrees % 360) + 360) % 360;
-  // return degrees % 360;
+  //return ((degrees % 360) + 360) % 360;
+   return degrees % 360;
 };

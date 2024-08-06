@@ -16,3 +16,23 @@ export const daysSinceEpoch = (date: Date) => {
 
   return differenceInDays;
 };
+
+
+
+
+const daysSinceJ1900 = (date) => {
+  // Definire il giorno giuliano all'inizio del 1900
+  const J1900 = 2415020.0;
+
+  // Calcolare il giorno giuliano della data fornita
+  const JD = date.getTime() / 86400000 + 2440587.5;
+
+  // Restituire i giorni trascorsi dal giorno giuliano di riferimento
+  return JD - J1900;
+};
+
+export const centuriesFromJ1900 = (date: Date) => {
+  const days = daysSinceJ1900(date);
+  const T = days / 36525.0;
+  return T;
+};
