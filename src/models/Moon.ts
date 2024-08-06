@@ -1,8 +1,4 @@
-import {
-  normalizeAngleD,
-  toDegrees,
-  toRadians,
-} from "../utils/angles";
+import { normalizeAngleD, toDegrees, toRadians } from "../utils/angles";
 import { daysSinceEpoch } from "../utils/dates";
 import { CelestialBody } from "./CelestialBody";
 import {
@@ -10,10 +6,7 @@ import {
   convertCoordsEclipticToEquatorial,
 } from "../astronomy/coords";
 import orbitalParams from "../data/planets.json";
-import {
-  calcEccentricAnomaly,
-  calcTrueAnomaly,
-} from "../astronomy/anomaly";
+import { calcEccentricAnomaly, calcTrueAnomaly } from "../astronomy/anomaly";
 
 export class Moon extends CelestialBody {
   constructor() {
@@ -144,7 +137,7 @@ export class Moon extends CelestialBody {
     console.log("LP", L_p);
     // 18. Calculate the variation correction (V)
     // V = 0.6583 * sin[2 * (L_p - Lsun)]
-    const V = 0.6583 * Math.sin(2 * toRadians((L_p - lSun)));
+    const V = 0.6583 * Math.sin(2 * toRadians(L_p - lSun));
 
     // 19. Calculate the Moon's true ecliptic longitude (L_t)
     // L_t = L_p + V
@@ -178,28 +171,34 @@ export class Moon extends CelestialBody {
     console.log("dT=", Omega_p, dT);
 
     // 25. Calculate the Moon's ecliptic longitude
-    let Lmoon = Omega_p + dT;
-
-    // 26. Adjust Lmoon if it exceeds 360 degrees
-    if (Lmoon > 360.0) {
-      Lmoon -= 360.0;
-    }
+    const Lmoon = normalizeAngleD(Omega_p + dT);
 
     // 27. Calculate the Moon's ecliptic latitude
-    const Bmoon =
+    const Bmoon = toDegrees(
       Math.asin(
         Math.sin(toRadians(L_t - Omega_p)) * Math.sin(toRadians(inclin))
-      ) *
-      (180 / Math.PI);
+      )
+    );
 
     const lambdaRad = toRadians(Lmoon);
     const betaRad = toRadians(Bmoon);
+    // const lambdaRad = 2.7815;
+    // const betaRad = 0.030336;
 
-    // console.log("quasi finale", lambdaRad, betaRad);
-    console.log("quasi finale", Lmoon, Bmoon);
+    console.log(
+      "quasi finale",
+      lambdaRad,
+      " (",
+      toDegrees(lambdaRad),
+      ") | ",
+      betaRad,
+      " (",
+      toDegrees(betaRad),
+      ")"
+    );
+    //console.log("quasi finale", Lmoon, Bmoon);
 
     const r = 1; //Math.sqrt(x * x + y * y);
-    console.log("R", x, y, r);
     const xec = r * Math.cos(lambdaRad) * Math.cos(betaRad);
     const yec = r * Math.sin(lambdaRad) * Math.cos(betaRad);
     const zec = r * Math.sin(betaRad);

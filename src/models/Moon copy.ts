@@ -15,7 +15,7 @@ export class Moon extends CelestialBody {
     super("moon");
   }
 
-  public getEphemerisAtDate(date: Date) {
+  public getEphemerisDaBho(date: Date) {
     //const T = daysBetweenDates(new Date("2000-01-01"), date) / 36500;
 
     const today = getJulianDate_LUNAR(2024, 7, 5, 0, 0);
