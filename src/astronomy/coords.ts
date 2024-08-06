@@ -2,6 +2,7 @@ import {
   CartesianCoordinates2D,
   CartesianCoordinates3D,
   Polar,
+  SphericalEcliptic,
 } from "../types/Coords.type";
 import Constants from "../data/constants.json";
 import { convertRadsToHMS, convertRadToDMS } from "../utils/angles";
@@ -27,11 +28,10 @@ export const calcCoordsPolarAtDate = (
   //       0.0087414 * Math.pow(T, 2) +
   //       Math.pow(T, 3) / 69699 -
   //       Math.pow(T, 4) / 14712000)) *
-  //       (Math.PI / 180)) 
-
+  //       (Math.PI / 180))
 
   const M = calcMeanAnomalyAtDate(M0, n, givenDate);
-  
+
   // const M =
   // ((134.9633964 + (477198.8675055 * T +
   //   0.0087414 * Math.pow(T, 2) +
@@ -167,3 +167,15 @@ export function convertCoordsHCOrbitalToHCEcliptic(
 
   return { x: xEcl, y: yEcl, z: zEcl };
 }
+
+export const convertSphericalEclipticToCartesianEcliptic = (
+  sphericalCoords: SphericalEcliptic
+): CartesianCoordinates3D => {
+  const { lng: λ, lat: β } = sphericalCoords;
+
+  const xEcl = Math.cos(λ) * Math.cos(β);
+  const yEcl = Math.sin(λ) * Math.cos(β);
+  const zEcl = Math.sin(β);
+
+  return { x: xEcl, y: yEcl, z: zEcl };
+};

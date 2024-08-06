@@ -14,3 +14,11 @@ export type Polar = {
   v: number,
   r: number
 }
+
+export type SphericalEcliptic = {
+  lat: number,
+  lng: number,
+  d?: number
+}
+
+
