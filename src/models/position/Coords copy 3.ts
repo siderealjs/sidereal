@@ -5,18 +5,15 @@ import {
   EquatorialCoords,
   OrbitalCoords as OrbitalCoordsType,
   PolarCoords,
-  SphericalEclipticCoords,
-  SphericalEquatorialCoords,
 } from "../../types/Coords.type";
 
-export class Coords {
-  protected spherical:
-    | SphericalEclipticCoords
-    | SphericalEquatorialCoords
-    | null = null;
+export class Coords<
+  T extends EclipticCoords | EquatorialCoords | OrbitalCoordsType
+> {
+  protected spherical: T["spherical"] | null = null;
   protected cartesian: Cartesian3DCoords | null = null;
 
-  private child: Cazzo | OrbitalCoords;
+  private child: Cazzo<T> | OrbitalCoords;
 
   constructor(coordType: "orbital" | "ecliptic" | "equatorial" = "ecliptic") {
     if (coordType === "orbital") {
@@ -27,14 +24,10 @@ export class Coords {
     return this.child;
   }
 
-  public setSpherical<T extends EclipticCoords | EquatorialCoords>(
-    spherical: T["spherical"]
-  ): void {
+  public setSpherical(spherical: T["spherical"]): void {
     this.spherical = spherical;
   }
-  public getSpherical<
-    T extends EclipticCoords | EquatorialCoords
-  >(): T["spherical"] {
+  public getSpherical(): T["spherical"] {
     if (!this.spherical) throw new Error("No spherical coord");
 
     return this.spherical;
@@ -58,7 +51,9 @@ export class Coords {
   }
 }
 
-class Cazzo extends Coords {
+class Cazzo<
+  L extends EclipticCoords | EquatorialCoords | OrbitalCoordsType
+> extends Coords<L> {
   public getAll<
     M extends OrbitalCoordsType | EclipticCoords | EquatorialCoords
   >() {
@@ -72,7 +67,7 @@ class Cazzo extends Coords {
   }
 }
 
-export class OrbitalCoords extends Coords {
+export class OrbitalCoords extends Coords<any> {
   private polar: PolarCoords | null = null;
 
   public setPolar(polar: PolarCoords): void {
