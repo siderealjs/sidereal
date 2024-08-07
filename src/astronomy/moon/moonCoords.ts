@@ -1,10 +1,10 @@
-import { SphericalEcliptic } from "../../types/Coords.type";
-import { normalizeAngleD, toRadians } from "../../utils/angles";
+import { Angle } from "../../models/position/Angle";
+import { SphericalEclipticCoords } from "../../types/Coords.type";
 import { centuriesFromJ1900 } from "../../utils/dates";
 
 export const calcMoonSphericalEclipticalCoordsAtDate = (
   date: Date
-): SphericalEcliptic => {
+): SphericalEclipticCoords => {
   const DTR = Math.PI / 180.0; // Conversione da gradi a radianti
   const T = centuriesFromJ1900(date);
   //const T = 0.799301848;
@@ -166,18 +166,29 @@ export const calcMoonSphericalEclipticalCoordsAtDate = (
 
   const w1 = 0.0004664 * Math.cos(Omega_rad);
   const w2 = 0.0000754 * Math.cos(DTR * (Omega + 275.05 - 2.3 * T));
+
   const B = B0 * (1 - w1 - w2);
   console.log("B:", B);
 
-  const LRad = toRadians(normalizeAngleD(L));
-  //const BRad = normalizeAngleR(toRadians(normalizeAngleD(B)) - 0.015);
-  const BRad = toRadians(normalizeAngleD(B)) - 0.015;
-  //  const BRad = toRadians(normalizeAngleD(B));
+  // const LRad = toRadians(normalizeAngleD(L));
+  // //const BRad = normalizeAngleR(toRadians(normalizeAngleD(B)) - 0.015);
+  // const BRad = toRadians(normalizeAngleD(B)) - 0.015;
+  // //  const BRad = toRadians(normalizeAngleD(B));
+
+  const angleL = new Angle().setDegrees(normalizeAngleD(L));
+  const angleB = new Angle().setDegrees(normalizeAngleD(B));
+  angleB.setRadians(angleB.radians() - 0.015);
 
   console.warn("Long and Lat in teoria", 2.7889, 0.028601);
 
   return {
-    lng: LRad,
-    lat: BRad,
+    lng: angleL,
+    lat: angleB,
+    r: 1,
   };
+};
+
+export const normalizeAngleD = (degrees: number) => {
+  return ((degrees % 360) + 360) % 360;
+  //return degrees % 360;
 };

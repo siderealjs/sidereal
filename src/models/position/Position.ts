@@ -16,9 +16,9 @@ import {
 import { Coords } from "./Coords";
 
 export class Position {
-  public eclipticCoords: Coords<EclipticCoords> = new Coords<EclipticCoords>();
+  private eclipticCoords: Coords<EclipticCoords> = new Coords<EclipticCoords>();
 
-  public equatorialCoords: Coords<EquatorialCoords> =
+  private equatorialCoords: Coords<EquatorialCoords> =
     new Coords<EquatorialCoords>();
 
   // private orbitalCoords: Coords<OrbitalCoords> = new Coords<OrbitalCoords>();
@@ -28,6 +28,7 @@ export class Position {
     let cartesianEclipticCoords;
 
     if (this.isCoordsSpherical(coords)) {
+      console.log('proseguio di qua')
       sphericalEclipticCoords = coords;
       cartesianEclipticCoords = sphericalEclipticToCartesianEcliptic(coords);
     } else {

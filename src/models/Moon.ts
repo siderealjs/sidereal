@@ -1,29 +1,17 @@
 import { CelestialBody } from "./CelestialBody";
-import {
-  calcolaRADEC,
-  convertCoordsEclipticToEquatorial,
-  convertSphericalEclipticToCartesianEcliptic,
-} from "../astronomy/coords";
 import { calcMoonSphericalEclipticalCoordsAtDate } from "../astronomy/moon/moonCoords";
+import { Position } from "./position/Position";
 
 export class Moon extends CelestialBody {
   constructor() {
     super("moon");
   }
 
-  public getEphemerisAtDate(date: Date) {
+  public getEphemerisAtDate(date: Date): Position {
     const moonSphericalEcl = calcMoonSphericalEclipticalCoordsAtDate(date);
 
-    console.log('actual', moonSphericalEcl)
-    const moonCartesianEcl =
-      convertSphericalEclipticToCartesianEcliptic(moonSphericalEcl);
+    const moonPosition = new Position().setEclipticCoords(moonSphericalEcl);
 
-    const moonEquatorial = convertCoordsEclipticToEquatorial(moonCartesianEcl);
-
-    const radec = calcolaRADEC(moonEquatorial);
-
-    console.log(radec);
-
-    return radec;
+    return moonPosition;
   }
 }
