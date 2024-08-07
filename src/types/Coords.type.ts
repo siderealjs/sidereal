@@ -21,4 +21,9 @@ export type SphericalEcliptic = {
   d?: number
 }
 
+export type SphericalEquatorial = {
+  RA: number,
+  DEC: number,
+}
+
 

@@ -7,6 +7,8 @@ import {
 import { normalizeAngleD, normalizeAngleR, toDegrees, toRadians } from '../utils/angles';
 import { calcEccentricAnomaly, calcTrueAnomaly } from '../astronomy/anomaly';
 import { daysSinceEpoch } from '../utils/dates';
+import { Position } from "./position/Position";
+
 
 export class Sun extends CelestialBody {
   constructor() {
@@ -39,12 +41,15 @@ export class Sun extends CelestialBody {
     const longitude = normalizeAngleR(v + toRadians(longAtPeri));
     console.log("current longit", longitude, toDegrees(longitude));
 
-    const moonCartesianEcl = convertSphericalEclipticToCartesianEcliptic({
-      lat: 0,
-      lng: longitude,
-    });
+    const position = new Position().setEclipticCoords({lat: 0, lng: longitude});
 
-    const moonEquatorial = convertCoordsEclipticToEquatorial(moonCartesianEcl);
+    // const moonCartesianEcl = convertSphericalEclipticToCartesianEcliptic({
+    //   lat: 0,
+    //   lng: longitude,
+    // });
+
+   // const moonEquatorial = convertCoordsEclipticToEquatorial(moonCartesianEcl);
+    const moonEquatorial = position.getEquatorialCoords();
 
     const radec = calcolaRADEC(moonEquatorial);
 

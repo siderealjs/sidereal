@@ -1,8 +1,5 @@
 import { SphericalEcliptic } from "../../types/Coords.type";
-import {
-  normalizeAngleD,
-  toRadians,
-} from "../../utils/angles";
+import { normalizeAngleD, toRadians } from "../../utils/angles";
 import { centuriesFromJ1900 } from "../../utils/dates";
 
 export const calcMoonSphericalEclipticalCoordsAtDate = (
@@ -120,7 +117,7 @@ export const calcMoonSphericalEclipticalCoordsAtDate = (
     0.000486 * Math.sin(2 * MP_rad - D_rad);
   console.log("L:", L);
 
-  const B =
+  const B0 =
     5.128189 * Math.sin(F_rad) +
     0.280606 * Math.sin(MP_rad + F_rad) +
     0.277693 * Math.sin(MP_rad - F_rad) +
@@ -167,6 +164,9 @@ export const calcMoonSphericalEclipticalCoordsAtDate = (
     e * e * 0.000306 * Math.sin(2 * D_rad - 2 * M_rad - F_rad) -
     0.000283 * Math.sin(MP_rad + 3 * F_rad);
 
+  const w1 = 0.0004664 * Math.cos(Omega_rad);
+  const w2 = 0.0000754 * Math.cos(DTR * (Omega + 275.05 - 2.3 * T));
+  const B = B0 * (1 - w1 - w2);
   console.log("B:", B);
 
   const LRad = toRadians(normalizeAngleD(L));
