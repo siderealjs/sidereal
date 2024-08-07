@@ -4,6 +4,7 @@ import {
   cartesianEquatorialToCartesianEcliptic,
   cartesianEquatorialToSphericalEquatorial,
   cartesianOrbitalToPolarOrbital,
+  convertCoordsHCOrbitalToHCEcliptic,
   polarOrbitalToCartesianOrbital,
   sphericalEclipticToCartesianEcliptic,
   sphericalEquatorialToCartesianEquatorial,
@@ -128,6 +129,21 @@ export class Position {
 
     return this.eclipticCoords.getAll();
   }
+
+  public convertOrbitalToEcliptic = (ω: number, Ω: number, i: number) => {
+    if (!this.orbitalCoords.isDefined()) {
+      throw new Error("orbital coords to convert are not found");
+    }
+
+    const cartesianEclipticCoords = convertCoordsHCOrbitalToHCEcliptic(
+      this.orbitalCoords.getAll().cartesian,
+      { ω, Ω, i }
+    );
+
+    this.setEclipticCoords(cartesianEclipticCoords);
+
+    return this;
+  };
 
   private isCoordsSpherical = (
     coords:

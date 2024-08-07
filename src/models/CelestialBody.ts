@@ -21,6 +21,7 @@ export class CelestialBody {
 
   public getEphemerisAtDate(date: Date) {
     const earthParams = orbitalParams["earth"];
+    const { ω, Ω, i } = this.orbitalParams;
 
     const earthPolar = calcCoordsPolarAtDate(date, earthParams);
     const bodyPolar = calcCoordsPolarAtDate(date, this.orbitalParams);
@@ -28,24 +29,35 @@ export class CelestialBody {
     const earthPosition = new Position().setOrbitalCoords(earthPolar);
     const bodyPosition = new Position().setOrbitalCoords(bodyPolar);
 
+    bodyPosition.convertOrbitalToEcliptic(ω, Ω, i);
+    earthPosition.convertOrbitalToEcliptic(earthParams.ω, earthParams.Ω, earthParams.i);
+
+    //bodyPosition.convertToGeocentric(date);
+
     // const earthHCOrbital = convertCoordsPolarToOrbital(earthPolar);
 
     // const bodyHCOrbital = convertCoordsPolarToOrbital(bodyPolar);
 
-    const earthHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
-      earthPosition.getOrbitalCoords().cartesian,
-      earthParams
-    );
+    // const earthHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
+    //   earthPosition.getOrbitalCoords().cartesian,
+    //   earthParams
+    // );
 
-    const bodyHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
-      bodyPosition.getOrbitalCoords().cartesian,
-      this.orbitalParams
-    );
+    // const bodyHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
+    //   bodyPosition.getOrbitalCoords().cartesian,
+    //   this.orbitalParams
+    // );
 
     // convert to geocentric
-    const xGCEclPlanet = bodyHCEcliptic.x - earthHCEcliptic.x;
-    const yGCEclPlanet = bodyHCEcliptic.y - earthHCEcliptic.y;
-    const zGCEclPlanet = bodyHCEcliptic.z - earthHCEcliptic.z;
+    const xGCEclPlanet =
+      bodyPosition.getEclipticCoords().cartesian.x -
+      earthPosition.getEclipticCoords().cartesian.x;
+    const yGCEclPlanet =
+      bodyPosition.getEclipticCoords().cartesian.y -
+      earthPosition.getEclipticCoords().cartesian.y;
+    const zGCEclPlanet =
+      bodyPosition.getEclipticCoords().cartesian.z -
+      earthPosition.getEclipticCoords().cartesian.z;
 
     const cartesianEclipticBodyGC = {
       x: xGCEclPlanet,

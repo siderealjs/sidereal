@@ -178,9 +178,9 @@ export function sphericalEquatorialToCartesianEquatorial(
 
 export function convertCoordsHCOrbitalToHCEcliptic(
   orbitalCoords: Cartesian2DCoords,
-  orbitalParams: OrbitalParams
+  { ω, Ω, i }: { ω: number; Ω: number; i: number }
 ): Cartesian3DCoords {
-  const { ω, Ω, i } = orbitalParams;
+  //const { ω, Ω, i } = orbitalParams;
 
   const { x: xOrb, y: yOrb } = orbitalCoords;
 
