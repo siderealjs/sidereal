@@ -7,7 +7,6 @@ import {
   PolarCoords,
   SphericalEclipticCoords,
 } from "../types/Coords.type";
-import { convertRadsToHMS, convertRadToDMS } from "../utils/angles";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 import {
   calcEccentricAnomaly,

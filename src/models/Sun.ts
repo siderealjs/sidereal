@@ -28,6 +28,15 @@ export class Sun extends CelestialBody {
     const longAtPeri = 282.938346;
     const sunEccentricity = this.orbitalParams.e;
 
+    const M0 = lonAtEPoch - longAtPeri;
+
+    this.orbitalParams.M0 = toRadians(lonAtEPoch - longAtPeri) 
+    this.orbitalParams.n = toRadians(360/365.242191);
+
+    console.log(36, this.orbitalParams.M0);
+    console.log(37, this.orbitalParams.n)
+
+
     // mean anomaly
     const M_degrees = normalizeAngleD(
       (360.0 * deltaDays) / 365.242191 + lonAtEPoch - longAtPeri
@@ -35,6 +44,7 @@ export class Sun extends CelestialBody {
     const M = toRadians(M_degrees);
 
     console.log("mean naomlay", M_degrees, M);
+
 
     // eccentric anomaly
     const E = calcEccentricAnomaly(M, sunEccentricity);
