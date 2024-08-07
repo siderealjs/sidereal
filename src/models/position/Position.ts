@@ -3,6 +3,8 @@ import {
   cartesianEclipticToSphericalEcliptic,
   cartesianEquatorialToCartesianEcliptic,
   cartesianEquatorialToSphericalEquatorial,
+  cartesianOrbitalToPolarOrbital,
+  polarOrbitalToCartesianOrbital,
   sphericalEclipticToCartesianEcliptic,
   sphericalEquatorialToCartesianEquatorial,
 } from "../../astronomy/coords";
@@ -12,6 +14,9 @@ import {
   EquatorialCoords,
   SphericalEquatorialCoords,
   SphericalEclipticCoords,
+  PolarCoords,
+  Cartesian2DCoords,
+  OrbitalCoords,
 } from "../../types/Coords.type";
 import { Coords } from "./Coords";
 
@@ -22,12 +27,29 @@ export class Position {
 
   private orbitalCoords: Coords = new Coords("orbital");
 
+  setOrbitalCoords(coords: PolarCoords | Cartesian2DCoords) {
+    let polarOrbitalCoords;
+    let cartesianPolarCoords;
+
+    if (this.isCoordsSpherical(coords)) {
+      polarOrbitalCoords = coords;
+      cartesianPolarCoords = polarOrbitalToCartesianOrbital(coords);
+    } else {
+      cartesianPolarCoords = coords;
+      polarOrbitalCoords = cartesianOrbitalToPolarOrbital(coords);
+    }
+
+    this.orbitalCoords.setPolar(polarOrbitalCoords);
+    this.orbitalCoords.setCartesian(cartesianPolarCoords);
+
+    return this;
+  }
+
   setEclipticCoords(coords: SphericalEclipticCoords | Cartesian3DCoords) {
     let sphericalEclipticCoords;
     let cartesianEclipticCoords;
 
     if (this.isCoordsSpherical(coords)) {
-      console.log("proseguio di qua");
       sphericalEclipticCoords = coords;
       cartesianEclipticCoords = sphericalEclipticToCartesianEcliptic(coords);
     } else {
@@ -80,6 +102,14 @@ export class Position {
     return this.equatorialCoords.getAll();
   }
 
+  public getOrbitalCoords(): OrbitalCoords {
+    if (!this.orbitalCoords.isDefined()) {
+      throw new Error("no orbital coords");
+    }
+
+    return this.orbitalCoords.getAll<OrbitalCoords>();
+  }
+
   public getEclipticCoords(): EclipticCoords {
     if (
       !this.equatorialCoords.isDefined() &&
@@ -104,5 +134,7 @@ export class Position {
       | Cartesian3DCoords
       | SphericalEclipticCoords
       | SphericalEquatorialCoords
-  ) => "lat" in coords || "RA" in coords;
+      | Cartesian2DCoords
+      | PolarCoords
+  ) => "lat" in coords || "RA" in coords || "v" in coords;
 }

@@ -42,7 +42,7 @@ export const calcCoordsPolarAtDate = (
   return { v, r };
 };
 
-export const convertCoordsPolarToOrbital = (
+export const polarOrbitalToCartesianOrbital = (
   polarCoords: PolarCoords
 ): Cartesian2DCoords => {
   const { v, r } = polarCoords;
@@ -51,6 +51,17 @@ export const convertCoordsPolarToOrbital = (
   const yOrb = r * Math.sin(v.radians());
 
   return { x: xOrb, y: yOrb };
+};
+
+export const cartesianOrbitalToPolarOrbital = (
+  cartesianCoords: Cartesian2DCoords
+): PolarCoords => {
+  const { x, y } = cartesianCoords;
+
+  const r = Math.sqrt(x * x + y * y);
+  const v = new Angle(Math.atan2(y, x)); // in radians
+
+  return { r, v };
 };
 
 export const cartesianEclipticToCartesianEquatorial = (

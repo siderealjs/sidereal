@@ -22,12 +22,12 @@ describe.only("Models:: CelestialBody,", () => {
       for (const planetName in allPlanetsNames) {
         const planet = new CelestialBody(planetName as CelestialBodyName);
 
-        const { RA, DEC } = planet.getEphemerisAtDate(date);
+        const { RA, DEC } = planet.getEphemerisAtDate(date).getEquatorialCoords().spherical;
         // @ts-ignore
         const expected = allPlanetsNames[planetName as any] as any;
 
-        expect(RA).toBeCloseTo(expected.ra, 1e-6);
-        expect(DEC).toBeCloseTo(expected.dec, 1e-6);
+        expect(RA.radians()).toBeCloseTo(expected.ra, 1e-6);
+        expect(DEC.radians()).toBeCloseTo(expected.dec, 1e-6);
       }
     });
   });

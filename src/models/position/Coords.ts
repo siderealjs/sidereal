@@ -10,16 +10,28 @@ import {
 } from "../../types/Coords.type";
 
 export class Coords {
+  protected polar: PolarCoords | null = null;
+
   protected spherical:
     | SphericalEclipticCoords
     | SphericalEquatorialCoords
     | null = null;
-  protected cartesian: Cartesian3DCoords | null = null;
+  protected cartesian: Cartesian3DCoords | Cartesian2DCoords | null = null;
 
   constructor(coordType: "orbital" | "ecliptic" | "equatorial" = "ecliptic") {
     if (coordType === "orbital") {
-      return new OrbitalCoordsObject("orbital");
+      return new OrbitalCoordsObject();
     }
+  }
+
+  public setPolar(polar: PolarCoords): void {
+    this.polar = polar;
+  }
+
+  public getPolar(): PolarCoords {
+    if (!this.polar) throw new Error("No polar coord");
+
+    return this.polar;
   }
 
   public setSpherical<T extends EclipticCoords | EquatorialCoords>(
@@ -35,7 +47,7 @@ export class Coords {
     return this.spherical;
   }
 
-  public setCartesian(cartesian: Cartesian3DCoords): void {
+  public setCartesian(cartesian: Cartesian3DCoords | Cartesian2DCoords): void {
     this.cartesian = cartesian;
   }
 
@@ -58,19 +70,7 @@ export class Coords {
   }
 }
 
-export class OrbitalCoordsObject extends Coords {
-  private polar: PolarCoords | null = null;
-
-  public setPolar(polar: PolarCoords): void {
-    this.polar = polar;
-  }
-
-  public getPolar(): PolarCoords {
-    if (!this.polar) throw new Error("No polar coord");
-
-    return this.polar;
-  }
-
+class OrbitalCoordsObject extends Coords {
   public isDefined(): boolean {
     const isCartesianDefined = this.cartesian !== null;
     const isPolarDefined = this.polar !== null;
@@ -78,12 +78,9 @@ export class OrbitalCoordsObject extends Coords {
     return isCartesianDefined && isPolarDefined;
   }
 
-  public getAll<
-    M extends OrbitalCoords | EclipticCoords | EquatorialCoords
-  >() {
+  public getAll<M extends OrbitalCoords | EclipticCoords | EquatorialCoords>() {
     if (!this.isDefined()) throw new Error("Missing coords");
 
-    // @ts-expect-error
     return {
       polar: this.polar as PolarCoords,
       cartesian: this.cartesian as Cartesian2DCoords,

@@ -1,7 +1,6 @@
 import {
   calcCoordsPolarAtDate,
   convertCoordsHCOrbitalToHCEcliptic,
-  convertCoordsPolarToOrbital,
 } from "./../astronomy/coords";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 import orbitalParams from "../data/planets.json";
@@ -26,17 +25,20 @@ export class CelestialBody {
     const earthPolar = calcCoordsPolarAtDate(date, earthParams);
     const bodyPolar = calcCoordsPolarAtDate(date, this.orbitalParams);
 
-    const earthHCOrbital = convertCoordsPolarToOrbital(earthPolar);
+    const earthPosition = new Position().setOrbitalCoords(earthPolar);
+    const bodyPosition = new Position().setOrbitalCoords(bodyPolar);
 
-    const bodyHCOrbital = convertCoordsPolarToOrbital(bodyPolar);
+    // const earthHCOrbital = convertCoordsPolarToOrbital(earthPolar);
+
+    // const bodyHCOrbital = convertCoordsPolarToOrbital(bodyPolar);
 
     const earthHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
-      earthHCOrbital,
+      earthPosition.getOrbitalCoords().cartesian,
       earthParams
     );
 
     const bodyHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
-      bodyHCOrbital,
+      bodyPosition.getOrbitalCoords().cartesian,
       this.orbitalParams
     );
 
@@ -119,54 +121,54 @@ export class CelestialBody {
   //   return radec;
   // }
 
-  public getMagnitude(date: Date) {
-    const earthParams = orbitalParams["earth"];
+  // public getMagnitude(date: Date) {
+  //   const earthParams = orbitalParams["earth"];
 
-    const earthPolar = calcCoordsPolarAtDate(date, earthParams);
-    const bodyPolar = calcCoordsPolarAtDate(date, this.orbitalParams);
+  //   const earthPolar = calcCoordsPolarAtDate(date, earthParams);
+  //   const bodyPolar = calcCoordsPolarAtDate(date, this.orbitalParams);
 
-    const earthHCOrbital = convertCoordsPolarToOrbital(earthPolar);
+  //   const earthHCOrbital = convertCoordsPolarToOrbital(earthPolar);
 
-    const bodyHCOrbital = convertCoordsPolarToOrbital(bodyPolar);
+  //   const bodyHCOrbital = convertCoordsPolarToOrbital(bodyPolar);
 
-    const earthHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
-      earthHCOrbital,
-      earthParams
-    );
+  //   const earthHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
+  //     earthHCOrbital,
+  //     earthParams
+  //   );
 
-    const bodyHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
-      bodyHCOrbital,
-      this.orbitalParams
-    );
+  //   const bodyHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
+  //     bodyHCOrbital,
+  //     this.orbitalParams
+  //   );
 
-    const dx = earthHCEcliptic.x - bodyHCEcliptic.x;
-    const dy = earthHCEcliptic.y - bodyHCEcliptic.y;
-    const dz = earthHCEcliptic.z - bodyHCEcliptic.z;
+  //   const dx = earthHCEcliptic.x - bodyHCEcliptic.x;
+  //   const dy = earthHCEcliptic.y - bodyHCEcliptic.y;
+  //   const dz = earthHCEcliptic.z - bodyHCEcliptic.z;
 
-    // Calcola la distanza usando la formula euclidea
-    const distanza = Math.sqrt(dx * dx + dy * dy + dz * dz);
+  //   // Calcola la distanza usando la formula euclidea
+  //   const distanza = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-    console.log("disanza oggetto-terra", distanza);
-    console.log("distanza oggetto-sole", bodyPolar.r);
+  //   console.log("disanza oggetto-terra", distanza);
+  //   console.log("distanza oggetto-sole", bodyPolar.r);
 
-    const phaseAngle = calculateAlphaWikipedia(
-      distanza,
-      bodyPolar.r,
-      earthPolar.r
-    );
-    console.log("phase angle", phaseAngle);
+  //   const phaseAngle = calculateAlphaWikipedia(
+  //     distanza,
+  //     bodyPolar.r,
+  //     earthPolar.r
+  //   );
+  //   console.log("phase angle", phaseAngle);
 
-    const mm =
-      this.orbitalParams.H +
-      5 * Math.log10(distanza * bodyPolar.r) -
-      2.5 * Math.log10(calculateQ(phaseAngle.degrees));
+  //   const mm =
+  //     this.orbitalParams.H +
+  //     5 * Math.log10(distanza * bodyPolar.r) -
+  //     2.5 * Math.log10(calculateQ(phaseAngle.degrees));
 
-    // const mm2 =
-    //   this.orbitalParams.Hemp +
-    //   5 * Math.log10(distanza * bodyPolar.r) +
-    //   calculateQemp("mars", phaseAngle.degrees);
+  //   // const mm2 =
+  //   //   this.orbitalParams.Hemp +
+  //   //   5 * Math.log10(distanza * bodyPolar.r) +
+  //   //   calculateQemp("mars", phaseAngle.degrees);
 
-    console.log("m apparent", mm);
-    // console.log("m apparent empt", mm2);
-  }
+  //   console.log("m apparent", mm);
+  //   // console.log("m apparent empt", mm2);
+  // }
 }
