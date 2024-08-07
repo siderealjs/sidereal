@@ -4,14 +4,19 @@ import {
   EquatorialCoords,
 } from "../../types/Coords.type";
 
-export class Coords<T extends EclipticCoords | EquatorialCoords> {
-  public spherical: T["spherical"] | null = null;
-  public cartesian: Cartesian3DCoords | null = null;
+export class Coords<T extends (EclipticCoords | EquatorialCoords)> {
+  private spherical: T["spherical"] | null = null;
+  private cartesian: Cartesian3DCoords | null = null;
 
   constructor() {}
 
   public setSpherical(spherical: T["spherical"]): void {
     this.spherical = spherical;
+  }
+  public getSpherical(): T["spherical"] {
+    if(!this.spherical) throw new Error('No spherical coord')
+
+    return this.spherical;
   }
 
   public setCartesian(cartesian: Cartesian3DCoords): void {

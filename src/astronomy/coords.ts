@@ -73,6 +73,27 @@ export const cartesianEclipticToCartesianEquatorial = (
   };
 };
 
+export const cartesianEquatorialToCartesianEcliptic = (
+  equatorialCoords: Cartesian3DCoords
+): Cartesian3DCoords => {
+  // Inclination of equatorial plane over the ecliptic plane (radians)
+  const epsilon = Constants.earthAxialTilt;
+
+  const { x: xEq, y: yEq, z: zEq } = equatorialCoords;
+  const cosEpsilon = Math.cos(epsilon);
+  const sinEpsilon = Math.sin(epsilon);
+
+  const xEcl = xEq;
+  const yEcl = cosEpsilon * yEq + sinEpsilon * zEq;
+  const zEcl = -sinEpsilon * yEq + cosEpsilon * zEq;
+
+  return {
+    x: xEcl,
+    y: yEcl,
+    z: zEcl,
+  };
+};
+
 export const convertCoordsEquatorialToEcliptic = (
   equatorialCoords: Cartesian3DCoords
 ): Cartesian3DCoords => {
@@ -122,6 +143,7 @@ export function cartesianEquatorialToSphericalEquatorial(
   return {
     RA,
     DEC,
+    r,
   };
 
   // Converti RA e DEC in formato leggibile
@@ -207,8 +229,9 @@ export const cartesianEclipticToSphericalEcliptic = (
 ) => {
   const { x, y, z } = cartesianCoords;
 
+  const r = Math.sqrt(x * x + y * y + z * z);
   const λ = Math.atan2(y, x);
   const β = Math.atan2(z, Math.sqrt(x * x + y * y));
 
-  return { lat: β, lng: λ };
+  return { lat: β, lng: λ, r };
 };
