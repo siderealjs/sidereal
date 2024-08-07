@@ -1,14 +1,20 @@
+import { convertRadToDMS } from "./../utils/angles";
 import { CelestialBody } from "./CelestialBody";
 import {
   calcolaRADEC,
   convertCoordsEclipticToEquatorial,
   convertSphericalEclipticToCartesianEcliptic,
 } from "../astronomy/coords";
-import { normalizeAngleD, normalizeAngleR, toDegrees, toRadians } from '../utils/angles';
-import { calcEccentricAnomaly, calcTrueAnomaly } from '../astronomy/anomaly';
-import { daysSinceEpoch } from '../utils/dates';
+import {
+  convertRadsToHMS,
+  normalizeAngleD,
+  normalizeAngleR,
+  toDegrees,
+  toRadians,
+} from "../utils/angles";
+import { calcEccentricAnomaly, calcTrueAnomaly } from "../astronomy/anomaly";
+import { daysSinceEpoch } from "../utils/dates";
 import { Position } from "./position/Position";
-
 
 export class Sun extends CelestialBody {
   constructor() {
@@ -41,20 +47,22 @@ export class Sun extends CelestialBody {
     const longitude = normalizeAngleR(v + toRadians(longAtPeri));
     console.log("current longit", longitude, toDegrees(longitude));
 
-    const position = new Position().setEclipticCoords({lat: 0, lng: longitude});
+    const position = new Position().setEclipticCoords({
+      lat: 0,
+      lng: longitude,
+    });
 
-    // const moonCartesianEcl = convertSphericalEclipticToCartesianEcliptic({
-    //   lat: 0,
-    //   lng: longitude,
-    // });
+   
+   const moonEquatorial = position.getEquatorialCoords();
 
-   // const moonEquatorial = convertCoordsEclipticToEquatorial(moonCartesianEcl);
-    const moonEquatorial = position.getEquatorialCoords();
 
-    const radec = calcolaRADEC(moonEquatorial);
+    console.log(
+      "FINE",
+      convertRadsToHMS(moonEquatorial.spherical.RA),
+      convertRadToDMS(moonEquatorial.spherical.DEC)
+    );
 
-    console.log("FINE", radec);
-
+    const radec = moonEquatorial.spherical;
     return radec;
   }
 }

@@ -1,7 +1,7 @@
 import {
   calcCoordsPolarAtDate,
-  calcolaRADEC,
-  convertCoordsEclipticToEquatorial,
+  cartesianEclipticToCartesianEquatorial,
+  cartesianEquatorialToSphericalEquatorial,
   convertCoordsHCOrbitalToHCEcliptic,
   convertCoordsPolarToOrbital,
 } from "./../astronomy/coords";
@@ -11,7 +11,6 @@ import { CelestialBodyName } from "../types/ObjectName.type";
 import {
   calculateAlphaWikipedia,
   calculateQ,
-  calculateQemp,
 } from "../astronomy/magnitude";
 
 export class CelestialBody {
@@ -59,9 +58,9 @@ export class CelestialBody {
       z: zGCEclPlanet,
     };
 
-    const equatorialCoords = convertCoordsEclipticToEquatorial(bodyCGEclCoords);
+    const equatorialCoords = cartesianEclipticToCartesianEquatorial(bodyCGEclCoords);
 
-    const d = calcolaRADEC(equatorialCoords);
+    const d = cartesianEquatorialToSphericalEquatorial(equatorialCoords);
     console.log("dd", d);
 
     return d;

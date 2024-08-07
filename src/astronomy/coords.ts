@@ -1,10 +1,12 @@
-import {
-  CartesianCoordinates2D,
-  CartesianCoordinates3D,
-  Polar,
-  SphericalEcliptic,
-} from "../types/Coords.type";
+import { SphericalEquatorialCoords } from "./../types/Coords.type";
+
 import Constants from "../data/constants.json";
+import {
+  Cartesian2DCoords,
+  Cartesian3DCoords,
+  PolarCoords,
+  SphericalEclipticCoords,
+} from "../types/Coords.type";
 import { convertRadsToHMS, convertRadToDMS } from "../utils/angles";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 import {
@@ -44,8 +46,8 @@ export const calcCoordsPolarAtDate = (
 };
 
 export const convertCoordsPolarToOrbital = (
-  polarCoords: Polar
-): CartesianCoordinates2D => {
+  polarCoords: PolarCoords
+): Cartesian2DCoords => {
   const { v, r } = polarCoords;
 
   const xOrb = r * Math.cos(v);
@@ -54,25 +56,45 @@ export const convertCoordsPolarToOrbital = (
   return { x: xOrb, y: yOrb };
 };
 
-// TODO: aggiusta commenti e naming
-export const convertCoordsEclipticToEquatorial = (
-  eclipticCoords: CartesianCoordinates3D
-): CartesianCoordinates3D => {
-  // Converti in coordinate equatoriali
-  const epsilon = Constants.earthAxialTilt; // inclinazione dell'eclittica in radianti
+export const cartesianEclipticToCartesianEquatorial = (
+  eclipticCoords: Cartesian3DCoords
+): Cartesian3DCoords => {
+  // inclination of equatorial plane over the ecliptic plane (radians)
+  const epsilon = Constants.earthAxialTilt;
 
   const { x: xEcl, y: yEcl, z: zEcl } = eclipticCoords;
   const cosEpsilon = Math.cos(epsilon);
   const sinEpsilon = Math.sin(epsilon);
 
-  const x_eq = xEcl;
-  const y_eq = cosEpsilon * yEcl - sinEpsilon * zEcl;
-  const z_eq = sinEpsilon * yEcl + cosEpsilon * zEcl;
+  const xEq = xEcl;
+  const yEq = cosEpsilon * yEcl - sinEpsilon * zEcl;
+  const zEq = sinEpsilon * yEcl + cosEpsilon * zEcl;
 
   return {
-    x: x_eq,
-    y: y_eq,
-    z: z_eq,
+    x: xEq,
+    y: yEq,
+    z: zEq,
+  };
+};
+
+export const convertCoordsEquatorialToEcliptic = (
+  equatorialCoords: Cartesian3DCoords
+): Cartesian3DCoords => {
+  // inclination of equatorial plane over the ecliptic plane (radians)
+  const epsilon = Constants.earthAxialTilt;
+
+  const { x: xEq, y: yEq, z: zEq } = equatorialCoords;
+  const cosEpsilon = Math.cos(epsilon);
+  const sinEpsilon = Math.sin(epsilon);
+
+  const xEcl = xEq;
+  const yEcl = cosEpsilon * yEq + sinEpsilon * zEq;
+  const zEcl = -sinEpsilon * yEq + cosEpsilon * zEq;
+
+  return {
+    x: xEcl,
+    y: yEcl,
+    z: zEcl,
   };
 };
 
@@ -80,7 +102,9 @@ export const convertCoordsEclipticToEquatorial = (
  * Calcola la Declinazione (DEC) e l'Ascensione Retta (RA) e converte in formato leggibile.
  * @returns {Object} - Oggetto contenente RA e DEC nel formato leggibile.
  */
-export function calcolaRADEC(equatorialCoords: CartesianCoordinates3D) {
+export function cartesianEquatorialToSphericalEquatorial(
+  equatorialCoords: Cartesian3DCoords
+) {
   const { x: xEq, y: yEq, z: zEq } = equatorialCoords;
   // Calcola la distanza radiale r
   const r = Math.sqrt(xEq * xEq + yEq * yEq + zEq * zEq);
@@ -99,26 +123,48 @@ export function calcolaRADEC(equatorialCoords: CartesianCoordinates3D) {
     RA += 2 * Math.PI;
   }
 
+  return {
+    RA,
+    DEC,
+  };
+
   // Converti RA e DEC in formato leggibile
-  const raFormattato = convertRadsToHMS(RA);
-  const decFormattato = convertRadToDMS(DEC);
+  //const raFormattato = convertRadsToHMS(RA);
+  //const decFormattato = convertRadToDMS(DEC);
+
+  // return {
+  //   ra: {
+  //     rad: RA,
+  //     deg: raFormattato,
+  //   },
+  //   dec: {
+  //     rad: DEC,
+  //     deg: decFormattato,
+  //   },
+  // };
+}
+
+export function sphericalEquatorialToCartesianEquatorial(
+  sphericalCoords: SphericalEquatorialCoords
+) {
+  const { RA, DEC } = sphericalCoords;
+
+  // Calcola le coordinate cartesiane equatoriali
+  const xEq = Math.cos(DEC) * Math.cos(RA);
+  const yEq = Math.cos(DEC) * Math.sin(RA);
+  const zEq = Math.sin(DEC);
 
   return {
-    ra: {
-      rad: RA,
-      deg: raFormattato,
-    },
-    dec: {
-      rad: DEC,
-      deg: decFormattato,
-    },
+    x: xEq,
+    y: yEq,
+    z: zEq,
   };
 }
 
 export function convertCoordsHCOrbitalToHCEcliptic(
-  orbitalCoords: CartesianCoordinates2D,
+  orbitalCoords: Cartesian2DCoords,
   orbitalParams: OrbitalParams
-): CartesianCoordinates3D {
+): Cartesian3DCoords {
   const { ω, Ω, i } = orbitalParams;
 
   const { x: xOrb, y: yOrb } = orbitalCoords;
@@ -148,9 +194,9 @@ export function convertCoordsHCOrbitalToHCEcliptic(
   return { x: xEcl, y: yEcl, z: zEcl };
 }
 
-export const convertSphericalEclipticToCartesianEcliptic = (
-  sphericalCoords: SphericalEcliptic
-): CartesianCoordinates3D => {
+export const sphericalEclipticToCartesianEcliptic = (
+  sphericalCoords: SphericalEclipticCoords
+): Cartesian3DCoords => {
   const { lng: λ, lat: β } = sphericalCoords;
 
   const xEcl = Math.cos(λ) * Math.cos(β);
@@ -158,4 +204,15 @@ export const convertSphericalEclipticToCartesianEcliptic = (
   const zEcl = Math.sin(β);
 
   return { x: xEcl, y: yEcl, z: zEcl };
+};
+
+export const cartesianEclipticToSphericalEcliptic = (
+  cartesianCoords: Cartesian3DCoords
+) => {
+  const { x, y, z } = cartesianCoords;
+
+  const λ = Math.atan2(y, x);
+  const β = Math.atan2(z, Math.sqrt(x * x + y * y));
+
+  return { lat: β, lng: λ };
 };
