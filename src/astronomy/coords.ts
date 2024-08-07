@@ -1,3 +1,4 @@
+import { Angle } from "./../models/position/Angle";
 import { SphericalEquatorialCoords } from "./../types/Coords.type";
 
 import Constants from "../data/constants.json";
@@ -31,12 +32,12 @@ export const calcCoordsPolarAtDate = (
   //console.log("004:: ecc anomaly E,", E);
 
   // Calcolare la vera anomalia
-  const v = calcTrueAnomaly(E, e);
+  const v = new Angle(calcTrueAnomaly(E, e));
   //console.log("005:: true anomaly", v);
 
   // Calcolare la distanza radiale
   //const r = a * (1 - e * Math.cos(E));
-  const r = (a * (1 - e * e)) / (1 + e * Math.cos(v));
+  const r = (a * (1 - e * e)) / (1 + e * Math.cos(v.radians()));
 
   return { v, r };
 };
@@ -46,8 +47,8 @@ export const convertCoordsPolarToOrbital = (
 ): Cartesian2DCoords => {
   const { v, r } = polarCoords;
 
-  const xOrb = r * Math.cos(v);
-  const yOrb = r * Math.sin(v);
+  const xOrb = r * Math.cos(v.radians());
+  const yOrb = r * Math.sin(v.radians());
 
   return { x: xOrb, y: yOrb };
 };
@@ -127,39 +128,24 @@ export function cartesianEquatorialToSphericalEquatorial(
   const r = Math.sqrt(xEq * xEq + yEq * yEq + zEq * zEq);
 
   // Calcola la Declinazione (DEC) in radianti
-  const DEC = Math.asin(zEq / r);
+  const DEC = new Angle(Math.asin(zEq / r));
 
   // Calcola l'Ascensione Retta (RA) in radianti
-  let RA = Math.atan2(yEq, xEq);
+  const RA = new Angle(Math.atan2(yEq, xEq));
 
   // Normalizza RA a [0, 2π)
-  RA = (RA + 2 * Math.PI) % (2 * Math.PI);
+  // RA = (RA + 2 * Math.PI) % (2 * Math.PI);
 
-  // Correggi RA se è negativo
-  if (RA < 0) {
-    RA += 2 * Math.PI;
-  }
+  // // Correggi RA se è negativo
+  // if (RA < 0) {
+  //   RA += 2 * Math.PI;
+  // }
 
   return {
-    RA,
+    RA: RA.normalize(),
     DEC,
     r,
   };
-
-  // Converti RA e DEC in formato leggibile
-  //const raFormattato = convertRadsToHMS(RA);
-  //const decFormattato = convertRadToDMS(DEC);
-
-  // return {
-  //   ra: {
-  //     rad: RA,
-  //     deg: raFormattato,
-  //   },
-  //   dec: {
-  //     rad: DEC,
-  //     deg: decFormattato,
-  //   },
-  // };
 }
 
 export function sphericalEquatorialToCartesianEquatorial(
@@ -168,9 +154,9 @@ export function sphericalEquatorialToCartesianEquatorial(
   const { RA, DEC } = sphericalCoords;
 
   // Calcola le coordinate cartesiane equatoriali
-  const xEq = Math.cos(DEC) * Math.cos(RA);
-  const yEq = Math.cos(DEC) * Math.sin(RA);
-  const zEq = Math.sin(DEC);
+  const xEq = Math.cos(DEC.radians()) * Math.cos(RA.radians());
+  const yEq = Math.cos(DEC.radians()) * Math.sin(RA.radians());
+  const zEq = Math.sin(DEC.radians());
 
   return {
     x: xEq,
@@ -217,9 +203,9 @@ export const sphericalEclipticToCartesianEcliptic = (
 ): Cartesian3DCoords => {
   const { lng: λ, lat: β, r } = sphericalCoords;
 
-  const xEcl = r * Math.cos(λ) * Math.cos(β);
-  const yEcl = r * Math.sin(λ) * Math.cos(β);
-  const zEcl = r * Math.sin(β);
+  const xEcl = r * Math.cos(λ.radians()) * Math.cos(β.radians());
+  const yEcl = r * Math.sin(λ.radians()) * Math.cos(β.radians());
+  const zEcl = r * Math.sin(β.radians());
 
   return { x: xEcl, y: yEcl, z: zEcl };
 };
@@ -230,8 +216,11 @@ export const cartesianEclipticToSphericalEcliptic = (
   const { x, y, z } = cartesianCoords;
 
   const r = Math.sqrt(x * x + y * y + z * z);
-  const λ = Math.atan2(y, x);
-  const β = Math.atan2(z, Math.sqrt(x * x + y * y));
+  const λValue = Math.atan2(y, x);
+  const λ = new Angle(λValue);
+
+  const βValue = Math.atan2(z, Math.sqrt(x * x + y * y));
+  const β = new Angle(βValue);
 
   return { lat: β, lng: λ, r };
 };

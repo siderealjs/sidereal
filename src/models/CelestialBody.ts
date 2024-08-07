@@ -7,7 +7,6 @@ import { OrbitalParams } from "./../types/OrbitalParams.type";
 import orbitalParams from "../data/planets.json";
 import { CelestialBodyName } from "../types/ObjectName.type";
 import { calculateAlphaWikipedia, calculateQ } from "../astronomy/magnitude";
-import { convertRadsToHMS, convertRadToDMS } from "../utils/angles";
 import { Position } from "./position/Position";
 
 export class CelestialBody {
@@ -62,7 +61,7 @@ export class CelestialBody {
       cartesianEclipticBodyGC
     );
 
-    const moonEquatorial = positionBodyGC.getEquatorialCoords();
+    // const moonEquatorial = positionBodyGC.getEquatorialCoords();
 
     // console.log(
     //   "FINE con longitudine",

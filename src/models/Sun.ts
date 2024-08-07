@@ -1,15 +1,14 @@
-import { convertRadToDMS } from "./../utils/angles";
 import { CelestialBody } from "./CelestialBody";
 
-import {
-  convertRadsToHMS,
-  normalizeAngleD,
-  normalizeAngleR,
-  toRadians,
-} from "../utils/angles";
+// import {
+//   normalizeAngleD,
+//   normalizeAngleR,
+//   toRadians,
+// } from "../utils/angles";
 import { calcEccentricAnomaly, calcTrueAnomaly } from "../astronomy/anomaly";
 import { daysSinceEpoch } from "../utils/dates";
 import { Position } from "./position/Position";
+import { Angle } from "./position/Angle";
 
 export class Sun extends CelestialBody {
   constructor() {
@@ -32,26 +31,29 @@ export class Sun extends CelestialBody {
     // console.log(37, this.orbitalParams.n);
 
     // mean anomaly
-    const M_degrees = normalizeAngleD(
-      (360.0 * deltaDays) / 365.242191 + lonAtEPoch - longAtPeri
-    );
-    const M = toRadians(M_degrees);
+    // const M_degrees = normalizeAngleD(
+    //   (360.0 * deltaDays) / 365.242191 + lonAtEPoch - longAtPeri
+    // );
+    const M_degrees =
+      (360.0 * deltaDays) / 365.242191 + lonAtEPoch - longAtPeri;
+    const M = new Angle().setDegrees(M_degrees).normalize();
 
     // eccentric anomaly
-    const E = calcEccentricAnomaly(M, sunEccentricity);
+    const E = calcEccentricAnomaly(M.radians(), sunEccentricity);
 
     // true anomaly (radians)
-    const v = calcTrueAnomaly(E, sunEccentricity);
+    const v = new Angle(calcTrueAnomaly(E, sunEccentricity));
 
-    const longitude = normalizeAngleR(v + toRadians(longAtPeri));
+    const longitude = new Angle(v.radians() + new Angle().setDegrees(longAtPeri).radians()).normalize(); 
+    // normalizeAngleR(v + toRadians(longAtPeri));
 
     const position = new Position().setEclipticCoords({
-      lat: 0,
+      lat: new Angle(0),
       lng: longitude,
       r: 1,
     });
 
-    const moonEquatorial = position.getEquatorialCoords();
+    // const moonEquatorial = position.getEquatorialCoords();
 
     // console.log(
     //   "FINE",

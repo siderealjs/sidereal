@@ -1,3 +1,5 @@
+import { Angle } from "../models/position/Angle";
+
 export type Cartesian3DCoords = {
   x: number;
   y: number;
@@ -9,38 +11,34 @@ export type Cartesian2DCoords = {
   y: number;
 };
 
-
 export type PolarCoords = {
-  v: number,
-  r: number
-}
+  v: Angle;
+  r: number;
+};
 
 export type SphericalEclipticCoords = {
-  lat: number,
-  lng: number,
-  r: number
-}
+  lat: Angle;
+  lng: Angle;
+  r: number;
+};
 
 export type SphericalEquatorialCoords = {
-  RA: number,
-  DEC: number,
-  r: number
-}
-
-
-
+  RA: Angle;
+  DEC: Angle;
+  r: number;
+};
 
 export interface EclipticCoords {
-  cartesian: Cartesian3DCoords,
-  spherical: SphericalEclipticCoords
+  cartesian: Cartesian3DCoords;
+  spherical: SphericalEclipticCoords;
 }
 
 export type EquatorialCoords = {
-  cartesian: Cartesian3DCoords,
-  spherical: SphericalEquatorialCoords
-}
+  cartesian: Cartesian3DCoords;
+  spherical: SphericalEquatorialCoords;
+};
 
 export type OrbitalCoords = {
-  cartesian: Cartesian2DCoords,
-  polar: PolarCoords
-}
+  cartesian: Cartesian2DCoords;
+  polar: PolarCoords;
+};
