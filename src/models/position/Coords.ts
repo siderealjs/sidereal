@@ -3,7 +3,7 @@ import {
   Cartesian3DCoords,
   EclipticCoords,
   EquatorialCoords,
-  OrbitalCoords as OrbitalCoordsType,
+  OrbitalCoords,
   PolarCoords,
   SphericalEclipticCoords,
   SphericalEquatorialCoords,
@@ -16,15 +16,10 @@ export class Coords {
     | null = null;
   protected cartesian: Cartesian3DCoords | null = null;
 
-  private child: Cazzo | OrbitalCoords;
-
   constructor(coordType: "orbital" | "ecliptic" | "equatorial" = "ecliptic") {
     if (coordType === "orbital") {
-      this.child = new OrbitalCoords("orbital");
+      return new OrbitalCoordsObject("orbital");
     }
-    this.child = new Cazzo();
-
-    return this.child;
   }
 
   public setSpherical<T extends EclipticCoords | EquatorialCoords>(
@@ -52,19 +47,10 @@ export class Coords {
   }
 
   public getAll<
-    M extends OrbitalCoordsType | EclipticCoords | EquatorialCoords
+    M extends OrbitalCoords | EclipticCoords | EquatorialCoords
   >(): M {
-    return this.child.getAll<M>() as M;
-  }
-}
-
-class Cazzo extends Coords {
-  public getAll<
-    M extends OrbitalCoordsType | EclipticCoords | EquatorialCoords
-  >() {
     if (!this.isDefined()) throw new Error("Missing coords");
 
-    // @ts-ignore
     return {
       spherical: this.spherical,
       cartesian: this.cartesian as Cartesian3DCoords,
@@ -72,7 +58,7 @@ class Cazzo extends Coords {
   }
 }
 
-export class OrbitalCoords extends Coords {
+export class OrbitalCoordsObject extends Coords {
   private polar: PolarCoords | null = null;
 
   public setPolar(polar: PolarCoords): void {
@@ -80,7 +66,7 @@ export class OrbitalCoords extends Coords {
   }
 
   public getPolar(): PolarCoords {
-    if (!this.polar) throw new Error("No spherical coord");
+    if (!this.polar) throw new Error("No polar coord");
 
     return this.polar;
   }
@@ -93,11 +79,11 @@ export class OrbitalCoords extends Coords {
   }
 
   public getAll<
-    M extends OrbitalCoordsType | EclipticCoords | EquatorialCoords
+    M extends OrbitalCoords | EclipticCoords | EquatorialCoords
   >() {
     if (!this.isDefined()) throw new Error("Missing coords");
 
-    // @ts-ignore
+    // @ts-expect-error
     return {
       polar: this.polar as PolarCoords,
       cartesian: this.cartesian as Cartesian2DCoords,
