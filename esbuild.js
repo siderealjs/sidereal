@@ -7,7 +7,7 @@ esbuild.build({
   bundle: true,
   outfile: 'dist/bundle.js',
   sourcemap: true,
-  minify: false,
+  minify: true,
   target: ['esnext'],
   format: 'esm' // Assicurati di usare il formato corretto
 }).catch(() => process.exit(1));

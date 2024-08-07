@@ -40,10 +40,6 @@ export class CelestialBody {
       this.orbitalParams
     );
 
-    //new Position().setEclipticCoords(bodyHCEcliptic);
-
-    //console.log('m1 earth HC', earthHCEcliptic)
-
     // convert to geocentric
     const xGCEclPlanet = bodyHCEcliptic.x - earthHCEcliptic.x;
     const yGCEclPlanet = bodyHCEcliptic.y - earthHCEcliptic.y;
@@ -55,19 +51,9 @@ export class CelestialBody {
       z: zGCEclPlanet,
     };
 
-    //console.log('meth1', cartesianEclipticBodyGC)
-
     const positionBodyGC = new Position().setEclipticCoords(
       cartesianEclipticBodyGC
     );
-
-    // const moonEquatorial = positionBodyGC.getEquatorialCoords();
-
-    // console.log(
-    //   "FINE con longitudine",
-    //   convertRadsToHMS(moonEquatorial.spherical.RA),
-    //   convertRadToDMS(moonEquatorial.spherical.DEC)
-    // );
 
     return positionBodyGC;
   }

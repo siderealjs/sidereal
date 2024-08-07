@@ -4,7 +4,7 @@ import {
   EquatorialCoords,
 } from "../../types/Coords.type";
 
-export class Coords<T extends (EclipticCoords | EquatorialCoords)> {
+export class Coords<T extends EclipticCoords | EquatorialCoords> {
   private spherical: T["spherical"] | null = null;
   private cartesian: Cartesian3DCoords | null = null;
 
@@ -14,7 +14,7 @@ export class Coords<T extends (EclipticCoords | EquatorialCoords)> {
     this.spherical = spherical;
   }
   public getSpherical(): T["spherical"] {
-    if(!this.spherical) throw new Error('No spherical coord')
+    if (!this.spherical) throw new Error("No spherical coord");
 
     return this.spherical;
   }
@@ -24,15 +24,6 @@ export class Coords<T extends (EclipticCoords | EquatorialCoords)> {
   }
 
   public isDefined(): boolean {
-    // let angle = null;
-
-    // if (this.spherical && "RA" in this.spherical) {
-    //   angle = this.spherical.RA;
-    // } else if (this.spherical && "lat" in this.spherical) {
-    //   angle = this.spherical.lat;
-    // }
-    // const isSphericalDefined = angle !== null;
-
     const isCartesianDefined = this.cartesian !== null;
     const isSphericalDefined = this.spherical !== null;
 
