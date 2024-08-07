@@ -12,23 +12,26 @@ import {
   EquatorialCoords,
   SphericalEquatorialCoords,
   SphericalEclipticCoords,
+  OrbitalCoords,
 } from "../../types/Coords.type";
 import { Coords } from "./Coords";
 
 export class Position {
-  private eclipticCoords: Coords<EclipticCoords> = new Coords<EclipticCoords>();
+  private eclipticCoords: Coords<EclipticCoords> = new Coords();
 
-  private equatorialCoords: Coords<EquatorialCoords> =
-    new Coords<EquatorialCoords>();
+  private equatorialCoords: Coords<EquatorialCoords> = new Coords();
 
-  // private orbitalCoords: Coords<OrbitalCoords> = new Coords<OrbitalCoords>();
+  private orbitalCoords: OrbitalCoords = new Coords("orbital");
 
   setEclipticCoords(coords: SphericalEclipticCoords | Cartesian3DCoords) {
+
+this.equatorialCoords.getAll()
+    
     let sphericalEclipticCoords;
     let cartesianEclipticCoords;
 
     if (this.isCoordsSpherical(coords)) {
-      console.log('proseguio di qua')
+      console.log("proseguio di qua");
       sphericalEclipticCoords = coords;
       cartesianEclipticCoords = sphericalEclipticToCartesianEcliptic(coords);
     } else {
@@ -72,7 +75,7 @@ export class Position {
 
     if (!this.equatorialCoords.isDefined() && this.eclipticCoords.isDefined()) {
       const cartesianEquatorial = cartesianEclipticToCartesianEquatorial(
-        this.eclipticCoords.getAll().cartesian
+        this.eclipticCoords.getAll().cartesian as Cartesian3DCoords
       );
 
       this.setEquatorialCoords(cartesianEquatorial);

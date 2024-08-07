@@ -28,7 +28,7 @@ export type SphericalEquatorialCoords = {
   r: number;
 };
 
-export interface EclipticCoords {
+export type EclipticCoords {
   cartesian: Cartesian3DCoords;
   spherical: SphericalEclipticCoords;
 }
@@ -42,3 +42,9 @@ export type OrbitalCoords = {
   cartesian: Cartesian2DCoords;
   polar: PolarCoords;
 };
+
+
+// export type Coord3 = {
+//   polar: PolarCoords,
+//   cartesian: Cartesian2DCoords
+// }

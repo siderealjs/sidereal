@@ -1,35 +1,27 @@
 import {
   Cartesian2DCoords,
   Cartesian3DCoords,
-  EclipticCoords,
-  EquatorialCoords,
   OrbitalCoords as OrbitalCoordsType,
   PolarCoords,
   SphericalEclipticCoords,
   SphericalEquatorialCoords,
 } from "../../types/Coords.type";
 
-export class Coords<
-  T extends EclipticCoords | EquatorialCoords
-> {
-  protected spherical: T["spherical"] | null = null;
+export class Coords {
+  protected spherical: SphericalEclipticCoords | SphericalEquatorialCoords | null = null;
   protected cartesian: Cartesian3DCoords | null = null;
-
-  private child: Cazzo<T["spherical"]> | OrbitalCoords;
+  protected polar: PolarCoords | null = null;
 
   constructor(coordType: "orbital" | "ecliptic" | "equatorial" = "ecliptic") {
     if (coordType === "orbital") {
-      this.child = new OrbitalCoords("orbital");
+      return new OrbitalCoords("orbital");
     }
-    this.child = new Cazzo();
-
-    return this.child;
   }
 
-  public setSpherical(spherical: T["spherical"]): void {
+  public setSpherical(spherical: SphericalEclipticCoords | SphericalEquatorialCoords): void {
     this.spherical = spherical;
   }
-  public getSpherical(): T["spherical"] {
+  public getSpherical(): SphericalEclipticCoords | SphericalEquatorialCoords {
     if (!this.spherical) throw new Error("No spherical coord");
 
     return this.spherical;
@@ -47,26 +39,28 @@ export class Coords<
   }
 
   public getAll() {
-    return this.child.getAll();
-  }
-}
-
-class Cazzo<
-  K extends SphericalEclipticCoords | SphericalEquatorialCoords
-> extends Coords<EclipticCoords | EquatorialCoords> {
-  public getAll() {
     if (!this.isDefined()) throw new Error("Missing coords");
 
     return {
-      spherical: this.spherical as K,
-      cartesian: this.cartesian as Cartesian3DCoords,
+      spherical: this.spherical as SphericalEclipticCoords | SphericalEquatorialCoords,
+      cartesian: this.cartesian as Cartesian2DCoords | Cartesian3DCoords,
     };
   }
 }
 
-class OrbitalCoords extends Coords<EquatorialCoords> {
-  private polar: PolarCoords | null = null;
+// class Cazzo extends Coords {
+//   public getAll() {
+//     if (!this.isDefined()) throw new Error("Missing coords");
 
+//     return {
+//       spherical: this.spherical as EclipticCoords | EquatorialCoords,
+//       cartesian: this.cartesian as Cartesian3DCoords,
+//       polar: this.polar as PolarCoords,
+//     };
+//   }
+// }
+
+class OrbitalCoords extends Coords {
   public setPolar(polar: PolarCoords): void {
     this.polar = polar;
   }
@@ -90,6 +84,7 @@ class OrbitalCoords extends Coords<EquatorialCoords> {
     return {
       polar: this.polar as PolarCoords,
       cartesian: this.cartesian as Cartesian2DCoords,
+      spherical: this.spherical as SphericalEquatorialCoords,
     };
   }
 }
