@@ -60,6 +60,7 @@ export class Sun extends CelestialBody {
     const position = new Position().setEclipticCoords({
       lat: 0,
       lng: longitude,
+      r: 1
     });
 
    

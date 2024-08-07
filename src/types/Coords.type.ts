@@ -18,11 +18,13 @@ export type PolarCoords = {
 export type SphericalEclipticCoords = {
   lat: number,
   lng: number,
+  r: number
 }
 
 export type SphericalEquatorialCoords = {
   RA: number,
   DEC: number,
+  r: number
 }
 
 

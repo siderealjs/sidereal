@@ -24,18 +24,15 @@ export const calcCoordsPolarAtDate = (
 
   const M = calcMeanAnomalyAtDate(M0, n, givenDate);
   //console.log("003: normalized M:", M, M * 180 /Math.PI, Mx * 180 / Math.PI);
-  console.log("003: normalized M:", M);
+  // console.log("003: normalized M:", M);
 
   // Calcolare l'anomalia eccentrica
   const E = calcEccentricAnomaly(M, e);
-
-  console.log("004:: ecc anomaly E,", E);
+  //console.log("004:: ecc anomaly E,", E);
 
   // Calcolare la vera anomalia
   const v = calcTrueAnomaly(E, e);
-
-  console.log("005:: true anomaly", v);
-  // deve fare 2.49999
+  //console.log("005:: true anomaly", v);
 
   // Calcolare la distanza radiale
   //const r = a * (1 - e * Math.cos(E));
@@ -196,11 +193,11 @@ export function convertCoordsHCOrbitalToHCEcliptic(
 export const sphericalEclipticToCartesianEcliptic = (
   sphericalCoords: SphericalEclipticCoords
 ): Cartesian3DCoords => {
-  const { lng: λ, lat: β } = sphericalCoords;
+  const { lng: λ, lat: β, r } = sphericalCoords;
 
-  const xEcl = Math.cos(λ) * Math.cos(β);
-  const yEcl = Math.sin(λ) * Math.cos(β);
-  const zEcl = Math.sin(β);
+  const xEcl = r * Math.cos(λ) * Math.cos(β);
+  const yEcl = r * Math.sin(λ) * Math.cos(β);
+  const zEcl = r * Math.sin(β);
 
   return { x: xEcl, y: yEcl, z: zEcl };
 };
