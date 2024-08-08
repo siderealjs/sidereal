@@ -20,7 +20,6 @@ import {
   Cartesian2DCoords,
   OrbitalCoords,
 } from "../../types/Coords.type";
-import { Earth } from "../Earth";
 import { Coords } from "./Coords";
 
 export class Position {
@@ -147,12 +146,10 @@ export class Position {
     return this;
   };
 
-  public convertToGeocentric(date: Date) {
+  public convertToGeocentric(earthPosition: Position) {
     if (!this.eclipticCoords.isDefined()) {
       throw new Error("missing ecl coords to convert");
     }
-
-    const earthPosition = new Earth().getPositionAtDate(date);
 
     const earthEclCoords = earthPosition.getEclipticCoords().cartesian;
     const bodyEclCoords = this.getEclipticCoords().cartesian;

@@ -1,8 +1,6 @@
-import { calcCoordsPolarAtDate } from "./../astronomy/coords";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 import orbitalParams from "../data/planets.json";
 import { CelestialBodyName } from "../types/ObjectName.type";
-import { Position } from "./position/Position";
 
 export class CelestialBody {
   protected orbitalParams: OrbitalParams;
@@ -13,18 +11,6 @@ export class CelestialBody {
     }
 
     this.orbitalParams = orbitalParams[name];
-  }
-
-  public getPositionAtDate(date: Date) {
-    const { ω, i, Ω } = this.orbitalParams;
-    const bodyPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
-
-    const bodyPosition = new Position().setOrbitalCoords(bodyPolarCoords);
-
-    bodyPosition.convertOrbitalToEcliptic(ω, i, Ω);
-    bodyPosition.convertToGeocentric(date);
-
-    return bodyPosition;
   }
 
   // ELIMINAMI SE QUELLA SOPRA VA
