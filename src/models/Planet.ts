@@ -5,6 +5,9 @@ import { CelestialBody } from "./CelestialBody";
 import { Earth } from "./Earth";
 import { calcPhaseAngle, calculateQ } from "../astronomy/magnitude";
 
+import readFile from "../../../astronomic-bin/dist/index.js";
+import { daysBetweenDates, daysSinceEpoch } from "../utils/dates";
+
 export class Planet extends CelestialBody {
   constructor(name: CelestialBodyName) {
     super(name);
@@ -18,6 +21,28 @@ export class Planet extends CelestialBody {
 
     bodyPosition.convertOrbitalToEcliptic(this.orbitalParams);
     bodyPosition.convertToGeocentric(earthPosition);
+
+    const dayKey = Math.round(
+      2451544 + daysSinceEpoch(new Date("2024-08-09 00:00:00"))
+    );
+    console.log("dayke", dayKey);
+    console.log("GABIRPONTE IL DJJJ", readFile(dayKey - 1));
+
+    //const { X, Y, Z } = readFile(dayKey);
+
+    const X = 6.954647769116639e7;
+    const Y = 2.224054264658053e8;
+    const Z = -1.937035103722617e6;
+    const newPos = new Position().setEclipticCoords({
+      x: X / 1.496e8,
+      y: Y / 1.496e8,
+      z: Z / 1.496e8,
+    });
+    //newPos.convertToGeocentric(earthPosition);
+    console.log(
+      newPos.getEquatorialCoords().spherical.RA.HMS(),
+      newPos.getEquatorialCoords().spherical.DEC.DMS()
+    );
 
     return bodyPosition;
   }
