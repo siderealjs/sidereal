@@ -175,7 +175,7 @@ export function sphericalEquatorialToCartesianEquatorial(
   };
 }
 
-export function convertCoordsHCOrbitalToHCEcliptic(
+export function cartesianOrbitalToCartesianEcliptic(
   orbitalCoords: Cartesian2DCoords,
   { ω, Ω, i }: { ω: number; Ω: number; i: number }
 ): Cartesian3DCoords {
@@ -206,6 +206,22 @@ export function convertCoordsHCOrbitalToHCEcliptic(
   return { x: xEcl, y: yEcl, z: zEcl };
 }
 
+export function polarOrbitalToSphericalEcliptic(
+  polarCoords: PolarCoords,
+  { ω, Ω, i }: { ω: number; Ω: number; i: number }
+): SphericalEclipticCoords {
+  const { v, r } = polarCoords;
+
+  const longitude = v.radians() + ω + Ω;
+  const latitude = Math.asin(Math.sin(i) * Math.sin(v.radians()));
+
+  return {
+    lat: new Angle(latitude).normalize(),
+    lng: new Angle(longitude).normalize(),
+    r,
+  };
+}
+
 export const sphericalEclipticToCartesianEcliptic = (
   sphericalCoords: SphericalEclipticCoords
 ): Cartesian3DCoords => {
@@ -217,32 +233,6 @@ export const sphericalEclipticToCartesianEcliptic = (
 
   return { x: xEcl, y: yEcl, z: zEcl };
 };
-
-function customAtan2(y, x) {
-  // Calcola l'angolo usando atan
-  const angle = Math.atan(y / x);
-
-  // Determina l'angolo corretto in base al quadrante
-  if (x > 0) {
-    // Caso 1: x positivo
-    return angle; // giusto per i quadranti I e IV
-  } else if (x < 0 && y >= 0) {
-    // Caso 2: x negativo e y positivo
-    return angle + Math.PI; // Quadrante II
-  } else if (x < 0 && y < 0) {
-    // Caso 3: x negativo e y negativo
-    return angle - Math.PI; // Quadrante III
-  } else if (x === 0 && y > 0) {
-    // Caso 4: x zero e y positivo
-    return Math.PI / 2; // Quadrante I
-  } else if (x === 0 && y < 0) {
-    // Caso 5: x zero e y negativo
-    return -Math.PI / 2; // Quadrante IV
-  } else if (x === 0 && y === 0) {
-    // Caso 6: x e y zero
-    return NaN; // Indeterminato, potrebbe essere trattato come errore o valore speciale
-  }
-}
 
 export const cartesianEclipticToSphericalEcliptic = (
   cartesianCoords: Cartesian3DCoords

@@ -1,3 +1,4 @@
+import { calcCoordsPolarAtDate } from "../astronomy/coords";
 import { CelestialBody } from "./CelestialBody";
 import { Position } from "./position/Position";
 import { Sun } from "./Sun";
@@ -8,20 +9,11 @@ export class Earth extends CelestialBody {
   }
 
   public getPositionAtDate(date: Date) {
-    const sun = new Sun();
-    const sunPosition = sun.getPositionAtDate(date);
+    const earthPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
 
-    const {
-      x: xSun,
-      y: ySun,
-      z: zSun,
-    } = sunPosition.getEclipticCoords().cartesian;
+    const earthPosition = new Position().setOrbitalCoords(earthPolarCoords);
 
-    const earthPosition = new Position().setEclipticCoords({
-      x: -1 * xSun,
-      y: -1 * ySun,
-      z: -1 * zSun,
-    });
+    earthPosition.convertOrbitalToEcliptic(this.orbitalParams);
 
     return earthPosition;
   }

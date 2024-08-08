@@ -4,10 +4,10 @@ import {
   cartesianEquatorialToCartesianEcliptic,
   cartesianEquatorialToSphericalEquatorial,
   cartesianOrbitalToPolarOrbital,
-  convertCoordsHCOrbitalToHCEcliptic,
   polarOrbitalToCartesianOrbital,
   sphericalEclipticToCartesianEcliptic,
   sphericalEquatorialToCartesianEquatorial,
+  polarOrbitalToSphericalEcliptic,
 } from "../../astronomy/coords";
 
 import {
@@ -139,8 +139,12 @@ export class Position {
 
     const { ω, Ω, i } = orbitalParams;
 
-    const cartesianEclipticCoords = convertCoordsHCOrbitalToHCEcliptic(
-      this.orbitalCoords.getAll().cartesian,
+    // const cartesianEclipticCoords = cartesianOrbitalToCartesianEcliptic(
+    //   this.orbitalCoords.getAll().cartesian,
+    //   { ω, Ω, i }
+    // );
+    const cartesianEclipticCoords = polarOrbitalToSphericalEcliptic(
+      this.orbitalCoords.getAll<OrbitalCoords>().polar,
       { ω, Ω, i }
     );
 
