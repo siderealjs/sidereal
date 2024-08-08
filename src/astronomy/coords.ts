@@ -25,7 +25,7 @@ export const calcCoordsPolarAtDate = (
 
   const M = calcMeanAnomalyAtDate(M0, n, givenDate);
   //console.log("003: normalized M:", M, M * 180 /Math.PI, Mx * 180 / Math.PI);
-  // console.log("003: normalized M:", M);
+  console.log("003: normalized M:", new Angle(M).degrees());
 
   // Calcolare l'anomalia eccentrica
   const E = calcEccentricAnomaly(M, e);
@@ -39,6 +39,7 @@ export const calcCoordsPolarAtDate = (
   //const r = a * (1 - e * Math.cos(E));
   const r = (a * (1 - e * e)) / (1 + e * Math.cos(v.radians()));
 
+  console.log("R TERRA", r);
   return { v, r };
 };
 
@@ -221,6 +222,32 @@ export const sphericalEclipticToCartesianEcliptic = (
   return { x: xEcl, y: yEcl, z: zEcl };
 };
 
+function customAtan2(y, x) {
+  // Calcola l'angolo usando atan
+  const angle = Math.atan(y / x);
+
+  // Determina l'angolo corretto in base al quadrante
+  if (x > 0) {
+    // Caso 1: x positivo
+    return angle; // giusto per i quadranti I e IV
+  } else if (x < 0 && y >= 0) {
+    // Caso 2: x negativo e y positivo
+    return angle + Math.PI; // Quadrante II
+  } else if (x < 0 && y < 0) {
+    // Caso 3: x negativo e y negativo
+    return angle - Math.PI; // Quadrante III
+  } else if (x === 0 && y > 0) {
+    // Caso 4: x zero e y positivo
+    return Math.PI / 2; // Quadrante I
+  } else if (x === 0 && y < 0) {
+    // Caso 5: x zero e y negativo
+    return -Math.PI / 2; // Quadrante IV
+  } else if (x === 0 && y === 0) {
+    // Caso 6: x e y zero
+    return NaN; // Indeterminato, potrebbe essere trattato come errore o valore speciale
+  }
+}
+
 export const cartesianEclipticToSphericalEcliptic = (
   cartesianCoords: Cartesian3DCoords
 ) => {
@@ -228,10 +255,10 @@ export const cartesianEclipticToSphericalEcliptic = (
 
   const r = Math.sqrt(x * x + y * y + z * z);
   const λValue = Math.atan2(y, x);
-  const λ = new Angle(λValue);
+  const λ = new Angle(λValue).normalize();
 
   const βValue = Math.atan2(z, Math.sqrt(x * x + y * y));
-  const β = new Angle(βValue);
+  const β = new Angle(βValue).normalize();
 
   return { lat: β, lng: λ, r };
 };

@@ -1,4 +1,5 @@
 import {
+  calcCoordsPolarAtDate,
   cartesianEclipticToCartesianEquatorial,
   cartesianEclipticToSphericalEcliptic,
   cartesianEquatorialToCartesianEcliptic,
@@ -9,6 +10,8 @@ import {
   sphericalEclipticToCartesianEcliptic,
   sphericalEquatorialToCartesianEquatorial,
 } from "../../astronomy/coords";
+import orbitalParams from "../../data/planets.json";
+
 import {
   Cartesian3DCoords,
   EclipticCoords,
@@ -144,6 +147,20 @@ export class Position {
 
     return this;
   };
+  
+  public convertToGeocentric(date: Date) {
+    const earthParams = orbitalParams["earth"];
+
+    const earthPolarCoords = calcCoordsPolarAtDate(date, earthParams);
+
+    const earthPosition = new Position().setOrbitalCoords(earthPolarCoords);
+
+    earthPosition.convertOrbitalToEcliptic(earthParams.ω, earthParams.Ω, earthParams.i);
+
+    return {}
+
+
+  }
 
   private isCoordsSpherical = (
     coords:

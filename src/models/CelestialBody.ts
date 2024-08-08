@@ -20,7 +20,7 @@ export class CelestialBody {
   }
 
   public getEphemerisAtDate(date: Date) {
-    const earthParams = orbitalParams["earth"];
+    const earthParams = orbitalParams["earthwrong"];
     const { ω, Ω, i } = this.orbitalParams;
 
     const earthPolar = calcCoordsPolarAtDate(date, earthParams);
@@ -32,6 +32,11 @@ export class CelestialBody {
     bodyPosition.convertOrbitalToEcliptic(ω, Ω, i);
     earthPosition.convertOrbitalToEcliptic(earthParams.ω, earthParams.Ω, earthParams.i);
 
+    // console.log('DA DENTRO CELES', earthPosition.getEquatorialCoords().spherical.DEC.DMS())
+
+   // bodyPosition.convertToGeocentric(date);
+
+    
     //bodyPosition.convertToGeocentric(date);
 
     // const earthHCOrbital = convertCoordsPolarToOrbital(earthPolar);
