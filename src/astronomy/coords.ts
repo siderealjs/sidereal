@@ -25,7 +25,6 @@ export const calcCoordsPolarAtDate = (
 
   const M = calcMeanAnomalyAtDate(M0, n, givenDate);
   //console.log("003: normalized M:", M, M * 180 /Math.PI, Mx * 180 / Math.PI);
-  console.log("003: normalized M:", new Angle(M).degrees());
 
   // Calcolare l'anomalia eccentrica
   const E = calcEccentricAnomaly(M, e);
@@ -39,7 +38,6 @@ export const calcCoordsPolarAtDate = (
   //const r = a * (1 - e * Math.cos(E));
   const r = (a * (1 - e * e)) / (1 + e * Math.cos(v.radians()));
 
-  console.log("R TERRA", r);
   return { v, r };
 };
 

@@ -1,5 +1,4 @@
 import {
-  calcCoordsPolarAtDate,
   cartesianEclipticToCartesianEquatorial,
   cartesianEclipticToSphericalEcliptic,
   cartesianEquatorialToCartesianEcliptic,
@@ -10,7 +9,6 @@ import {
   sphericalEclipticToCartesianEcliptic,
   sphericalEquatorialToCartesianEquatorial,
 } from "../../astronomy/coords";
-import orbitalParams from "../../data/planets.json";
 
 import {
   Cartesian3DCoords,
@@ -22,6 +20,7 @@ import {
   Cartesian2DCoords,
   OrbitalCoords,
 } from "../../types/Coords.type";
+import { Earth } from "../Earth";
 import { Coords } from "./Coords";
 
 export class Position {
@@ -133,7 +132,7 @@ export class Position {
     return this.eclipticCoords.getAll();
   }
 
-  public convertOrbitalToEcliptic = (ω: number, Ω: number, i: number) => {
+  public convertOrbitalToEcliptic = (ω: number, i: number, Ω: number) => {
     if (!this.orbitalCoords.isDefined()) {
       throw new Error("orbital coords to convert are not found");
     }
@@ -147,19 +146,26 @@ export class Position {
 
     return this;
   };
-  
+
   public convertToGeocentric(date: Date) {
-    const earthParams = orbitalParams["earth"];
+    if (!this.eclipticCoords.isDefined()) {
+      throw new Error("missing ecl coords to convert");
+    }
 
-    const earthPolarCoords = calcCoordsPolarAtDate(date, earthParams);
+    const earthPosition = new Earth().getPositionAtDate(date);
 
-    const earthPosition = new Position().setOrbitalCoords(earthPolarCoords);
+    const earthEclCoords = earthPosition.getEclipticCoords().cartesian;
+    const bodyEclCoords = this.getEclipticCoords().cartesian;
 
-    earthPosition.convertOrbitalToEcliptic(earthParams.ω, earthParams.Ω, earthParams.i);
+    const geocentricEclipticCoords = {
+      x: bodyEclCoords.x - earthEclCoords.x,
+      y: bodyEclCoords.y - earthEclCoords.y,
+      z: bodyEclCoords.z - earthEclCoords.z,
+    };
 
-    return {}
+    this.setEclipticCoords(geocentricEclipticCoords);
 
-
+    return this;
   }
 
   private isCoordsSpherical = (

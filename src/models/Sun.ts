@@ -1,10 +1,4 @@
 import { CelestialBody } from "./CelestialBody";
-
-// import {
-//   normalizeAngleD,
-//   normalizeAngleR,
-//   toRadians,
-// } from "../utils/angles";
 import { calcEccentricAnomaly, calcTrueAnomaly } from "../astronomy/anomaly";
 import { daysSinceEpoch } from "../utils/dates";
 import { Position } from "./position/Position";
@@ -12,10 +6,10 @@ import { Angle } from "./position/Angle";
 
 export class Sun extends CelestialBody {
   constructor() {
-    super("earth");
+    super("sun");
   }
 
-  public getEphemerisAtDate(date: Date) {
+  public getPositionAtDate(date: Date) {
     const deltaDays = daysSinceEpoch(date); // Questa funzione è già implementata
 
     const lonAtEPoch = 280.466069;
@@ -26,8 +20,6 @@ export class Sun extends CelestialBody {
       (360.0 * deltaDays) / 365.242191 + lonAtEPoch - longAtPeri;
     const M = new Angle().setDegrees(M_degrees).normalize();
 
-
-    console.log('LA FINE DU YUORN STA TUTTA QUI', M.degrees())
     // eccentric anomaly
     const E = calcEccentricAnomaly(M.radians(), sunEccentricity);
 
@@ -41,21 +33,11 @@ export class Sun extends CelestialBody {
 
     const r = this.orbitalParams.a * (1 - this.orbitalParams.e * Math.cos(E));
 
-    console.log('R SOLE', r)
-    console.log('LONGITUDE SOLE,', longitude.degrees());
     const position = new Position().setEclipticCoords({
       lat: new Angle(0),
       lng: longitude,
       r,
     });
-
-    // const moonEquatorial = position.getEquatorialCoords();
-
-    // console.log(
-    //   "FINE",
-    //   convertRadsToHMS(moonEquatorial.spherical.RA),
-    //   convertRadToDMS(moonEquatorial.spherical.DEC)
-    // );
 
     return position;
   }

@@ -7,7 +7,7 @@ export class Moon extends CelestialBody {
     super("moon");
   }
 
-  public getEphemerisAtDate(date: Date): Position {
+  public getPositionAtDate(date: Date): Position {
     const moonSphericalEcl = calcMoonSphericalEclipticalCoordsAtDate(date);
 
     const moonPosition = new Position().setEclipticCoords(moonSphericalEcl);

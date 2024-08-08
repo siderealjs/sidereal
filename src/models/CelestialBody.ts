@@ -1,11 +1,7 @@
-import {
-  calcCoordsPolarAtDate,
-  convertCoordsHCOrbitalToHCEcliptic,
-} from "./../astronomy/coords";
+import { calcCoordsPolarAtDate } from "./../astronomy/coords";
 import { OrbitalParams } from "./../types/OrbitalParams.type";
 import orbitalParams from "../data/planets.json";
 import { CelestialBodyName } from "../types/ObjectName.type";
-import { calculateAlphaWikipedia, calculateQ } from "../astronomy/magnitude";
 import { Position } from "./position/Position";
 
 export class CelestialBody {
@@ -19,122 +15,129 @@ export class CelestialBody {
     this.orbitalParams = orbitalParams[name];
   }
 
-  public getEphemerisAtDate(date: Date) {
-    const earthParams = orbitalParams["earth"];
-    const { ω, Ω, i } = this.orbitalParams;
+  public getPositionAtDate(date: Date) {
+    const { ω, i, Ω } = this.orbitalParams;
+    const bodyPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
 
-    const earthPolar = calcCoordsPolarAtDate(date, earthParams);
+    const bodyPosition = new Position().setOrbitalCoords(bodyPolarCoords);
 
-    console.log("POLARI TERRA da martre", earthPolar.r, earthPolar.v.degrees());
+    bodyPosition.convertOrbitalToEcliptic(ω, i, Ω);
+    bodyPosition.convertToGeocentric(date);
 
-    const bodyPolar = calcCoordsPolarAtDate(date, this.orbitalParams);
-
-    const earthPosition = new Position().setOrbitalCoords(earthPolar);
-    const bodyPosition = new Position().setOrbitalCoords(bodyPolar);
-
-    bodyPosition.convertOrbitalToEcliptic(ω, Ω, i);
-    earthPosition.convertOrbitalToEcliptic(
-      earthParams.ω,
-      earthParams.Ω,
-      earthParams.i
-    );
-
-    // console.log('DA DENTRO CELES', earthPosition.getEquatorialCoords().spherical.DEC.DMS())
-
-    // bodyPosition.convertToGeocentric(date);
-
-    //bodyPosition.convertToGeocentric(date);
-
-    // const earthHCOrbital = convertCoordsPolarToOrbital(earthPolar);
-
-    // const bodyHCOrbital = convertCoordsPolarToOrbital(bodyPolar);
-
-    // const earthHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
-    //   earthPosition.getOrbitalCoords().cartesian,
-    //   earthParams
-    // );
-
-    // const bodyHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
-    //   bodyPosition.getOrbitalCoords().cartesian,
-    //   this.orbitalParams
-    // );
-
-    // convert to geocentric
-
-    const wGIusto = 4.9382057178469285;
-
-    const earthPolarConWSole = calcCoordsPolarAtDate(date, this.orbitalParams);
-
-    console.log(
-      "POLARI TERRA",
-      earthPolarConWSole.r,
-      earthPolarConWSole.v.degrees()
-    );
-    const earthPositionConWSole = new Position().setOrbitalCoords(
-      earthPolarConWSole
-    );
-
-    //earthPosition.convertOrbitalToEcliptic(this.orbitalParams.ω, 0, 0);
-    earthPositionConWSole.convertOrbitalToEcliptic(
-      wGIusto,
-      this.orbitalParams.i,
-      this.orbitalParams.Ω
-    );
-
-    earthPositionConWSole.setEclipticCoords({
-      x: -1 * earthPositionConWSole.getEclipticCoords().cartesian.x,
-      y: -1 * earthPositionConWSole.getEclipticCoords().cartesian.y,
-      z: -1 * earthPositionConWSole.getEclipticCoords().cartesian.z,
-    });
-
-    const xGCEclPlanet =
-      bodyPosition.getEclipticCoords().cartesian.x -
-      earthPosition.getEclipticCoords().cartesian.x;
-    const yGCEclPlanet =
-      bodyPosition.getEclipticCoords().cartesian.y -
-      earthPosition.getEclipticCoords().cartesian.y;
-    const zGCEclPlanet =
-      bodyPosition.getEclipticCoords().cartesian.z -
-      earthPosition.getEclipticCoords().cartesian.z;
-
-    const cartesianEclipticBodyGC = {
-      x: xGCEclPlanet,
-      y: yGCEclPlanet,
-      z: zGCEclPlanet,
-    };
-
-    const positionBodyGC = new Position().setEclipticCoords(
-      cartesianEclipticBodyGC
-    );
-
-
-
-
-    const xGCEclPlanetConWSun =
-      bodyPosition.getEclipticCoords().cartesian.x -
-      earthPositionConWSole.getEclipticCoords().cartesian.x;
-    const yGCEclPlanetConWSun =
-      bodyPosition.getEclipticCoords().cartesian.y -
-      earthPositionConWSole.getEclipticCoords().cartesian.y;
-    const zGCEclPlanetConWSun =
-      bodyPosition.getEclipticCoords().cartesian.z -
-      earthPositionConWSole.getEclipticCoords().cartesian.z;
-
-    const cartesianEclipticBodyGCConWSun = {
-      x: xGCEclPlanetConWSun,
-      y: yGCEclPlanetConWSun,
-      z: zGCEclPlanetConWSun,
-    };
-
-    const positionBodyGCConWSun = new Position().setEclipticCoords(
-      cartesianEclipticBodyGC
-    );
-
-
-    console.log('coord con WSUN', positionBodyGCConWSun.getEquatorialCoords().spherical.DEC.DMS())
-    console.log('coord con WEARTH', positionBodyGC.getEquatorialCoords().spherical.DEC.DMS())
-    return positionBodyGC;
+    return bodyPosition;
   }
+
+  // ELIMINAMI SE QUELLA SOPRA VA
+  // public getPositionAtDate(date: Date) {
+  //   const earthParams = orbitalParams["earth"];
+  //   const { ω, Ω, i } = this.orbitalParams;
+
+  //   const earthPolar = calcCoordsPolarAtDate(date, earthParams);
+
+  //   const bodyPolar = calcCoordsPolarAtDate(date, this.orbitalParams);
+
+  //   const earthPosition = new Position().setOrbitalCoords(earthPolar);
+  //   const bodyPosition = new Position().setOrbitalCoords(bodyPolar);
+
+  //   bodyPosition.convertOrbitalToEcliptic(ω, Ω, i);
+  //   earthPosition.convertOrbitalToEcliptic(
+  //     earthParams.ω,
+  //     earthParams.Ω,
+  //     earthParams.i
+  //   );
+
+  //   // console.log('DA DENTRO CELES', earthPosition.getEquatorialCoords().spherical.DEC.DMS())
+
+  //   // bodyPosition.convertToGeocentric(date);
+
+  //   //bodyPosition.convertToGeocentric(date);
+
+  //   // const earthHCOrbital = convertCoordsPolarToOrbital(earthPolar);
+
+  //   // const bodyHCOrbital = convertCoordsPolarToOrbital(bodyPolar);
+
+  //   // const earthHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
+  //   //   earthPosition.getOrbitalCoords().cartesian,
+  //   //   earthParams
+  //   // );
+
+  //   // const bodyHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
+  //   //   bodyPosition.getOrbitalCoords().cartesian,
+  //   //   this.orbitalParams
+  //   // );
+
+  //   // convert to geocentric
+
+  //   const wGIusto = 4.9382057178469285;
+
+  //   const earthPolarConWSole = calcCoordsPolarAtDate(date, this.orbitalParams);
+
+  //   console.log(
+  //     "POLARI TERRA",
+  //     earthPolarConWSole.r,
+  //     earthPolarConWSole.v.degrees()
+  //   );
+  //   const earthPositionConWSole = new Position().setOrbitalCoords(
+  //     earthPolarConWSole
+  //   );
+
+  //   //earthPosition.convertOrbitalToEcliptic(this.orbitalParams.ω, 0, 0);
+  //   earthPositionConWSole.convertOrbitalToEcliptic(
+  //     wGIusto,
+  //     this.orbitalParams.i,
+  //     this.orbitalParams.Ω
+  //   );
+
+  //   earthPositionConWSole.setEclipticCoords({
+  //     x: -1 * earthPositionConWSole.getEclipticCoords().cartesian.x,
+  //     y: -1 * earthPositionConWSole.getEclipticCoords().cartesian.y,
+  //     z: -1 * earthPositionConWSole.getEclipticCoords().cartesian.z,
+  //   });
+
+  //   const xGCEclPlanet =
+  //     bodyPosition.getEclipticCoords().cartesian.x -
+  //     earthPosition.getEclipticCoords().cartesian.x;
+  //   const yGCEclPlanet =
+  //     bodyPosition.getEclipticCoords().cartesian.y -
+  //     earthPosition.getEclipticCoords().cartesian.y;
+  //   const zGCEclPlanet =
+  //     bodyPosition.getEclipticCoords().cartesian.z -
+  //     earthPosition.getEclipticCoords().cartesian.z;
+
+  //   const cartesianEclipticBodyGC = {
+  //     x: xGCEclPlanet,
+  //     y: yGCEclPlanet,
+  //     z: zGCEclPlanet,
+  //   };
+
+  //   const positionBodyGC = new Position().setEclipticCoords(
+  //     cartesianEclipticBodyGC
+  //   );
+
+  //   const xGCEclPlanetConWSun =
+  //     bodyPosition.getEclipticCoords().cartesian.x -
+  //     earthPositionConWSole.getEclipticCoords().cartesian.x;
+  //   const yGCEclPlanetConWSun =
+  //     bodyPosition.getEclipticCoords().cartesian.y -
+  //     earthPositionConWSole.getEclipticCoords().cartesian.y;
+  //   const zGCEclPlanetConWSun =
+  //     bodyPosition.getEclipticCoords().cartesian.z -
+  //     earthPositionConWSole.getEclipticCoords().cartesian.z;
+
+  //   const cartesianEclipticBodyGCConWSun = {
+  //     x: xGCEclPlanetConWSun,
+  //     y: yGCEclPlanetConWSun,
+  //     z: zGCEclPlanetConWSun,
+  //   };
+
+  //   const positionBodyGCConWSun = new Position().setEclipticCoords(
+  //     cartesianEclipticBodyGC
+  //   );
+
+  //   console.log('coord con WSUN', positionBodyGCConWSun.getEquatorialCoords().spherical.DEC.DMS())
+  //   console.log('coord con WEARTH', positionBodyGC.getEquatorialCoords().spherical.DEC.DMS())
+  //   return positionBodyGC;
+  // }
 
   // public getEphemerisAtDate2(date: Date) {
   //   const earthParams = orbitalParams["earth"];
