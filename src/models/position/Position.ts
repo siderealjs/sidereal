@@ -153,6 +153,18 @@ export class Position {
     return this;
   };
 
+  public calcDistanceFrom(otherBodyPosition: Position): number {
+    const otherBodyEclipticCoords =
+      otherBodyPosition.getEclipticCoords().cartesian;
+    const bodyEclipticCoords = this.getEclipticCoords().cartesian;
+
+    const dx = otherBodyEclipticCoords.x - bodyEclipticCoords.x;
+    const dy = otherBodyEclipticCoords.y - bodyEclipticCoords.y;
+    const dz = otherBodyEclipticCoords.z - bodyEclipticCoords.z;
+
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+  }
+
   public convertToGeocentric(earthPosition: Position) {
     if (!this.eclipticCoords.isDefined()) {
       throw new Error("missing ecl coords to convert");

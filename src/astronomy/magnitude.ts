@@ -1,21 +1,22 @@
-export function calculateAlphaWikipedia(dbo: number, dbs: number, dos: number) {
-  // Calcola il coseno dell'angolo alpha
-  const cosAlpha = (dbo * dbo + dbs * dbs - dos * dos) / (2 * dbo * dbs);
+import { Angle } from "../models/position/Angle";
 
-  // Assicurati che il valore di cosAlpha sia compreso tra -1 e 1 per evitare errori
-  // if (cosAlpha < -1) cosAlpha = -1;
-  // if (cosAlpha > 1) cosAlpha = 1;
+export function calcPhaseAngle(
+  distanceBodyObject: number,
+  distanceBodySun: number,
+  distanceObserverSun: number
+): Angle {
+  const dBO2 = distanceBodyObject * distanceBodyObject;
+  const dBS2 = distanceBodySun * distanceBodySun;
+  const dOS2 = distanceObserverSun * distanceObserverSun;
+
+  // Calcola il coseno dell'angolo alpha
+  const cosAlpha =
+    (dBO2 + dBS2 - dOS2) / (2 * distanceBodyObject * distanceBodySun);
 
   // Calcola l'angolo in radianti usando l'inverso del coseno
-  const alphaRadians = Math.acos(cosAlpha);
+  const alpha = Math.acos(cosAlpha);
 
-  // Converte l'angolo in gradi (opzionale)
-  const alphaDegrees = alphaRadians * (180 / Math.PI);
-
-  return {
-    radians: alphaRadians,
-    degrees: alphaDegrees,
-  };
+  return new Angle(alpha);
 }
 
 export function calculateQ(a: number) {

@@ -3,8 +3,7 @@ import { CelestialBodyName } from "../types/ObjectName.type";
 import { Position } from "./position/Position";
 import { CelestialBody } from "./CelestialBody";
 import { Earth } from "./Earth";
-import { calculateAlphaWikipedia, calculateQ } from "../astronomy/magnitude";
-import { Angle } from "./position/Angle";
+import { calcPhaseAngle, calculateQ } from "../astronomy/magnitude";
 
 export class Planet extends CelestialBody {
   constructor(name: CelestialBodyName) {
@@ -24,75 +23,31 @@ export class Planet extends CelestialBody {
   }
 
   public getMagnitude(date: Date) {
-    // const earthParams = orbitalParams["earth"];
-
-    // const earthPolar = calcCoordsPolarAtDate(date, earthParams);
-    // const bodyPolar = calcCoordsPolarAtDate(date, this.orbitalParams);
-
-    // const earthHCOrbital = convertCoordsPolarToOrbital(earthPolar);
-
-    // const bodyHCOrbital = convertCoordsPolarToOrbital(bodyPolar);
-
-    // const earthHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
-    //   earthHCOrbital,
-    //   earthParams
-    // );
-
-    // const bodyHCEcliptic = convertCoordsHCOrbitalToHCEcliptic(
-    //   bodyHCOrbital,
-    //   this.orbitalParams
-    // );
-
-    // const dx = earthHCEcliptic.x - bodyHCEcliptic.x;
-    // const dy = earthHCEcliptic.y - bodyHCEcliptic.y;
-    // const dz = earthHCEcliptic.z - bodyHCEcliptic.z;
-
-    // // Calcola la distanza usando la formula euclidea
-    // const distanza = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-    // ecliptic earth coords
     const earthPosition = new Earth().getPositionAtDate(date);
 
     const bodyPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
     const bodyPosition = new Position().setOrbitalCoords(bodyPolarCoords);
     bodyPosition.convertOrbitalToEcliptic(this.orbitalParams);
 
-    const earthEcliptic = earthPosition.getEclipticCoords().cartesian;
-    const bodyEcliptic = bodyPosition.getEclipticCoords().cartesian;
+    const bodyEarthDistance = bodyPosition.calcDistanceFrom(earthPosition);
 
-    const dx = earthEcliptic.x - bodyEcliptic.x;
-    const dy = earthEcliptic.y - bodyEcliptic.y;
-    const dz = earthEcliptic.z - bodyEcliptic.z;
-
-    const bodyEarthDistance = Math.sqrt(dx * dx + dy * dy + dz * dz);
     const bodySunDistance = bodyPolarCoords.r;
     const earthSunDistance = earthPosition.getOrbitalCoords().polar.r;
 
-    console.log("disanza oggetto-terra", bodyEarthDistance);
-    console.log("distanza oggetto-sole", bodySunDistance);
-
-    const phaseAngleX = calculateAlphaWikipedia(
+    const phaseAngle = calcPhaseAngle(
       bodyEarthDistance,
       bodySunDistance,
       earthSunDistance
     );
 
-    const phaseAngle = new Angle(phaseAngleX.radians);
-    console.log("phase angle", phaseAngle.degrees());
+    const phaseFactor = calculateQ(phaseAngle.degrees());
 
-
-    const mm =
+    const apparentMagnitude =
       this.orbitalParams.H +
       5 * Math.log10(bodyEarthDistance * bodySunDistance) -
-      2.5 * Math.log10(calculateQ(phaseAngle.degrees()));
+      2.5 * Math.log10(phaseFactor);
 
-    // const mm2 =
-    //   this.orbitalParams.Hemp +
-    //   5 * Math.log10(distanza * bodyPolar.r) +
-    //   calculateQemp("mars", phaseAngle.degrees);
-
-    console.log("m apparent", mm);
-    // console.log("m apparent empt", mm2);
+    return apparentMagnitude;
   }
   // public getMagnitude(date: Date) {
   //   const earthParams = orbitalParams["earth"];
