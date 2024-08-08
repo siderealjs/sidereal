@@ -20,23 +20,29 @@ export class CelestialBody {
   }
 
   public getEphemerisAtDate(date: Date) {
-    const earthParams = orbitalParams["earthwrong"];
+    const earthParams = orbitalParams["earth"];
     const { ω, Ω, i } = this.orbitalParams;
 
     const earthPolar = calcCoordsPolarAtDate(date, earthParams);
+
+    console.log("POLARI TERRA da martre", earthPolar.r, earthPolar.v.degrees());
+
     const bodyPolar = calcCoordsPolarAtDate(date, this.orbitalParams);
 
     const earthPosition = new Position().setOrbitalCoords(earthPolar);
     const bodyPosition = new Position().setOrbitalCoords(bodyPolar);
 
     bodyPosition.convertOrbitalToEcliptic(ω, Ω, i);
-    earthPosition.convertOrbitalToEcliptic(earthParams.ω, earthParams.Ω, earthParams.i);
+    earthPosition.convertOrbitalToEcliptic(
+      earthParams.ω,
+      earthParams.Ω,
+      earthParams.i
+    );
 
     // console.log('DA DENTRO CELES', earthPosition.getEquatorialCoords().spherical.DEC.DMS())
 
-   // bodyPosition.convertToGeocentric(date);
+    // bodyPosition.convertToGeocentric(date);
 
-    
     //bodyPosition.convertToGeocentric(date);
 
     // const earthHCOrbital = convertCoordsPolarToOrbital(earthPolar);
@@ -54,6 +60,33 @@ export class CelestialBody {
     // );
 
     // convert to geocentric
+
+    const wGIusto = 4.9382057178469285;
+
+    const earthPolarConWSole = calcCoordsPolarAtDate(date, this.orbitalParams);
+
+    console.log(
+      "POLARI TERRA",
+      earthPolarConWSole.r,
+      earthPolarConWSole.v.degrees()
+    );
+    const earthPositionConWSole = new Position().setOrbitalCoords(
+      earthPolarConWSole
+    );
+
+    //earthPosition.convertOrbitalToEcliptic(this.orbitalParams.ω, 0, 0);
+    earthPositionConWSole.convertOrbitalToEcliptic(
+      wGIusto,
+      this.orbitalParams.i,
+      this.orbitalParams.Ω
+    );
+
+    earthPositionConWSole.setEclipticCoords({
+      x: -1 * earthPositionConWSole.getEclipticCoords().cartesian.x,
+      y: -1 * earthPositionConWSole.getEclipticCoords().cartesian.y,
+      z: -1 * earthPositionConWSole.getEclipticCoords().cartesian.z,
+    });
+
     const xGCEclPlanet =
       bodyPosition.getEclipticCoords().cartesian.x -
       earthPosition.getEclipticCoords().cartesian.x;
@@ -74,6 +107,32 @@ export class CelestialBody {
       cartesianEclipticBodyGC
     );
 
+
+
+
+    const xGCEclPlanetConWSun =
+      bodyPosition.getEclipticCoords().cartesian.x -
+      earthPositionConWSole.getEclipticCoords().cartesian.x;
+    const yGCEclPlanetConWSun =
+      bodyPosition.getEclipticCoords().cartesian.y -
+      earthPositionConWSole.getEclipticCoords().cartesian.y;
+    const zGCEclPlanetConWSun =
+      bodyPosition.getEclipticCoords().cartesian.z -
+      earthPositionConWSole.getEclipticCoords().cartesian.z;
+
+    const cartesianEclipticBodyGCConWSun = {
+      x: xGCEclPlanetConWSun,
+      y: yGCEclPlanetConWSun,
+      z: zGCEclPlanetConWSun,
+    };
+
+    const positionBodyGCConWSun = new Position().setEclipticCoords(
+      cartesianEclipticBodyGC
+    );
+
+
+    console.log('coord con WSUN', positionBodyGCConWSun.getEquatorialCoords().spherical.DEC.DMS())
+    console.log('coord con WEARTH', positionBodyGC.getEquatorialCoords().spherical.DEC.DMS())
     return positionBodyGC;
   }
 

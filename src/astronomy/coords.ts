@@ -181,8 +181,6 @@ export function convertCoordsHCOrbitalToHCEcliptic(
   orbitalCoords: Cartesian2DCoords,
   { ω, Ω, i }: { ω: number; Ω: number; i: number }
 ): Cartesian3DCoords {
-  //const { ω, Ω, i } = orbitalParams;
-
   const { x: xOrb, y: yOrb } = orbitalCoords;
 
   const cosω = Math.cos(ω);
