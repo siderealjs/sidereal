@@ -11,13 +11,12 @@ export class Planet extends CelestialBody {
   }
 
   public getPositionAtDate(date: Date) {
-    const { ω, i, Ω } = this.orbitalParams;
     const bodyPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
 
     const earthPosition = new Earth().getPositionAtDate(date)
     const bodyPosition = new Position().setOrbitalCoords(bodyPolarCoords);
 
-    bodyPosition.convertOrbitalToEcliptic(ω, i, Ω);
+    bodyPosition.convertOrbitalToEcliptic(this.orbitalParams);
     bodyPosition.convertToGeocentric(earthPosition);
 
     return bodyPosition;

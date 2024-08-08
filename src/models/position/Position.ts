@@ -20,6 +20,7 @@ import {
   Cartesian2DCoords,
   OrbitalCoords,
 } from "../../types/Coords.type";
+import { OrbitalParams } from "../../types/OrbitalParams.type";
 import { Coords } from "./Coords";
 
 export class Position {
@@ -131,10 +132,12 @@ export class Position {
     return this.eclipticCoords.getAll();
   }
 
-  public convertOrbitalToEcliptic = (ω: number, i: number, Ω: number) => {
+  public convertOrbitalToEcliptic = (orbitalParams: OrbitalParams) => {
     if (!this.orbitalCoords.isDefined()) {
       throw new Error("orbital coords to convert are not found");
     }
+
+    const { ω, Ω, i } = orbitalParams;
 
     const cartesianEclipticCoords = convertCoordsHCOrbitalToHCEcliptic(
       this.orbitalCoords.getAll().cartesian,
