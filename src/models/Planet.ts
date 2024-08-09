@@ -7,7 +7,7 @@ import { calcPhaseAngle, calculateQ } from "../astronomy/magnitude";
 
 import { loadEphemeris } from "sidereal-ephemeris";
 
-import { daysBetweenDates, daysSinceEpoch } from "../utils/dates";
+import { convertToUTC, daysBetweenDates, daysSinceEpoch } from "../utils/dates";
 
 export class Planet extends CelestialBody {
   constructor(name: CelestialBodyName) {
@@ -15,7 +15,8 @@ export class Planet extends CelestialBody {
   }
 
   public getPositionAtDate(date: Date) {
-    const earthPosition = new Earth().getPositionAtDate(date);
+    const UTCdate = convertToUTC(date);
+    const earthPosition = new Earth().getPositionAtDate(UTCdate);
 
     // const bodyPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
 
@@ -24,9 +25,27 @@ export class Planet extends CelestialBody {
     // bodyPosition.convertOrbitalToEcliptic(this.orbitalParams);
     // bodyPosition.convertToGeocentric(earthPosition);
 
-    const terraEphemeris = loadEphemeris("mars");
-    const k = terraEphemeris.getPositionAtDate(date);
-    const nP = new Position().setEclipticCoords(k);
+    // const tomorrow = new Date()
+    // tomorrow.setDate(date.getDate() + 1);
+    // console.log('TOMORRW', tomorrow.toString())
+
+    // const tomorrow = new Date();
+    // tomorrow.setDate(date.getDate() + 1);
+    // tomorrow.setHours(0, 0, 0);
+    // const ratio =
+    //   1 - (tomorrow.getTime() - date.getTime()) / (1000 * 60 * 60 * 24);
+    // console.log("TOMORRW", tomorrow.toString(), "DIFF", ratio);
+
+    const marsEph = loadEphemeris("mars");
+    const todayPos = marsEph.getPositionAtDate(UTCdate);
+    //const tomorrowPos = marsEph.getPositionAtDate(tomorrow);
+
+    // const x = todayPos.x + (tomorrowPos.x - todayPos.x) * ratio;
+    // const y = todayPos.y + (tomorrowPos.y - todayPos.y) * ratio;
+    // const z = todayPos.z + (tomorrowPos.z - todayPos.z) * ratio;
+
+    // const xNow = xToday + perc * xTomorrow
+    const nP = new Position().setEclipticCoords(todayPos);
     nP.convertToGeocentric(earthPosition);
 
     console.log(
@@ -35,10 +54,6 @@ export class Planet extends CelestialBody {
       nP.getEclipticCoords().cartesian.y,
       nP.getEclipticCoords().cartesian.z
     );
-
-    // const dayKey = Math.round(
-    //   2451544 + daysSinceEpoch(new Date("2024-08-09 00:00:00"))
-    // );
 
     console.log(
       nP.getEquatorialCoords().spherical.RA.HMS(),

@@ -13,8 +13,12 @@ export class Earth extends CelestialBody {
     const k = terraEphemeris.getPositionAtDate(date);
     const nP = new Position().setEclipticCoords(k);
 
-    console.log('INTERNO ca', nP.getEclipticCoords().cartesian.x, nP.getEclipticCoords().cartesian.y, nP.getEclipticCoords().cartesian.z);
-
+    console.log(
+      "INTERNO ca",
+      nP.getEclipticCoords().cartesian.x,
+      nP.getEclipticCoords().cartesian.y,
+      nP.getEclipticCoords().cartesian.z
+    );
 
     return nP;
 
