@@ -1,19 +1,27 @@
-import { Ephemeris } from "../types/Ephemeris.type";
+import { Ephemeris } from './../types/Ephemeris.type';
 import { CelestialBodyName } from "../types/ObjectName.type";
 import { Earth } from "./body/Earth";
 import { Planet } from "./body/Planet";
 import { Sun } from "./body/Sun";
 
 export default class Sidereal {
-  public planet(planetName: CelestialBodyName, ephemeris?: Ephemeris): Planet {
-    return new Planet(planetName, ephemeris);
+  protected loadedEphemeris: Record<string, Ephemeris> = {};
+
+  public planet(planetName: CelestialBodyName): Planet {
+    return new Planet(planetName, this.loadedEphemeris);
   }
 
-  public earth(ephemeris?: Ephemeris): Earth {
-    return new Earth(ephemeris);
+  public earth(): Earth {
+    return new Earth(this.loadedEphemeris);
   }
 
-  public sun(ephemeris: Ephemeris): Sun {
-    return new Sun(ephemeris);
+  public sun(): Sun {
+    return new Sun(this.loadedEphemeris);
+  }
+
+  public loadEphemeris(ephemerisList: Ephemeris[]): void {
+    ephemerisList.forEach(ephemeris => {
+      this.loadedEphemeris[ephemeris.name] = ephemeris;
+    })
   }
 }

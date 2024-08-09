@@ -5,14 +5,16 @@ import { Ephemeris } from "../../types/Ephemeris.type";
 
 export class CelestialBody {
   protected orbitalParams: OrbitalParams;
-  protected ephemeris: Ephemeris | null = null;
+  protected ephemeris: Record<string, Ephemeris> = {};
+  protected bodyName: CelestialBodyName;
 
-  constructor(name: CelestialBodyName, ephemeris?: Ephemeris | null) {
+  constructor(name: CelestialBodyName, ephemeris?: Record<CelestialBodyName, Ephemeris>) {
     if (!orbitalParams[name]) {
       throw new Error(`non ce un oggetto chiamato ${name}`);
     }
 
+    this.bodyName = name;
     this.orbitalParams = orbitalParams[name];
-    this.ephemeris = ephemeris || null;
+    this.ephemeris = ephemeris || {};
   }
 }

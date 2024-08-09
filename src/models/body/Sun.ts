@@ -1,10 +1,11 @@
+import { CelestialBodyName } from "./../../types/ObjectName.type";
 import { CelestialBody } from "./CelestialBody";
 import { Position } from "./../position/Position";
 import { calcCoordsPolarAtDate } from "../../astronomy/coords";
 import { Ephemeris } from "../../types/Ephemeris.type";
 
 export class Sun extends CelestialBody {
-  constructor(ephemeris?: Ephemeris) {
+  constructor(ephemeris?: Record<CelestialBodyName, Ephemeris>) {
     super("sun", ephemeris);
   }
 
