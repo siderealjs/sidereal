@@ -5,7 +5,8 @@ import { CelestialBody } from "./CelestialBody";
 import { Earth } from "./Earth";
 import { calcPhaseAngle, calculateQ } from "../astronomy/magnitude";
 
-import readFile from "../../../astronomic-bin/dist/index.js";
+import { loadEphemeris } from "sidereal-ephemeris";
+
 import { daysBetweenDates, daysSinceEpoch } from "../utils/dates";
 
 export class Planet extends CelestialBody {
@@ -14,37 +15,37 @@ export class Planet extends CelestialBody {
   }
 
   public getPositionAtDate(date: Date) {
-    const bodyPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
-
     const earthPosition = new Earth().getPositionAtDate(date);
-    const bodyPosition = new Position().setOrbitalCoords(bodyPolarCoords);
 
-    bodyPosition.convertOrbitalToEcliptic(this.orbitalParams);
-    bodyPosition.convertToGeocentric(earthPosition);
+    // const bodyPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
 
-    const dayKey = Math.round(
-      2451544 + daysSinceEpoch(new Date("2024-08-09 00:00:00"))
-    );
-    console.log("dayke", dayKey);
-    console.log("GABIRPONTE IL DJJJ", readFile(dayKey - 1));
+    // const bodyPosition = new Position().setOrbitalCoords(bodyPolarCoords);
 
-    //const { X, Y, Z } = readFile(dayKey);
+    // bodyPosition.convertOrbitalToEcliptic(this.orbitalParams);
+    // bodyPosition.convertToGeocentric(earthPosition);
 
-    const X = 6.954647769116639e7;
-    const Y = 2.224054264658053e8;
-    const Z = -1.937035103722617e6;
-    const newPos = new Position().setEclipticCoords({
-      x: X / 1.496e8,
-      y: Y / 1.496e8,
-      z: Z / 1.496e8,
-    });
-    //newPos.convertToGeocentric(earthPosition);
+    const terraEphemeris = loadEphemeris("mars");
+    const k = terraEphemeris.getPositionAtDate(date);
+    const nP = new Position().setEclipticCoords(k);
+    nP.convertToGeocentric(earthPosition);
+
     console.log(
-      newPos.getEquatorialCoords().spherical.RA.HMS(),
-      newPos.getEquatorialCoords().spherical.DEC.DMS()
+      "INTERNO MARS ca",
+      nP.getEclipticCoords().cartesian.x,
+      nP.getEclipticCoords().cartesian.y,
+      nP.getEclipticCoords().cartesian.z
     );
 
-    return bodyPosition;
+    // const dayKey = Math.round(
+    //   2451544 + daysSinceEpoch(new Date("2024-08-09 00:00:00"))
+    // );
+
+    console.log(
+      nP.getEquatorialCoords().spherical.RA.HMS(),
+      nP.getEquatorialCoords().spherical.DEC.DMS()
+    );
+
+    return nP;
   }
 
   public getMagnitude(date: Date) {

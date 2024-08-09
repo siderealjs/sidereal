@@ -1,6 +1,6 @@
 {
-  "name": "js-astronomy-lib",
-  "version": "1.0.0",
+  "name": "sidereal",
+  "version": "0.0.3",
   "main": "index.js",
   "scripts": {
     "lint": "eslint 'src/**/*.{js,ts}'",
@@ -22,5 +22,8 @@
     "ts-jest": "^29.2.4",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.0.0"
+  },
+  "dependencies": {
+    "sidereal-ephemeris": "^0.0.2"
   }
 }
