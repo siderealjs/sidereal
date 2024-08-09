@@ -1,4 +1,4 @@
-import SiderealObject  from "./src/models/Sidereal";
+import SiderealObject  from "./src/Sidereal";
 
 type SiderealObjectType = typeof SiderealObject;
 

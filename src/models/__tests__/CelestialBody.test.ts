@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { Planet } from "../Planet";
+import { Planet } from "../body/Planet";
 import { CelestialBodyName } from "./../../types/ObjectName.type";
 
 describe.only("Models:: CelestialBody,", () => {
