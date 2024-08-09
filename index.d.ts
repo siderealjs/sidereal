@@ -1,3 +1,7 @@
-import { SiderealType } from "./src/types/Sidereal.type";
+import SiderealObject  from "./src/models/Sidereal";
 
-declare const Sidereal: SiderealType;
+type SiderealObjectType = typeof SiderealObject;
+
+declare const Sidereal: SiderealObjectType;
+
+export default Sidereal;
