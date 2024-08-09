@@ -7,14 +7,34 @@ import { calcPhaseAngle, calculateQ } from "../astronomy/magnitude";
 
 import { loadEphemeris } from "sidereal-ephemeris";
 
-import { convertToUTC, daysBetweenDates, daysSinceEpoch } from "../utils/dates";
+import { convertToUTC } from "../utils/dates";
 
 export class Planet extends CelestialBody {
   constructor(name: CelestialBodyName) {
     super(name);
   }
 
-  public getPositionAtDate(date: Date) {
+  public getPositionAtDate(UTCDate: Date, useEphemeris = false) {
+    const earthPosition = new Earth().getPositionAtDate(UTCDate, useEphemeris);
+
+    let planetPosition;
+    if (useEphemeris) {
+      const planetEphemeris = loadEphemeris("mars");
+      const planetEclipticCoords = planetEphemeris.getPositionAtDate(UTCDate);
+
+      planetPosition = new Position().setEclipticCoords(planetEclipticCoords);
+    } else {
+      const planetPolarCoords = calcCoordsPolarAtDate(UTCDate, this.orbitalParams);
+      planetPosition = new Position().setOrbitalCoords(planetPolarCoords);
+      planetPosition.convertOrbitalToEcliptic(this.orbitalParams);
+    }
+
+    planetPosition.convertToGeocentric(earthPosition);
+
+    return planetPosition;
+  }
+
+  public getPositionAtDateCOPY(date: Date) {
     const UTCdate = convertToUTC(date);
     const earthPosition = new Earth().getPositionAtDate(UTCdate);
 
