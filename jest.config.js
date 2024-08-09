@@ -8,4 +8,16 @@ export default {
       tsconfig: "tsconfig.json",
     },
   },
+
+  transformIgnorePatterns: ["node_modules/", "ephemeris/"],
+  testPathIgnorePatterns: [
+    "/build/",
+    "/config/",
+    "/data/",
+    "/dist/",
+    "/node_modules/",
+    "/test/",
+    "/vendor/",
+    "ephemeris/"
+  ],
 };

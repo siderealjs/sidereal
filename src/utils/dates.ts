@@ -34,38 +34,43 @@ export const centuriesFromJ1900 = (date: Date) => {
   return T;
 };
 
-export const createUTCDate = (y, m, d, h, min) => {
+export const createUTCDate = (
+  y: number,
+  m: number,
+  d: number,
+  h: number = 0,
+  min: number = 0
+) => {
   // this already magically converts the hour in UTC
   // it subtracts 1 from hours when it's appropriate
 
   return new Date(y, m - 1, d, h, min, 0);
 };
 
-export function convertToUTC(date: Date, timeZone = "Europe/London") {
-  // const summerTimeDeltaH = isDstObserved(date) ? -1 : 0;
+// export function convertToUTC(date: Date, timeZone = "Europe/London") {
+//   // const summerTimeDeltaH = isDstObserved(date) ? -1 : 0;
 
-  // console.log("SHOULD ADD OR NOT", summerTimeDeltaH);
+//   // console.log("SHOULD ADD OR NOT", summerTimeDeltaH);
 
-  // Crea una stringa della data locale usando il fuso orario specificato
-  const options = {
-    timeZone,
-    hour12: false,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  };
-  const localDateString = new Intl.DateTimeFormat("en-US", options).format(
-    date
-  );
+//   // Crea una stringa della data locale usando il fuso orario specificato
+//   const options = {
+//     timeZone,
+//     hour12: false,
+//     year: "numeric",
+//     month: "2-digit",
+//     day: "2-digit",
+//     hour: "2-digit",
+//     minute: "2-digit",
+//     second: "2-digit",
+//   };
+//   const localDateString = new Intl.DateTimeFormat("en-US", options).format(
+//     date
+//   );
 
-  // Estrai i valori dalla stringa della data locale
-  const [month, day, year, hour, minute, second] =
-    localDateString.match(/\d+/g);
+//   // Estrai i valori dalla stringa della data locale
+//   const [month, day, year, hour, minute, second] =
+//     localDateString.match(/\d+/g);
 
-  // Crea una nuova data in UTC usando i valori estratti
-  return new Date(year, month - 1, day, parseInt(hour), minute, second);
-}
-
+//   // Crea una nuova data in UTC usando i valori estratti
+//   return new Date(year, month - 1, day, parseInt(hour), minute, second);
+// }

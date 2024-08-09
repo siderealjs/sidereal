@@ -10,5 +10,6 @@
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint"],
-  "rules": {}
+  "rules": {},
+  "ignorePatterns": ["node_modules/", "dist/", "ephemeris/"] // Esclude la directory node_modules
 }

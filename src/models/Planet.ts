@@ -7,8 +7,6 @@ import { calcPhaseAngle, calculateQ } from "../astronomy/magnitude";
 
 import { loadEphemeris } from "sidereal-ephemeris";
 
-import { convertToUTC } from "../utils/dates";
-
 export class Planet extends CelestialBody {
   constructor(name: CelestialBodyName) {
     super(name);
@@ -24,7 +22,10 @@ export class Planet extends CelestialBody {
 
       planetPosition = new Position().setEclipticCoords(planetEclipticCoords);
     } else {
-      const planetPolarCoords = calcCoordsPolarAtDate(UTCDate, this.orbitalParams);
+      const planetPolarCoords = calcCoordsPolarAtDate(
+        UTCDate,
+        this.orbitalParams
+      );
       planetPosition = new Position().setOrbitalCoords(planetPolarCoords);
       planetPosition.convertOrbitalToEcliptic(this.orbitalParams);
     }
@@ -34,8 +35,8 @@ export class Planet extends CelestialBody {
     return planetPosition;
   }
 
-  public getPositionAtDateCOPY(date: Date) {
-    const UTCdate = convertToUTC(date);
+  public getPositionAtDateCOPY(UTCdate: Date) {
+    //const UTCdate = convertToUTC(date);
     const earthPosition = new Earth().getPositionAtDate(UTCdate);
 
     // const bodyPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);

@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { CelestialBody } from "../CelestialBody";
+import { Planet } from "../Planet";
 import { CelestialBodyName } from "./../../types/ObjectName.type";
 
 describe.only("Models:: CelestialBody,", () => {
@@ -20,9 +20,9 @@ describe.only("Models:: CelestialBody,", () => {
       };
 
       for (const planetName in allPlanetsNames) {
-        const planet = new CelestialBody(planetName as CelestialBodyName);
+        const planet = new Planet(planetName as CelestialBodyName);
 
-        const { RA, DEC } = planet.getEphemerisAtDate(date).getEquatorialCoords().spherical;
+        const { RA, DEC } = planet.getPositionAtDate(date).getEquatorialCoords().spherical;
         // @ts-ignore
         const expected = allPlanetsNames[planetName as any] as any;
 

@@ -10,6 +10,6 @@
     "outDir": "./dist",
     "moduleResolution": "node"
   },
-  "include": ["src/**/*.ts", "src/usa.js"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }

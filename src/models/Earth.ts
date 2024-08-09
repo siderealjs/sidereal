@@ -23,8 +23,6 @@ export class Earth extends CelestialBody {
       return earthPosition;
     }
 
-    return nP;
-
     const earthPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
 
     const earthPosition = new Position().setOrbitalCoords(earthPolarCoords);
