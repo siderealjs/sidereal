@@ -1,13 +1,17 @@
-import { CelestialBody } from "./models/CelestialBody";
-import Constants from "./data/constants.json";
-import { Moon } from "./models/Moon";
+// import { CelestialBody } from "./models/CelestialBody";
+// import Constants from "./data/constants.json";
+// import { Moon } from "./models/Moon";
 
-const AstronomyLab = {
-  Constants,
-  CelestialBody,
-  Moon,
-};
+// const AstronomyLab = {
+//   Constants,
+//   CelestialBody,
+//   Moon,
+// };
 
-export { Constants, CelestialBody };
+// export { Constants, CelestialBody };
 
-export default AstronomyLab;
+// export default AstronomyLab;
+
+import Sidereal from "./models/Sidereal";
+
+export default Sidereal;

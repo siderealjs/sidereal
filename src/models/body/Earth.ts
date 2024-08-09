@@ -1,16 +1,15 @@
-import { loadEphemeris } from "sidereal-ephemeris";
-import { calcCoordsPolarAtDate } from "../astronomy/coords";
+import { calcCoordsPolarAtDate } from "../../astronomy/coords";
 import { CelestialBody } from "./CelestialBody";
-import { Position } from "./position/Position";
+import { Position } from "./../position/Position";
+import { Ephemeris } from "../../types/Ephemeris.type";
 
 export class Earth extends CelestialBody {
-  constructor() {
-    super("earth");
+  constructor(ephemeris?: Ephemeris) {
+    super("earth", ephemeris);
   }
-
-  public getPositionAtDate(date: Date, useEphemeris = false) {
-    if (useEphemeris) {
-      const terraEphemeris = loadEphemeris("earth");
+  public getPositionAtDate(date: Date) {
+    if (this.ephemeris) {
+      const terraEphemeris = this.ephemeris;
       const k = terraEphemeris.getPositionAtDate(date);
       return new Position().setEclipticCoords(k);
     } else {

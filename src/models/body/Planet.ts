@@ -1,24 +1,22 @@
-import { calcCoordsPolarAtDate } from "./../astronomy/coords";
-import { CelestialBodyName } from "../types/ObjectName.type";
-import { Position } from "./position/Position";
+import { calcCoordsPolarAtDate } from "./../../astronomy/coords";
+import { CelestialBodyName } from "../../types/ObjectName.type";
+import { Position } from "./../position/Position";
 import { CelestialBody } from "./CelestialBody";
 import { Earth } from "./Earth";
-import { calcPhaseAngle, calculateQ } from "../astronomy/magnitude";
-
-import { loadEphemeris } from "sidereal-ephemeris";
+import { calcPhaseAngle, calculateQ } from "../../astronomy/magnitude";
+import { Ephemeris } from "../../types/Ephemeris.type";
 
 export class Planet extends CelestialBody {
-  constructor(name: CelestialBodyName) {
-    super(name);
+  constructor(name: CelestialBodyName, ephemeris?: Ephemeris) {
+    super(name, ephemeris);
   }
 
-  public getPositionAtDate(UTCDate: Date, useEphemeris = false) {
-    const earthPosition = new Earth().getPositionAtDate(UTCDate, useEphemeris);
+  public getPositionAtDate(UTCDate: Date) {
+    const earthPosition = new Earth().getPositionAtDate(UTCDate);
 
     let planetPosition;
-    if (useEphemeris) {
-      const planetEphemeris = loadEphemeris("mars");
-      const planetEclipticCoords = planetEphemeris.getPositionAtDate(UTCDate);
+    if (this.ephemeris) {
+      const planetEclipticCoords = this.ephemeris.getPositionAtDate(UTCDate);
 
       planetPosition = new Position().setEclipticCoords(planetEclipticCoords);
     } else {

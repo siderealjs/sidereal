@@ -1,10 +1,11 @@
 import { CelestialBody } from "./CelestialBody";
-import { Position } from "./position/Position";
-import { calcCoordsPolarAtDate } from "../astronomy/coords";
+import { Position } from "./../position/Position";
+import { calcCoordsPolarAtDate } from "../../astronomy/coords";
+import { Ephemeris } from "../../types/Ephemeris.type";
 
 export class Sun extends CelestialBody {
-  constructor() {
-    super("sun");
+  constructor(ephemeris?: Ephemeris) {
+    super("sun", ephemeris);
   }
 
   public getPositionAtDate(date: Date) {
