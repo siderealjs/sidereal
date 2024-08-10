@@ -3,9 +3,14 @@ export default {
   testEnvironment: "node",
   verbose: true, // Questo è equivalente a usare --verbose
   testMatch: ["**/?(*.)+(spec|test).[jt]s?(x)"],
+  moduleNameMapper: {
+    "^@test-resources/(.*)$": "<rootDir>/test-resources/$1",
+    "^@test-resources/(.*)$": "<rootDir>/test-resources/$1",
+    "^@models/(.*)$": "<rootDir>/src/models/$1",
+    "^@types$": "<rootDir>/src/types/index.ts", // Import senza wildcard, quindi niente `$1`
+  },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   transform: {
-    // Applica ts-jest a tutti i file TypeScript tranne quelli che terminano con .test.ts
     "^.+\\.(ts|tsx)$": [
       "ts-jest",
       {

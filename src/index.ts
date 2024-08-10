@@ -1,8 +1,7 @@
-import { Ephemeris } from "./types/Ephemeris.type";
-import { CelestialBodyName } from "./types/ObjectName.type";
-import { Earth } from "./models/body/Earth";
-import { Planet } from "./models/body/Planet";
-import { Sun } from "./models/body/Sun";
+import { Ephemeris, CelestialBodyName } from "@types";
+import { Earth } from "@models/celestial-bodies/Earth";
+import { Planet } from "@models/celestial-bodies/Planet";
+import { Sun } from "@models/celestial-bodies/Sun";
 import Constants from "./data/constants.json";
 
 export default class Sidereal {

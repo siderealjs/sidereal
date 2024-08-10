@@ -7,7 +7,7 @@ import {
   PolarCoords,
   SphericalEclipticCoords,
   SphericalEquatorialCoords,
-} from "../../types/Coords.type";
+} from "@types";
 
 export class Coords {
   protected polar: PolarCoords | null = null;

@@ -1,33 +1,31 @@
 import Sidereal from "../../../index";
-import dataTestNoEphemeris from "../../../../test-resources/data/planetPositionsNoEphemeris.json";
-import dataTestEphemeris from "../../../../test-resources/data/planetPositionsEphemeris.json";
-import { fixtureEphemeris } from "../../../../test-resources/fixtures/fixtureEphemeris.fixture";
-import { BodyName } from "sidereal-ephemeris/src/types/BodyName.type";
+import dataTestNoEphemeris from "@test-resources/data/planetPositionsNoEphemeris.json";
+import dataTestEphemeris from "@test-resources/data/planetPositionsEphemeris.json";
+import { fixtureEphemeris } from "@test-resources/fixtures/fixtureEphemeris.fixture";
 
 const testDate = new Date("2007-03-23T10:25:00.000Z");
 
-describe("Models:: Planet,", () => {
+describe.only("Models:: Bodies::  Earth,", () => {
   describe("getPositionAtDate", () => {
-    it("should return right Position for every planet WITHOUT ephemeris", () => {
+    it("should return right Position for Earth WITHOUT ephemeris", () => {
       for (const planetName in dataTestNoEphemeris) {
         if (planetName !== "earth") {
           const expectedCoords =
             dataTestNoEphemeris[planetName].ecliptic.cartesian;
 
           const sid = new Sidereal();
-          const planet = sid.planet(planetName as BodyName);
+          const planet = sid.planet(planetName);
 
           const { x, y, z } = planet
             .getPositionAtDate(testDate)
             .getEclipticCoords().cartesian;
-
           expect(x).toBe(expectedCoords.x);
           expect(y).toBe(expectedCoords.y);
           expect(z).toBe(expectedCoords.z);
         }
       }
     });
-    it("should return right Position for every planet WITH ephemeris", () => {
+    it("should return right Position for for Earth WITH ephemeris", () => {
       for (const planetName in dataTestEphemeris) {
         if (planetName !== "earth") {
           const expectedCoords =
@@ -40,7 +38,7 @@ describe("Models:: Planet,", () => {
 
           sid.loadEphemeris([fkEphEarth, fkEphPlanet]);
 
-          const planet = sid.planet(planetName as BodyName);
+          const planet = sid.planet(planetName);
 
           const { x, y, z } = planet
             .getPositionAtDate(testDate)

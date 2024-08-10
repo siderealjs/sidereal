@@ -1,5 +1,5 @@
 import { Angle } from "../../models/position/Angle";
-import { SphericalEclipticCoords } from "../../types/Coords.type";
+import { SphericalEclipticCoords } from "@types";
 import { centuriesFromJ1900 } from "../../utils/dates";
 
 export const calcMoonSphericalEclipticalCoordsAtDate = (

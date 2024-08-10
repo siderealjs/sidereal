@@ -19,8 +19,8 @@ import {
   PolarCoords,
   Cartesian2DCoords,
   OrbitalCoords,
-} from "../../types/Coords.type";
-import { OrbitalParams } from "../../types/OrbitalParams.type";
+  OrbitalParams,
+} from "@types";
 import { Coords } from "./Coords";
 
 export class Position {

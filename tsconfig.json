@@ -10,9 +10,15 @@
     "outDir": "./dist",
     "moduleResolution": "node",
     "declaration": true,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "baseUrl": "./",
+
+    "paths": {
+      "@test-resources/*": ["test-resources/*"],
+      "@models/*": ["src/models/*"],
+      "@types": ["src/types/index.ts"]
+    }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules",  "**/*.test.ts"]
-  
+  "exclude": ["node_modules", "**/*.test.ts"]
 }

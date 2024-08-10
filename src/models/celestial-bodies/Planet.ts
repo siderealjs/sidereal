@@ -1,10 +1,9 @@
 import { calcCoordsPolarAtDate } from "./../../astronomy/coords";
-import { CelestialBodyName } from "../../types/ObjectName.type";
+import { CelestialBodyName, Ephemeris } from "@types";
 import { Position } from "./../position/Position";
-import { CelestialBody } from "./CelestialBody";
-import { Earth } from "./Earth";
+import { CelestialBody } from "@models/celestial-bodies/CelestialBody";
+import { Earth } from "@models/celestial-bodies/Earth";
 import { calcPhaseAngle, calculateQ } from "../../astronomy/magnitude";
-import { Ephemeris } from "../../types/Ephemeris.type";
 
 export class Planet extends CelestialBody {
   constructor(

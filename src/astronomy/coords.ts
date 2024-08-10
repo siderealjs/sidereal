@@ -1,14 +1,15 @@
-import { Angle } from "./../models/position/Angle";
-import { SphericalEquatorialCoords } from "./../types/Coords.type";
-
-import Constants from "../data/constants.json";
+import { Angle } from "@models/position/Angle";
 import {
+  SphericalEquatorialCoords,
   Cartesian2DCoords,
   Cartesian3DCoords,
+  OrbitalParams,
   PolarCoords,
   SphericalEclipticCoords,
-} from "../types/Coords.type";
-import { OrbitalParams } from "./../types/OrbitalParams.type";
+} from "@types";
+
+import Constants from "../data/constants.json";
+
 import {
   calcEccentricAnomaly,
   calcMeanAnomalyAtDate,
