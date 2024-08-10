@@ -4,7 +4,7 @@ import {
   calcTrueAnomaly,
 } from "../anomaly";
 
-describe.only("Astronomy:: Anomaly", () => {
+describe("Astronomy:: Anomaly", () => {
   describe("calcEccentricAnomaly", () => {
     it("should return correct eccentric anomaly for given M and e", () => {
       const M = 0.5;
@@ -39,7 +39,7 @@ describe.only("Astronomy:: Anomaly", () => {
     });
   });
 
-  describe.only("calcTrueAnomaly", () => {
+  describe("calcTrueAnomaly", () => {
     it("should calculate the true anomaly correctly for given E and e", () => {
       const E = Math.PI / 4;
       const e = 0.1;

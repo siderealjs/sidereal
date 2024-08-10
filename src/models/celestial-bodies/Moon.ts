@@ -1,5 +1,5 @@
 import { CelestialBody } from "./CelestialBody";
-import { calcMoonSphericalEclipticalCoordsAtDate } from "../../astronomy/moon/moonCoords";
+import { calcMoonSphericalEclipticalCoordsAtDate } from "../../astronomy/moonCoords";
 import { Position } from "./../position/Position";
 
 export class Moon extends CelestialBody {

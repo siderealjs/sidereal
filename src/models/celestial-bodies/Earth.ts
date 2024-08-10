@@ -9,15 +9,11 @@ export class Earth extends CelestialBody {
   }
   public getPositionAtDate(date: Date) {
     if (this.ephemeris[this.bodyName]) {
-
-      console.log('la terra usa le ephemr')
       const earthEclipticCoords =
         this.ephemeris[this.bodyName]!.getPositionAtDate(date);
 
       return new Position().setEclipticCoords(earthEclipticCoords);
     } else {
-      console.log('la terra NON usa le ephemr')
-
       const earthPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
 
       const earthPosition = new Position().setOrbitalCoords(earthPolarCoords);
