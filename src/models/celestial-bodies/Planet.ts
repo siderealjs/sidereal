@@ -36,10 +36,7 @@ export class Planet extends CelestialBody {
     }
 
     if (coordinatesCenter === "earth") {
-      console.log("CONVERT TO GEOGEOGOGOGOGFOGFOGFOOGF");
       planetPosition.convertToGeocentric(earthPosition);
-    } else {
-      console.log("do not conver for the love ot gufgofuhfghug");
     }
 
     return planetPosition;
