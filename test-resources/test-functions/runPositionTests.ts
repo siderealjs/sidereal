@@ -36,7 +36,7 @@ export const runSingleBodyPositionTests = (
     sid.useEphemeris([fkEphEarth, fkEphPlanet]);
   }
 
-  const planet = sid.planet(planetName);
+  const planet = sid.planet(planetName as any);
   const { x, y, z } = planet
     .getPositionAtDate(testDate, referenceBody)
     .getEclipticCoords().cartesian;

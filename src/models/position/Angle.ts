@@ -47,13 +47,13 @@ export class Angle {
     return this.radiansToDMS(this.valueInRadians);
   }
 
-  degreesToRadians = (degrees: number): number => {
+  private degreesToRadians = (degrees: number): number => {
     // (Math.PI / 180)
     const DTR = 0.017453292519943295;
     return degrees * DTR;
   };
 
-  radianstoDegrees = (radians: number): number => {
+  private radianstoDegrees = (radians: number): number => {
     // (180 / Math.PI)
     const RTD = 57.29577951308232;
     return radians * RTD;
@@ -65,7 +65,7 @@ export class Angle {
    * @param {number} radians - Value in radians
    * @returns {string} - In the format +10h 05m 12s
    */
-  radiansToHMS = (radians: number): string => {
+  private radiansToHMS = (radians: number): string => {
     if (radians === null || radians === undefined || Number.isNaN(radians)) {
       throw new Error("angle not valid");
     }
@@ -96,12 +96,12 @@ export class Angle {
   };
 
   /**
-   * Convert angles in radians to Degrees-Primes-Seconds angles
+   * Convert angles from radians to Degrees-Primes-Seconds angles
    *
    * @param {number} radians - Value in radians
    * @returns {string} - Format "+dd° mm’ ss”".
    */
-  radiansToDMS(radians: number): string {
+  private radiansToDMS(radians: number): string {
     if (radians === null || radians === undefined || Number.isNaN(radians)) {
       throw new Error("angle not valid");
     }
@@ -125,11 +125,9 @@ export class Angle {
     return `${sign}${intDegrees}° ${formattedMinutes}' ${formattedSeconds}"`;
   }
 
-  // Funzione per normalizzare l'angolo tra 0 e 2PI gradi
   normalize() {
     const x2PI = 2 * Math.PI;
     this.valueInRadians = (((this.valueInRadians || 0) % x2PI) + x2PI) % x2PI;
-    //return degrees % (2 * Math.PI);
 
     return this;
   }

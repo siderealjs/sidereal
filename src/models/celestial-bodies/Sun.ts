@@ -18,6 +18,3 @@ export class Sun extends CelestialBody {
     return sunPosition;
   }
 }
-
-
-// confronti coord geocentriche con coord eliocentriche
