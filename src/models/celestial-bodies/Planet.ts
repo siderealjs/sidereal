@@ -17,6 +17,7 @@ export class Planet extends CelestialBody {
     const earthPosition = new Earth(this.ephemeris).getPositionAtDate(UTCDate);
 
     let planetPosition;
+
     if (this.ephemeris[this.bodyName]) {
       const planetEclipticCoords =
         this.ephemeris[this.bodyName]!.getPositionAtDate(UTCDate);

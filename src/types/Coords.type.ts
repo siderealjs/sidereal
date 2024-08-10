@@ -1,4 +1,4 @@
-import { Angle } from "../models/position/Angle";
+import { Angle } from "@models/position/Angle";
 
 export type Cartesian3DCoords = {
   x: number;

@@ -1,4 +1,4 @@
-import { Angle } from "../../models/position/Angle";
+import { Angle } from "@models/position/Angle";
 import { SphericalEclipticCoords } from "@types";
 import { centuriesFromJ1900 } from "../../utils/dates";
 

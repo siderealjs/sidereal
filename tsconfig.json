@@ -19,6 +19,6 @@
       "@types": ["src/types/index.ts"]
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts",  "test-resources/**/*"], // Include i file di test al di fuori di src],
   "exclude": ["node_modules", "**/*.test.ts"]
 }

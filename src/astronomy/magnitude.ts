@@ -1,4 +1,4 @@
-import { Angle } from "../models/position/Angle";
+import { Angle } from "@models/position/Angle";
 
 export function calcPhaseAngle(
   distanceBodyObject: number,

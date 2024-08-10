@@ -1,9 +1,9 @@
 import Sidereal from "../../../index";
-import dataTestNoEphemeris from "../../../../test-resources/data/planetPositionsNoEphemeris.json";
-import dataTestEphemeris from "../../../../test-resources/data/planetPositionsEphemeris.json";
-import { fixtureEphemeris } from "../../../../test-resources/fixtures/fixtureEphemeris.fixture";
+import dataTestNoEphemeris from "@test-resources/data/planetPositionsNoEphemeris.json";
+import dataTestEphemeris from "@test-resources/data/planetPositionsEphemeris.json";
+import { fixtureEphemeris } from "@test-resources/fixtures/fixtureEphemeris.fixture";
 
-const testDate = new Date("2007-03-23T10:25:00.000Z");
+const testDate = new Date("2007-03-23T00:05:00.000Z");
 
 describe("Models:: Planet,", () => {
   describe("getPositionAtDate", () => {
@@ -20,13 +20,13 @@ describe("Models:: Planet,", () => {
             .getPositionAtDate(testDate)
             .getEclipticCoords().cartesian;
 
-          expect(x).toBe(expectedCoords.x);
-          expect(y).toBe(expectedCoords.y);
-          expect(z).toBe(expectedCoords.z);
+          expect(`${planetName} ${x}`).toBe(`${planetName} ${expectedCoords.x}`);
+          expect(`${planetName} ${y}`).toBe(`${planetName} ${expectedCoords.y}`);
+          expect(`${planetName} ${z}`).toBe(`${planetName} ${expectedCoords.z}`);
         }
       }
     });
-    it("should return right Position for every planet WITH ephemeris", () => {
+    it.only("should return right Position for every planet WITH ephemeris", () => {
       for (const planetName in dataTestEphemeris) {
         if (planetName !== "earth") {
           const expectedCoords =
@@ -45,9 +45,9 @@ describe("Models:: Planet,", () => {
             .getPositionAtDate(testDate)
             .getEclipticCoords().cartesian;
 
-          expect(x).toBe(expectedCoords.x);
-          expect(y).toBe(expectedCoords.y);
-          expect(z).toBe(expectedCoords.z);
+            expect(`${planetName} ${x}`).toBe(`${planetName} ${expectedCoords.x}`);
+            expect(`${planetName} ${y}`).toBe(`${planetName} ${expectedCoords.y}`);
+            expect(`${planetName} ${z}`).toBe(`${planetName} ${expectedCoords.z}`);
         }
       }
     });

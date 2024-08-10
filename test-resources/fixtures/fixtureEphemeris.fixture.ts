@@ -1,4 +1,4 @@
-import dataTestEphemeris from "../data/planetPositionsEphemeris.json";
+import dataTestEphemeris from "@test-resources/data/planetPositionsEphemeris.json";
 
 export class fixtureEphemeris {
   name: string;
@@ -7,6 +7,8 @@ export class fixtureEphemeris {
   }
 
   getPositionAtDate(date: Date) {
+
+    console.log('sono dentro 11 e ilpianete e', this.name, dataTestEphemeris[this.name].ecliptic.cartesian)
     return dataTestEphemeris[this.name].ecliptic.cartesian;
   }
 }
