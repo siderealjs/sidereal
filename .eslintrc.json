@@ -9,7 +9,5 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint"],
-  "rules": {},
-  "ignorePatterns": ["node_modules/", "dist/", "ephemeris/"] // Esclude la directory node_modules
+  "plugins": ["@typescript-eslint"]
 }

@@ -44,7 +44,8 @@ export const calcEccentricAnomaly = (
  */
 export const calcTrueAnomaly = (E: number, e: number): number => {
   if (e < 0 || e >= 1) {
-    console.warn("Not valid anomaly e=", e);
+    // console.warn("Not valid anomaly e=", e);
+    // TODO: throw error here
     return 0;
   }
 

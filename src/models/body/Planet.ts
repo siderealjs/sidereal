@@ -14,7 +14,7 @@ export class Planet extends CelestialBody {
     super(name, ephemeris);
   }
 
-  public getPositionAtDate(UTCDate: Date) {
+  public getPositionAtDate(UTCDate: Date): Position {
     const earthPosition = new Earth(this.ephemeris).getPositionAtDate(UTCDate);
 
     let planetPosition;
