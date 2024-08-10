@@ -21,9 +21,10 @@ export default class Sidereal {
     return new Sun(this.loadedEphemeris);
   }
 
-  public loadEphemeris(ephemerisList: Ephemeris[]): void {
+  public useEphemeris(ephemerisList: Ephemeris[]): void {
     ephemerisList.forEach((ephemeris) => {
       this.loadedEphemeris[ephemeris.name] = ephemeris;
     });
   }
+
 }

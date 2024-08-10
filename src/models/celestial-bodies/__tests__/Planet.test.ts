@@ -3,53 +3,124 @@ import dataTestNoEphemeris from "@test-resources/data/planetPositionsNoEphemeris
 import dataTestEphemeris from "@test-resources/data/planetPositionsEphemeris.json";
 import { fixtureEphemeris } from "@test-resources/fixtures/fixtureEphemeris.fixture";
 
-const testDate = new Date("2007-03-23T00:05:00.000Z");
+const testDate = new Date("2007-03-23T00:00:00.000Z");
 
 describe("Models:: Planet,", () => {
   describe("getPositionAtDate", () => {
-    it("should return right Position for every planet WITHOUT ephemeris", () => {
-      for (const planetName in dataTestNoEphemeris) {
-        if (planetName !== "earth") {
-          const expectedCoords =
-            dataTestNoEphemeris[planetName].ecliptic.cartesian;
+    describe("WITH ephemeris", () => {
+      it("should return right Heliocentric Position for every planet", () => {
+        for (const planetName in dataTestEphemeris) {
+          if (planetName !== "earth") {
+            const expectedCoords =
+              dataTestEphemeris[planetName].ecliptic.sun.cartesian;
+            const sid = new Sidereal();
 
-          const sid = new Sidereal();
-          const planet = sid.planet(planetName);
+            const fkEphPlanet = new fixtureEphemeris(planetName);
+            const fkEphEarth = new fixtureEphemeris("earth");
 
-          const { x, y, z } = planet
-            .getPositionAtDate(testDate)
-            .getEclipticCoords().cartesian;
+            sid.useEphemeris([fkEphEarth, fkEphPlanet]);
 
-          expect(`${planetName} ${x}`).toBe(`${planetName} ${expectedCoords.x}`);
-          expect(`${planetName} ${y}`).toBe(`${planetName} ${expectedCoords.y}`);
-          expect(`${planetName} ${z}`).toBe(`${planetName} ${expectedCoords.z}`);
+            const planet = sid.planet(planetName);
+
+            const { x, y, z } = planet
+              .getPositionAtDate(testDate, "sun")
+              .getEclipticCoords().cartesian;
+
+            expect(`${planetName} ${x}`).toBe(
+              `${planetName} ${expectedCoords.x}`
+            );
+            expect(`${planetName} ${y}`).toBe(
+              `${planetName} ${expectedCoords.y}`
+            );
+            expect(`${planetName} ${z}`).toBe(
+              `${planetName} ${expectedCoords.z}`
+            );
+          }
         }
-      }
+      });
+      it("should return right Geocentric Position for every planet", () => {
+        for (const planetName in dataTestEphemeris) {
+          if (planetName !== "earth") {
+            const expectedCoords =
+              dataTestEphemeris[planetName].ecliptic.earth.cartesian;
+            const sid = new Sidereal();
+
+            const fkEphPlanet = new fixtureEphemeris(planetName);
+            const fkEphEarth = new fixtureEphemeris("earth");
+
+            sid.useEphemeris([fkEphEarth, fkEphPlanet]);
+
+            const planet = sid.planet(planetName);
+
+            const { x, y, z } = planet
+              .getPositionAtDate(testDate, "earth")
+              .getEclipticCoords().cartesian;
+
+            expect(`${planetName} ${x}`).toBe(
+              `${planetName} ${expectedCoords.x}`
+            );
+            expect(`${planetName} ${y}`).toBe(
+              `${planetName} ${expectedCoords.y}`
+            );
+            expect(`${planetName} ${z}`).toBe(
+              `${planetName} ${expectedCoords.z}`
+            );
+          }
+        }
+      });
     });
-    it.only("should return right Position for every planet WITH ephemeris", () => {
-      for (const planetName in dataTestEphemeris) {
-        if (planetName !== "earth") {
-          const expectedCoords =
-            dataTestEphemeris[planetName].ecliptic.cartesian;
 
-          const sid = new Sidereal();
+    describe("WITHOUT ephemeris", () => {
+      it("should return right Heliocentric Position for every planet", () => {
+        for (const planetName in dataTestNoEphemeris) {
+          if (planetName !== "earth") {
+            const expectedCoords =
+              dataTestNoEphemeris[planetName].ecliptic.sun.cartesian;
 
-          const fkEphPlanet = new fixtureEphemeris(planetName);
-          const fkEphEarth = new fixtureEphemeris("earth");
+            const sid = new Sidereal();
+            const planet = sid.planet(planetName);
 
-          sid.loadEphemeris([fkEphEarth, fkEphPlanet]);
+            const { x, y, z } = planet
+              .getPositionAtDate(testDate, "sun")
+              .getEclipticCoords().cartesian;
 
-          const planet = sid.planet(planetName);
-
-          const { x, y, z } = planet
-            .getPositionAtDate(testDate)
-            .getEclipticCoords().cartesian;
-
-            expect(`${planetName} ${x}`).toBe(`${planetName} ${expectedCoords.x}`);
-            expect(`${planetName} ${y}`).toBe(`${planetName} ${expectedCoords.y}`);
-            expect(`${planetName} ${z}`).toBe(`${planetName} ${expectedCoords.z}`);
+            expect(`${planetName} ${x}`).toBe(
+              `${planetName} ${expectedCoords.x}`
+            );
+            expect(`${planetName} ${y}`).toBe(
+              `${planetName} ${expectedCoords.y}`
+            );
+            expect(`${planetName} ${z}`).toBe(
+              `${planetName} ${expectedCoords.z}`
+            );
+          }
         }
-      }
+      });
+      it("should return right Geocentric Position for every planet", () => {
+        for (const planetName in dataTestNoEphemeris) {
+          if (planetName !== "earth") {
+            const expectedCoords =
+              dataTestNoEphemeris[planetName].ecliptic.earth.cartesian;
+
+            const sid = new Sidereal();
+            const planet = sid.planet(planetName);
+
+            const { x, y, z } = planet
+              .getPositionAtDate(testDate, "earth")
+              .getEclipticCoords().cartesian;
+
+            expect(`${planetName} ${x}`).toBe(
+              `${planetName} ${expectedCoords.x}`
+            );
+            expect(`${planetName} ${y}`).toBe(
+              `${planetName} ${expectedCoords.y}`
+            );
+            expect(`${planetName} ${z}`).toBe(
+              `${planetName} ${expectedCoords.z}`
+            );
+          }
+        }
+      });
     });
   });
 });

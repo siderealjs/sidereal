@@ -13,7 +13,10 @@ export class Planet extends CelestialBody {
     super(name, ephemeris);
   }
 
-  public getPositionAtDate(UTCDate: Date): Position {
+  public getPositionAtDate(
+    UTCDate: Date,
+    coordinatesCenter: "sun" | "earth"
+  ): Position {
     const earthPosition = new Earth(this.ephemeris).getPositionAtDate(UTCDate);
 
     let planetPosition;
@@ -32,7 +35,12 @@ export class Planet extends CelestialBody {
       planetPosition.convertOrbitalToEcliptic(this.orbitalParams);
     }
 
-    planetPosition.convertToGeocentric(earthPosition);
+    if (coordinatesCenter === "earth") {
+      console.log("CONVERT TO GEOGEOGOGOGOGFOGFOGFOOGF");
+      planetPosition.convertToGeocentric(earthPosition);
+    } else {
+      console.log("do not conver for the love ot gufgofuhfghug");
+    }
 
     return planetPosition;
   }
