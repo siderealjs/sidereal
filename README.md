@@ -1,6 +1,8 @@
 # Sidereal
 
-Sidereal is a JavaScript library designed for astronomical calculations. It provides a set of APIs for determining the positions of celestial bodies, their celestial observables and performing orbital transfers and other related calculations.
+Sidereal is a JavaScript library designed for astronomical calculations. 
+
+It provides a set of APIs for determining the positions of celestial bodies, their celestial observables and performing orbital transfers and other related calculations.
 
 ## Features
 
@@ -28,9 +30,9 @@ Comprehensive documentation and API details will be available on the official we
 
 Sidereal provides accurate astronomical calculations using built-in algorithms, but to keep the bundle size small, it does not include precomputed ephemerides. As a result, there may be a modest margin of error in the calculations. See the [Basic usage](#basic-usage) section below to understand the scale of this error.
 
-For higher precision, you can use Sidereal with [Sidereal-Ephemeris](https://github.com/yourusername/sidereal-ephemeris), which incorporates JPL ephemerides. Together, they can achieve errors as small as 0.0832° as shown in [this example](#fff).
+For higher precision, you can use Sidereal with [Sidereal-Ephemeris](https://github.com/siderealjs/sidereal-ephemeris), which incorporates JPL ephemerides. Together, they can achieve errors as small as 0.0832° as shown in [this example](#fff).
 
-For more on Sidereal-Ephemeris, visit the [GitHub repository](https://github.com/yourusername/sidereal-ephemeris).
+For more on Sidereal-Ephemeris, visit the [GitHub repository](https://github.com/siderealjs/sidereal-ephemeris).
 
 
 ## Basic usage
@@ -105,16 +107,17 @@ Result
 ```
 
 RA 04h 15m 44s Dec +18° 02' 45" 
-RA error: 0.0833°
-Dec error: 0.0042°
-Total angular error: 0.0832°
+
 ```
 
 Expected result ([J2000](https://theskylive.com/planetarium?objects=sun-moon-venus-neptune-mars-mercury-jupiter-saturn-uranus-pluto&localdata=51.4887%7C-0.5273%7CColnbrook%2C+United+Kingdom%7CEurope%2FLondon%7C0&obj=venus&h=23&m=00&date=2020-06-21#ra|4.262867489688309|dec|18.04620603036221|fov|NaN))
 ```
 RA 04h 15m 46s  Dec  +18° 02' 46"
+RA error: 0.0833°
+Dec error: 0.0042°
+Total angular error: 0.0832°
 ```
 
 ## License
 
-Sidereal is licensed under the MIT License.
+Sidereal is licensed under the [MIT License](https://github.com/siderealjs/sidereal?tab=MIT-1-ov-file#readme).
