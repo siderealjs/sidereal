@@ -1,3 +1,5 @@
+import { Angle } from "@models/position/Angle";
+
 export const daysBetweenDates = (date1: Date, date2: Date): number => {
   const millisecondsPerDay = 86400000; // 24 * 60 * 60 * 1000
   const timeDifference = date2.getTime() - date1.getTime(); // differenza in millisecondi
@@ -47,30 +49,65 @@ export const createUTCDate = (
   return new Date(y, m - 1, d, h, min, 0);
 };
 
-// export function convertToUTC(date: Date, timeZone = "Europe/London") {
-//   // const summerTimeDeltaH = isDstObserved(date) ? -1 : 0;
+export const calGST = (julianDay: number) => {
+  const T = (julianDay - 2451545.0) / 36525;
 
-//   // console.log("SHOULD ADD OR NOT", summerTimeDeltaH);
+  // Calcola il GST a 0h UT (in gradi)
+  let GST0 =
+    100.46061837 +
+    36000.770053608 * T +
+    0.000387933 * T * T -
+    (T * T * T) / 38710000;
 
-//   // Crea una stringa della data locale usando il fuso orario specificato
-//   const options = {
-//     timeZone,
-//     hour12: false,
-//     year: "numeric",
-//     month: "2-digit",
-//     day: "2-digit",
-//     hour: "2-digit",
-//     minute: "2-digit",
-//     second: "2-digit",
-//   };
-//   const localDateString = new Intl.DateTimeFormat("en-US", options).format(
-//     date
-//   );
+  const UT = calculateUT(julianDay); // Sostituisci con l'ora UT corrente se disponibile
+console.log('UT INTERNO', UT)
+  // Calcola il GST completo aggiungendo la componente UT
+  let GST = GST0 + 360.98564724 * (UT / 24);
 
-//   // Estrai i valori dalla stringa della data locale
-//   const [month, day, year, hour, minute, second] =
-//     localDateString.match(/\d+/g);
+  // Normalizza GST in un intervallo di 0-360 gradi
+  GST = GST % 360;
+  if (GST < 0) {
+    GST += 360;
+  }
 
-//   // Crea una nuova data in UTC usando i valori estratti
-//   return new Date(year, month - 1, day, parseInt(hour), minute, second);
-// }
+  //const GSTAngle = new Angle().setDegrees(GST);
+
+  //return GSTAngle
+
+  // // Converti GST in ore
+   const GST_hours = GST / 15;
+
+   return GST_hours;
+  // console.log("GST in gradi:", GST); // GST in gradi
+  // console.log("GST in ore:", GST_hours); // GST in ore
+};
+
+
+export function calcGST(julianDate: number) {
+  const T = (julianDate - 2451545.0) / 36525.0;
+
+    // Calcolo dell'angolo GST in gradi
+    let gstDegrees = 280.46061837 + 360.98564736629 * (julianDate - 2451545.0) +
+                     T * T * (0.000387933 - T / 38710000.0);
+
+    // Normalizzazione dell'angolo GST in gradi
+    gstDegrees = gstDegrees % 360;
+    if (gstDegrees < 0) gstDegrees += 360;
+
+    // Converti in ore
+    const gstHours = gstDegrees / 15.0;
+
+    return gstHours;
+}
+
+export const calculateUT = (JD: number) => {
+  const JD0 = Math.floor(JD - 0.5) + 0.5; // Giorno giuliano senza frazione decimale
+  const UT = (JD - JD0) * 24; // Frazione del giorno in ore
+  return UT;
+};
+
+
+export const calcHourAngle = (GST: Angle, RA: Angle) => {
+
+  return new Angle(GST.radians() - RA.radians());
+}

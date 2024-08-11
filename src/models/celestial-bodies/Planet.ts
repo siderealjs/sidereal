@@ -4,6 +4,7 @@ import { Position } from "./../position/Position";
 import { CelestialBody } from "@models/celestial-bodies/CelestialBody";
 import { Earth } from "@models/celestial-bodies/Earth";
 import { calcPhaseAngle, calculateQ } from "../../astronomy/magnitude";
+import { calcRiseAndSetTime } from "src/astronomy/riseSet";
 
 export class Planet extends CelestialBody {
   constructor(
@@ -69,4 +70,12 @@ export class Planet extends CelestialBody {
 
     return apparentMagnitude;
   }
+
+  getRiseAndSetTimeAtDate = (date: Date) => {
+    const position = this.getPositionAtDate(date, "earth");
+    const { DEC, RA } = position.getEquatorialCoords().spherical;
+
+    console.log(RA.HMS(), DEC.DMS())
+    const som = calcRiseAndSetTime(DEC, date);
+  };
 }
