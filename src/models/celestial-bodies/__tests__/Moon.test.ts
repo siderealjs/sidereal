@@ -4,7 +4,7 @@ import dataTestEphemeris from "@test-resources/data/planetPositionsEphemeris.jso
 
 const testDate = new Date("2007-03-23T00:00:00.000Z");
 
-describe("Models:: Celestial Bodies :: Moon,", () => {
+describe("Models:: Celestial Bodies:: Moon,", () => {
   describe("getPositionAtDate", () => {
     describe("WITHOUT ephemeris", () => {
       it("should return right Geocentric Position for the Moon", () => {

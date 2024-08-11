@@ -4,7 +4,7 @@ import { runAllPlanetPositionTests } from "@test-resources/test-functions/runPos
 
 const testDate = new Date("2007-03-23T00:00:00.000Z");
 
-describe("Models:: Celestial Bodies :: Planet,", () => {
+describe("Models:: Celestial Bodies:: Planet", () => {
   describe("getPositionAtDate", () => {
     describe("WITH ephemeris", () => {
       it("should return right Heliocentric Position for every planet", () => {

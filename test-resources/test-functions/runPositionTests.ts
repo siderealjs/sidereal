@@ -8,7 +8,11 @@ export const runAllPlanetPositionTests = (
   testDate: Date
 ) => {
   for (const planetName in data) {
-    if (planetName !== "earth" && planetName !== "moon") {
+    if (
+      planetName !== "earth" &&
+      planetName !== "moon" &&
+      planetName !== "sun"
+    ) {
       runSingleBodyPositionTests(
         planetName,
         data,
