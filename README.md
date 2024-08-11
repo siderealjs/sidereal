@@ -77,7 +77,7 @@ Total Angular error: 2.043°
 
 ### Usage with sidereal-ephemeris
 
-```typescript
+```javascript
 
 import Sidereal from "sidereal";
 import { loadEphemeris } from "sidereal-ephemeris";

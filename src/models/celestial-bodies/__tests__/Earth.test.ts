@@ -8,7 +8,7 @@ describe("Models:: Celestial Bodies:: Earth,", () => {
   describe("getPositionAtDate", () => {
     describe("WITH ephemeris", () => {
       it("should return right Heliocentric Position for Earth", () => {
-        runSingleBodyPositionTests('earth', dataTestEphemeris, "sun", true, testDate);
+        runSingleBodyPositionTests('earth', dataTestEphemeris, "sun", true, testDate, 'earth');
       });
 
      
@@ -16,7 +16,7 @@ describe("Models:: Celestial Bodies:: Earth,", () => {
 
     describe("WITHOUT ephemeris", () => {
       it("should return right Heliocentric Position for Earth", () => {
-        runSingleBodyPositionTests('earth', dataTestNoEphemeris, "sun", false, testDate);
+        runSingleBodyPositionTests('earth', dataTestNoEphemeris, "sun", false, testDate, 'earth');
       });
 
      

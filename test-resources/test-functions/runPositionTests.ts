@@ -8,7 +8,7 @@ export const runAllPlanetPositionTests = (
   testDate: Date
 ) => {
   for (const planetName in data) {
-    if (planetName !== "earth") {
+    if (planetName !== "earth" && planetName !== "moon") {
       runSingleBodyPositionTests(
         planetName,
         data,
@@ -25,7 +25,8 @@ export const runSingleBodyPositionTests = (
   data: any,
   referenceBody: "sun" | "earth",
   useEphemeris: boolean,
-  testDate: Date
+  testDate: Date,
+  entity = "planet"
 ) => {
   const expectedCoords = data[planetName].ecliptic[referenceBody].cartesian;
 
@@ -36,7 +37,7 @@ export const runSingleBodyPositionTests = (
     sid.useEphemeris([fkEphEarth, fkEphPlanet]);
   }
 
-  const planet = sid.planet(planetName as any);
+  const planet = sid[entity](planetName as any);
   const { x, y, z } = planet
     .getPositionAtDate(testDate, referenceBody)
     .getEclipticCoords().cartesian;

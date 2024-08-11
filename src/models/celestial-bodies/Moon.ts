@@ -1,17 +1,23 @@
-import { CelestialBody } from "./CelestialBody";
+import { CelestialBody } from "@models/celestial-bodies/CelestialBody";
 import { calcMoonSphericalEclipticalCoordsAtDate } from "../../astronomy/moonCoords";
-import { Position } from "./../position/Position";
+import { Position } from "@models/position/Position";
+import { CelestialBodyName, Ephemeris } from "@types";
 
 export class Moon extends CelestialBody {
-  constructor() {
-    super("moon");
+  constructor(ephemeris?: Record<CelestialBodyName, Ephemeris>) {
+    super("moon", ephemeris);
   }
 
-  public getPositionAtDate(date: Date): Position {
-    const moonSphericalEcl = calcMoonSphericalEclipticalCoordsAtDate(date);
+  public getPositionAtDate(UTCDate: Date): Position {
+    if (this.ephemeris[this.bodyName]) {
+      const moonEclipticCoords =
+        this.ephemeris[this.bodyName]!.getPositionAtDate(UTCDate);
 
-    const moonPosition = new Position().setEclipticCoords(moonSphericalEcl);
+      return new Position().setEclipticCoords(moonEclipticCoords);
+    } else {
+      const moonSphericalEcl = calcMoonSphericalEclipticalCoordsAtDate(UTCDate);
 
-    return moonPosition;
+      return new Position().setEclipticCoords(moonSphericalEcl);
+    }
   }
 }
