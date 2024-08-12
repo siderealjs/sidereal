@@ -21,12 +21,12 @@ export class Sun extends CelestialBody {
     return sunPosition;
   }
 
-  public getRiseAndSetTimeAtDate(date: AstroDate) {
+  public getRiseAndSetTimeAtDate(date: AstroDate):  {rise: Angle, set: Angle} {
     const long = 0;
 
     const GMST0 = getGMST0AtDate(date);
 
-    const UTCnoon = new AstroDate(date); 
+    const UTCnoon = new AstroDate(date);
     UTCnoon.setUTCHours(12);
     UTCnoon.setUTCMinutes(0);
 
@@ -51,6 +51,14 @@ export class Sun extends CelestialBody {
     console.log("Sunrise", sunriseTime.HMS());
     // console.log('Sunrtrans', new Angle(UTNoon * 24 / (2 * Math.PI)).normalize().HMS());
     console.log("Sunset", sunsetTime.HMS());
+
+    console.log("Sunrise", sunriseTime.HMS());
+    console.log("Sunset", sunsetTime.HMS());
+
+    return {
+      rise: sunriseTime,
+      set: sunsetTime,
+    };
   }
 
   // public getHorizonHeightAtDate(date: Date) {

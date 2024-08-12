@@ -1,3 +1,4 @@
+import Sidereal from "../../../index";
 import dataTestNoEphemeris from "@test-resources/data/planetPositionsNoEphemeris.json";
 import dataTestEphemeris from "@test-resources/data/planetPositionsEphemeris.json";
 import { runAllPlanetPositionTests } from "@test-resources/test-functions/runPositionTests";
@@ -23,8 +24,25 @@ describe("Models:: Celestial Bodies:: Planet", () => {
       });
 
       it("should return right Geocentric Position for every planet", () => {
-        runAllPlanetPositionTests(dataTestNoEphemeris, "earth", false, testDate);
+        runAllPlanetPositionTests(
+          dataTestNoEphemeris,
+          "earth",
+          false,
+          testDate
+        );
       });
+    });
+  });
+
+  describe("getRiseAndSetTimeAtDate", () => {
+    it("should predict rise and set times for every planet", () => {
+      const sid = new Sidereal();
+      const venus = sid.planet("venus");
+
+      const { rise, set } = venus.getRiseAndSetTimeAtDate(testDate);
+
+      expect(rise.radians()).toBe(1.8998802803052328);
+      expect(set.radians()).toBe(5.613519010775988);
     });
   });
 });

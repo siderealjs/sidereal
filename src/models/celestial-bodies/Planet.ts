@@ -8,7 +8,6 @@ import { Angle } from "@models/position/Angle";
 import { getGMST0AtDate } from "../../astronomy/gmst0";
 import { AstroDate } from "@models/AstroDate";
 
-
 export class Planet extends CelestialBody {
   constructor(
     name: CelestialBodyName,
@@ -26,15 +25,13 @@ export class Planet extends CelestialBody {
     let planetPosition;
 
     if (this.ephemeris[this.bodyName]) {
-      const planetEclipticCoords =
-        this.ephemeris[this.bodyName]!.getPositionAtDate(date.UTC());
+      const planetEclipticCoords = this.ephemeris[
+        this.bodyName
+      ]!.getPositionAtDate(date.UTC());
 
       planetPosition = new Position().setEclipticCoords(planetEclipticCoords);
     } else {
-      const planetPolarCoords = calcCoordsPolarAtDate(
-        date,
-        this.orbitalParams
-      );
+      const planetPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
       planetPosition = new Position().setOrbitalCoords(planetPolarCoords);
       planetPosition.convertOrbitalToEcliptic(this.orbitalParams);
     }
@@ -74,45 +71,38 @@ export class Planet extends CelestialBody {
     return apparentMagnitude;
   }
 
-  getRiseAndSetTimeAtDate = (date: AstroDate) => {
+  getRiseAndSetTimeAtDate = (date: AstroDate) : {rise: Angle, set: Angle} => {
+    const long = 0;
 
-      const long = 0;
-  
-  
-     
-      const GMST0 = getGMST0AtDate(date);
-      const UTCnoon = new AstroDate(date); 
-      UTCnoon.setUTCHours(12);
-      UTCnoon.setUTCMinutes(0);
+    const GMST0 = getGMST0AtDate(date);
+    const UTCnoon = new AstroDate(date);
+    UTCnoon.setUTCHours(12);
+    UTCnoon.setUTCMinutes(0);
 
+    const planetPositionNoon = this.getPositionAtDate(UTCnoon, "earth");
+    const { RA: RANoon, DEC: DECNoon } =
+      planetPositionNoon.getEquatorialCoords().spherical;
 
-  
-      const planetPositionNoon = this.getPositionAtDate(UTCnoon, 'earth');
-      const {RA: RANoon, DEC: DECNoon} = planetPositionNoon.getEquatorialCoords().spherical;
-  
-  
-      const UTNoon = RANoon.radians() - GMST0.radians() -long
-  
-      
-  
-      const sinh = 0 // Math.sin(-0.833 * 2 * Math.PI / 360);
-      const sinDEC = Math.sin(DECNoon.radians());
-      const sinLat = Math.sin(51 * 2 * Math.PI / 360)
-      const cosDEC = Math.cos(DECNoon.radians());
-      const cosLat = Math.cos(51 * 2 * Math.PI / 360)
-  
-  
-      const cosLHA = (sinh - sinLat*sinDEC)/(cosLat *cosDEC);
-      const LHA_radians = Math.acos(cosLHA);
-  
-      const sunriseTime = new Angle(UTNoon - LHA_radians).normalize()
-      const sunsetTime = new Angle(UTNoon + LHA_radians).normalize()
-  
-  
-    
-      console.log('Sunrise', sunriseTime.HMS());
-      console.log('Sunset', sunsetTime.HMS());
-  
-    
+    const UTNoon = RANoon.radians() - GMST0.radians() - long;
+
+    const sinh = 0; // Math.sin(-0.833 * 2 * Math.PI / 360);
+    const sinDEC = Math.sin(DECNoon.radians());
+    const sinLat = Math.sin((51 * 2 * Math.PI) / 360);
+    const cosDEC = Math.cos(DECNoon.radians());
+    const cosLat = Math.cos((51 * 2 * Math.PI) / 360);
+
+    const cosLHA = (sinh - sinLat * sinDEC) / (cosLat * cosDEC);
+    const LHA_radians = Math.acos(cosLHA);
+
+    const sunriseTime = new Angle(UTNoon - LHA_radians).normalize();
+    const sunsetTime = new Angle(UTNoon + LHA_radians).normalize();
+
+    console.log("Sunrise", sunriseTime.HMS());
+    console.log("Sunset", sunsetTime.HMS());
+
+    return {
+      rise: sunriseTime,
+      set: sunsetTime,
+    };
   };
 }
