@@ -49,7 +49,7 @@ export const createUTCDate = (
   return new Date(y, m - 1, d, h, min, 0);
 };
 
-export const calGST = (julianDay: number) => {
+export const calGST999 = (julianDay: number) => {
   const T = (julianDay - 2451545.0) / 36525;
 
   // Calcola il GST a 0h UT (in gradi)
@@ -83,7 +83,7 @@ console.log('UT INTERNO', UT)
 };
 
 
-export function calcGST(julianDate: number) {
+export function calcGSTg(julianDate: number) {
   const T = (julianDate - 2451545.0) / 36525.0;
 
     // Calcolo dell'angolo GST in gradi
@@ -98,6 +98,44 @@ export function calcGST(julianDate: number) {
     const gstHours = gstDegrees / 15.0;
 
     return gstHours;
+}
+
+
+
+export function calcLST(GST_degrees, longitude_Degrees) {
+  // Converti la longitudine in ore
+  const longitudeHours = longitude_Degrees / 15;
+  const gstHours = GST_degrees / 15;
+  
+  // Calcola LST in ore
+  let lst = gstHours + longitudeHours;
+  
+  // Normalizza LST per l'intervallo [0, 24) ore
+  lst = lst % 24;
+  
+  // Assicurati che il risultato sia positivo
+  if (lst < 0) {
+      lst += 24;
+  }
+  
+  return lst;
+}
+
+export function calculateHA(lstHours, raRadians) {
+  // Converti LST da ore a radianti
+  const lstRadians = lstHours * (2 * Math.PI / 24);
+  
+  // Calcola HA
+  let ha = lstRadians - raRadians;
+  
+  // Normalizza HA per l'intervallo [-π, π)
+  if (ha > Math.PI) {
+      ha -= 2 * Math.PI;
+  } else if (ha < -Math.PI) {
+      ha += 2 * Math.PI;
+  }
+  
+  return ha;
 }
 
 export const calculateUT = (JD: number) => {
