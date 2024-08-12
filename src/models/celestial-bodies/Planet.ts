@@ -72,13 +72,13 @@ export class Planet extends CelestialBody {
   }
 
   getRiseAndSetTimeAtDate = (date: Date) => {
-    const position = this.getPositionAtDate(date, "earth");
-    const { DEC, RA } = position.getEquatorialCoords().spherical;
+    // const position = this.getPositionAtDate(date, "earth");
+    // const { DEC, RA } = position.getEquatorialCoords().spherical;
 
 
     
 
-    console.log(RA.HMS(), DEC.DMS())
-    const som = calcRiseAndSetTime(DEC, RA,  date);
+    // console.log(RA.HMS(), DEC.DMS())
+    // const som = calcRiseAndSetTime(DEC, RA,  date);
   };
 }
