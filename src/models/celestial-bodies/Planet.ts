@@ -1,14 +1,12 @@
 import { calcCoordsPolarAtDate } from "./../../astronomy/coords";
 import { CelestialBodyName, Ephemeris } from "@types";
-import { Position } from "./../position/Position";
+import { Position } from "@models/position/Position";
 import { CelestialBody } from "@models/celestial-bodies/CelestialBody";
 import { Earth } from "@models/celestial-bodies/Earth";
 import { calcPhaseAngle, calculateQ } from "../../astronomy/magnitude";
-import { calcRiseAndSetTime } from "src/astronomy/riseSet";
-
-import orbitalParams from "../../data/planets.json";
-import { calcMeanAnomalyAtDate } from "src/astronomy/anomaly";
 import { Angle } from "@models/position/Angle";
+import { getGMST0AtDate } from "../../astronomy/gmst0";
+import { AstroDate } from "@models/AstroDate";
 
 
 export class Planet extends CelestialBody {
@@ -20,21 +18,21 @@ export class Planet extends CelestialBody {
   }
 
   public getPositionAtDate(
-    UTCDate: Date,
+    date: AstroDate,
     coordinatesCenter: "sun" | "earth"
   ): Position {
-    const earthPosition = new Earth(this.ephemeris).getPositionAtDate(UTCDate);
+    const earthPosition = new Earth(this.ephemeris).getPositionAtDate(date);
 
     let planetPosition;
 
     if (this.ephemeris[this.bodyName]) {
       const planetEclipticCoords =
-        this.ephemeris[this.bodyName]!.getPositionAtDate(UTCDate);
+        this.ephemeris[this.bodyName]!.getPositionAtDate(date.UTC());
 
       planetPosition = new Position().setEclipticCoords(planetEclipticCoords);
     } else {
       const planetPolarCoords = calcCoordsPolarAtDate(
-        UTCDate,
+        date,
         this.orbitalParams
       );
       planetPosition = new Position().setOrbitalCoords(planetPolarCoords);
@@ -48,7 +46,7 @@ export class Planet extends CelestialBody {
     return planetPosition;
   }
 
-  public getMagnitude(date: Date) {
+  public getMagnitude(date: AstroDate) {
     const earthPosition = new Earth().getPositionAtDate(date);
 
     const bodyPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
@@ -76,25 +74,24 @@ export class Planet extends CelestialBody {
     return apparentMagnitude;
   }
 
-  getRiseAndSetTimeAtDate = (date: Date) => {
+  getRiseAndSetTimeAtDate = (date: AstroDate) => {
 
       const long = 0;
   
   
-      const MSun = calcMeanAnomalyAtDate(orbitalParams['sun'].M0, orbitalParams['sun'].n, date);
-      const meanLongitudeSun_radians = MSun + orbitalParams['sun'].ω;
-      const GMST0_radians = meanLongitudeSun_radians + Math.PI
-  console.log('GMST0 PLANET', GMST0_radians)
-  
-      const UTCnoon = new Date(date.getTime());
+     
+      const GMST0 = getGMST0AtDate(date);
+      const UTCnoon = new AstroDate(date); 
       UTCnoon.setUTCHours(12);
       UTCnoon.setUTCMinutes(0);
+
+
   
       const planetPositionNoon = this.getPositionAtDate(UTCnoon, 'earth');
       const {RA: RANoon, DEC: DECNoon} = planetPositionNoon.getEquatorialCoords().spherical;
   
   
-      const UTNoon = RANoon.radians() - GMST0_radians -long
+      const UTNoon = RANoon.radians() - GMST0.radians() -long
   
       
   

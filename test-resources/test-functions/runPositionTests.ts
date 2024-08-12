@@ -1,5 +1,6 @@
 import { fixtureEphemeris } from "@test-resources/fixtures/fixtureEphemeris.fixture";
 import Sidereal from "../../src/index";
+import { AstroDate } from "@models/AstroDate";
 
 export const runAllPlanetPositionTests = (
   data: any,
@@ -29,7 +30,7 @@ export const runSingleBodyPositionTests = (
   data: any,
   referenceBody: "sun" | "earth",
   useEphemeris: boolean,
-  testDate: Date,
+  testDate: AstroDate,
   entity = "planet"
 ) => {
   const expectedCoords = data[planetName].ecliptic[referenceBody].cartesian;
@@ -41,7 +42,7 @@ export const runSingleBodyPositionTests = (
     sid.useEphemeris([fkEphEarth, fkEphPlanet]);
   }
 
-  const planet = sid[entity](planetName as any);
+  const planet = sid[entity as](planetName as any);
   const { x, y, z } = planet
     .getPositionAtDate(testDate, referenceBody)
     .getEclipticCoords().cartesian;
