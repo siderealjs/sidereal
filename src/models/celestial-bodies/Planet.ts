@@ -6,6 +6,11 @@ import { Earth } from "@models/celestial-bodies/Earth";
 import { calcPhaseAngle, calculateQ } from "../../astronomy/magnitude";
 import { calcRiseAndSetTime } from "src/astronomy/riseSet";
 
+import orbitalParams from "../../data/planets.json";
+import { calcMeanAnomalyAtDate } from "src/astronomy/anomaly";
+import { Angle } from "@models/position/Angle";
+
+
 export class Planet extends CelestialBody {
   constructor(
     name: CelestialBodyName,
@@ -72,13 +77,45 @@ export class Planet extends CelestialBody {
   }
 
   getRiseAndSetTimeAtDate = (date: Date) => {
-    // const position = this.getPositionAtDate(date, "earth");
-    // const { DEC, RA } = position.getEquatorialCoords().spherical;
 
-
+      const long = 0;
+  
+  
+      const MSun = calcMeanAnomalyAtDate(orbitalParams['sun'].M0, orbitalParams['sun'].n, date);
+      const meanLongitudeSun_radians = MSun + orbitalParams['sun'].ω;
+      const GMST0_radians = meanLongitudeSun_radians + Math.PI
+  console.log('GMST0 PLANET', GMST0_radians)
+  
+      const UTCnoon = new Date(date.getTime());
+      UTCnoon.setUTCHours(12);
+      UTCnoon.setUTCMinutes(0);
+  
+      const planetPositionNoon = this.getPositionAtDate(UTCnoon, 'earth');
+      const {RA: RANoon, DEC: DECNoon} = planetPositionNoon.getEquatorialCoords().spherical;
+  
+  
+      const UTNoon = RANoon.radians() - GMST0_radians -long
+  
+      
+  
+      const sinh = 0 // Math.sin(-0.833 * 2 * Math.PI / 360);
+      const sinDEC = Math.sin(DECNoon.radians());
+      const sinLat = Math.sin(51 * 2 * Math.PI / 360)
+      const cosDEC = Math.cos(DECNoon.radians());
+      const cosLat = Math.cos(51 * 2 * Math.PI / 360)
+  
+  
+      const cosLHA = (sinh - sinLat*sinDEC)/(cosLat *cosDEC);
+      const LHA_radians = Math.acos(cosLHA);
+  
+      const sunriseTime = new Angle(UTNoon - LHA_radians).normalize()
+      const sunsetTime = new Angle(UTNoon + LHA_radians).normalize()
+  
+  
     
-
-    // console.log(RA.HMS(), DEC.DMS())
-    // const som = calcRiseAndSetTime(DEC, RA,  date);
+      console.log('Sunrise', sunriseTime.HMS());
+      console.log('Sunset', sunsetTime.HMS());
+  
+    
   };
 }

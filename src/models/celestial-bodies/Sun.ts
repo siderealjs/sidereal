@@ -29,6 +29,8 @@ export class Sun extends CelestialBody {
     const M = calcMeanAnomalyAtDate(this.orbitalParams.M0, this.orbitalParams.n, date);
     const meanLongitude_radians = M + this.orbitalParams.ω;
     const GMST0_radians = meanLongitude_radians + Math.PI
+    console.log('GMST0 SUN', GMST0_radians)
+
 
 
     const UTCnoon = new Date(date.getTime());
@@ -60,6 +62,7 @@ export class Sun extends CelestialBody {
 
   
     console.log('Sunrise', sunriseTime.HMS());
+   // console.log('Sunrtrans', new Angle(UTNoon * 24 / (2 * Math.PI)).normalize().HMS());
     console.log('Sunset', sunsetTime.HMS());
 
   }
