@@ -1,4 +1,4 @@
-import { daysBetweenDates } from "../utils/dates";
+import { AstroDate } from "@models/AstroDate";
 
 /**
  * Get eccentric anomaly (E) solving the Kepler equation E = M + e*sinE with Newton-Raphson Method
@@ -68,10 +68,11 @@ export const calcTrueAnomaly = (E: number, e: number): number => {
 export const calcMeanAnomalyAtDate = (
   M0: number,
   n: number,
-  date: Date
+  date: AstroDate
 ): number => {
-  const epochForM0 = new Date("2000-01-01");
-  const deltaT = daysBetweenDates(epochForM0, date);
+
+  const deltaT = date.daysSinceEpoch('J2000');
+
   // Calcolate mean anomaly
   const M = M0 + n * deltaT;
 

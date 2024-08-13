@@ -1,12 +1,45 @@
+import { AstroDate } from "@models/AstroDate";
 import { Angle } from "@models/position/Angle";
 import { SphericalEclipticCoords } from "@types";
-import { centuriesFromJ1900 } from "../utils/dates";
+
+
+
+
+
+
+
+const daysSinceJ1900 = (date: Date): number => {
+  // Definire il giorno giuliano all'inizio del 1900
+  const J1900 = 2415020.0;
+
+  // Calcolare il giorno giuliano della data fornita
+  const JD = date.getTime() / 86400000 + 2440587.5;
+
+  // Restituire i giorni trascorsi dal giorno giuliano di riferimento
+  return JD - J1900;
+};
+
+export const centuriesFromJ1900 = (date: Date) => {
+  const days = daysSinceJ1900(date);
+  console.log('days old', days)
+  const T = days / 36525.0;
+  return T;
+};
+
+
 
 export const calcMoonSphericalEclipticalCoordsAtDate = (
-  date: Date
+  date: AstroDate
 ): SphericalEclipticCoords => {
   const DTR = Math.PI / 180.0; // Conversione da gradi a radianti
-  const T = centuriesFromJ1900(date);
+  const daysFromJ1900 = date.daysSinceEpoch('J1900');
+  console.log('days new', daysFromJ1900)
+  // centuries from j1900
+  const T = daysFromJ1900 / 36525.0;
+
+
+  console.log('newt,', T);
+  console.log('OLDT', centuriesFromJ1900(date.UTC()));
   //const T = 0.799301848;
 
   const commonAdditive =

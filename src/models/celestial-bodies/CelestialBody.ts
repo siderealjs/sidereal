@@ -1,6 +1,7 @@
 import { OrbitalParams, CelestialBodyName, Ephemeris } from "@types";
 import orbitalParams from "../../data/planets.json";
-
+import { AstroDate } from "@models/AstroDate";
+import { Position } from "@models/position/Position";
 
 export class CelestialBody {
   protected orbitalParams: OrbitalParams;
@@ -18,5 +19,12 @@ export class CelestialBody {
     this.bodyName = name;
     this.orbitalParams = orbitalParams[name];
     this.ephemeris = ephemeris || {};
+  }
+
+  public getPositionAtDate(
+    date: AstroDate,
+    coordinatesCenter: "sun" | "earth"
+  ): Position {
+    throw new Error("Method not implemented.");
   }
 }

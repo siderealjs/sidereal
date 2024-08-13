@@ -46,7 +46,7 @@ const sidereal = new Sidereal();
 
 const mars = sidereal.planet('mars');
 
-const date = new Date("2024-06-22T00:00:00.000Z")
+const date = new sidereal.AstroDate(2024, 6, 22, 0, 0)
 const coordinatesCenter = "earth";
 
 const marsPosition = mars.getPositionAtDate(date, coordinatesCenter);
@@ -92,7 +92,7 @@ sidereal.useEphemeris([venusEphemeris, earthEphemeris])
 
 const venus = sidereal.planet('venus');
 
-const date = new Date("2020-06-22T00:00:00.000Z")
+const date = new sidereal.AstroDate(2020, 6, 22, 0, 0)
 const coordinatesCenter = "earth";
 
 const marsPosition = venus.getPositionAtDate(date, coordinatesCenter);

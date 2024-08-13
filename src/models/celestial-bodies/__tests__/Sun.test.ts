@@ -1,35 +1,48 @@
 import { runSingleBodyPositionTests } from "@test-resources/test-functions/runPositionTests";
 import dataTestNoEphemeris from "@test-resources/data/planetPositionsNoEphemeris.json";
 import dataTestEphemeris from "@test-resources/data/planetPositionsEphemeris.json";
+import { AstroDate } from "@models/AstroDate";
+import Sidereal from "../../../index";
 
-const testDate = new Date("2007-03-23T00:00:00.000Z");
+const testDate = new AstroDate(2007, 3, 23, 0, 0);
 
 describe("Models:: Celestial Bodies:: Sun", () => {
   describe("getPositionAtDate", () => {
     describe("WITHOUT ephemeris", () => {
-      it("should return right Geocentric Position for the Sun", () => {
-  
+      it("should return right Geocentric Position", () => {
         runSingleBodyPositionTests(
           "sun",
           dataTestNoEphemeris,
           "earth",
           false,
           testDate,
-          'sun'
+          "sun"
         );
       });
     });
     describe("WITH ephemeris", () => {
-      it("should return right Geocentric Position for the Sun", () => {
+      it("should return right Geocentric Position", () => {
         runSingleBodyPositionTests(
           "sun",
           dataTestEphemeris,
           "earth",
           true,
           testDate,
-          'sun'
+          "sun"
         );
       });
+    });
+  });
+
+  describe("getRiseAndSetTimeAtDate, WITHOUT ephemeris", () => {
+    it("should predict rise and set times", () => {
+      const sid = new Sidereal();
+      const sun = sid.sun();
+
+      const { rise, set } = sun.getRiseAndSetTimeAtDate(testDate);
+
+      expect(rise.toUTCString()).toBe("Fri, 23 Mar 2007 05:55:23 GMT");
+      expect(set.toUTCString()).toBe("Fri, 23 Mar 2007 18:18:12 GMT");
     });
   });
 });

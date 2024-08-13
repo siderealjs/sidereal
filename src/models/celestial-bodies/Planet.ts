@@ -1,9 +1,12 @@
 import { calcCoordsPolarAtDate } from "./../../astronomy/coords";
 import { CelestialBodyName, Ephemeris } from "@types";
-import { Position } from "./../position/Position";
+import { Position } from "@models/position/Position";
 import { CelestialBody } from "@models/celestial-bodies/CelestialBody";
 import { Earth } from "@models/celestial-bodies/Earth";
 import { calcPhaseAngle, calculateQ } from "../../astronomy/magnitude";
+import { getUTNoon } from "../../astronomy/gmst0";
+import { AstroDate } from "@models/AstroDate";
+import { calcHourAngleAtDate } from "../../../src/astronomy/riseSet";
 
 export class Planet extends CelestialBody {
   constructor(
@@ -14,35 +17,33 @@ export class Planet extends CelestialBody {
   }
 
   public getPositionAtDate(
-    UTCDate: Date,
+    date: AstroDate,
     coordinatesCenter: "sun" | "earth"
   ): Position {
-    const earthPosition = new Earth(this.ephemeris).getPositionAtDate(UTCDate);
-
     let planetPosition;
 
-    if (this.ephemeris[this.bodyName]) {
-      const planetEclipticCoords =
-        this.ephemeris[this.bodyName]!.getPositionAtDate(UTCDate);
+    const ephemeris = this.ephemeris[this.bodyName];
+
+    if (ephemeris) {
+      const planetEclipticCoords = ephemeris.getPositionAtDate(date.UTC());
 
       planetPosition = new Position().setEclipticCoords(planetEclipticCoords);
     } else {
-      const planetPolarCoords = calcCoordsPolarAtDate(
-        UTCDate,
-        this.orbitalParams
-      );
+      const planetPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
       planetPosition = new Position().setOrbitalCoords(planetPolarCoords);
       planetPosition.convertOrbitalToEcliptic(this.orbitalParams);
     }
 
     if (coordinatesCenter === "earth") {
+      const earthPosition = new Earth(this.ephemeris).getPositionAtDate(date);
+
       planetPosition.convertToGeocentric(earthPosition);
     }
 
     return planetPosition;
   }
 
-  public getMagnitude(date: Date) {
+  public getMagnitude(date: AstroDate) {
     const earthPosition = new Earth().getPositionAtDate(date);
 
     const bodyPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
@@ -69,4 +70,21 @@ export class Planet extends CelestialBody {
 
     return apparentMagnitude;
   }
+
+  getRiseAndSetTimeAtDate = (
+    date: AstroDate
+  ): { rise: AstroDate; set: AstroDate } => {
+    const long = 0;
+
+    const UTCnoon = new AstroDate(date).setNoon();
+    const UTNoon = getUTNoon(UTCnoon, long);
+
+    const sunsetTime = calcHourAngleAtDate(this, UTCnoon, UTNoon, false);
+    const sunriseTime = calcHourAngleAtDate(this, UTCnoon, UTNoon, true);
+
+    return {
+      rise: sunriseTime,
+      set: sunsetTime,
+    };
+  };
 }

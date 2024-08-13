@@ -15,9 +15,10 @@ import {
   calcMeanAnomalyAtDate,
   calcTrueAnomaly,
 } from "./anomaly";
+import { AstroDate } from "@models/AstroDate";
 
 export const calcCoordsPolarAtDate = (
-  givenDate: Date,
+  givenDate: AstroDate,
   orbitalParams: OrbitalParams
 ) => {
   const { a, e, n, M0 } = orbitalParams;

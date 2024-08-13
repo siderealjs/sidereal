@@ -1,3 +1,4 @@
+import { AstroDate } from "./../../models/AstroDate";
 import {
   calcEccentricAnomaly,
   calcMeanAnomalyAtDate,
@@ -55,8 +56,7 @@ describe("Astronomy:: Anomaly", () => {
 
       const result = calcTrueAnomaly(E, e);
 
-     
-      expect(result).toBe(0); 
+      expect(result).toBe(0);
     });
   });
 
@@ -64,7 +64,7 @@ describe("Astronomy:: Anomaly", () => {
     it("should calculate mean anomaly correctly for given parameters", () => {
       const M0 = Math.PI / 4;
       const n = 0.01;
-      const date = new Date("2000-01-10");
+      const date = new AstroDate(2000, 1, 10, 0, 0);
 
       const result = calcMeanAnomalyAtDate(M0, n, date);
 
