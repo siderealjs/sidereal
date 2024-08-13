@@ -8,7 +8,7 @@ const testDate = new AstroDate(2007, 3, 23, 0, 0);
 describe("Models:: Celestial Bodies:: Earth,", () => {
   describe("getPositionAtDate", () => {
     describe("WITH ephemeris", () => {
-      it("should return right Heliocentric Position for Earth", () => {
+      it("should return right Heliocentric Position", () => {
         runSingleBodyPositionTests('earth', dataTestEphemeris, "sun", true, testDate, 'earth');
       });
 
@@ -16,7 +16,7 @@ describe("Models:: Celestial Bodies:: Earth,", () => {
     });
 
     describe("WITHOUT ephemeris", () => {
-      it("should return right Heliocentric Position for Earth", () => {
+      it("should return right Heliocentric Position", () => {
         runSingleBodyPositionTests('earth', dataTestNoEphemeris, "sun", false, testDate, 'earth');
       });
 

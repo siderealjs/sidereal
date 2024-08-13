@@ -1,4 +1,4 @@
-import Sidereal from "../../../index";
+import { runAllPlanetRiseSetTests } from './../../../../test-resources/test-functions/runRiseSetTests';
 import dataTestNoEphemeris from "@test-resources/data/planetPositionsNoEphemeris.json";
 import dataTestEphemeris from "@test-resources/data/planetPositionsEphemeris.json";
 import { runAllPlanetPositionTests } from "@test-resources/test-functions/runPositionTests";
@@ -34,24 +34,11 @@ describe("Models:: Celestial Bodies:: Planet", () => {
     });
   });
 
-  describe("getRiseAndSetTimeAtDate", () => {
-    describe("WITH ephemeris", () => {
+  describe("getRiseAndSetTimeAtDate, WITHOUT ephemeris", () => {
+      // testing with ephemeris is not possible, because it requires calling ephemeris
+      // many times at many different times
       it("should predict rise and set times for every planet", () => {
-        for (const planetName in dataTestEphemeris) {
-          if (
-            planetName !== "earth" &&
-            planetName !== "moon" &&
-            planetName !== "sun"
-          ) {
-            const sid = new Sidereal();
-            const planet = sid.planet(planetName);
-
-            const { rise, set } = planet.getRiseAndSetTimeAtDate(testDate);
-            expect(rise.toUTCString()).toBe("Fri, 23 Mar 2007 04:55:18 GMT");
-            expect(set.toUTCString()).toBe("Fri, 23 Mar 2007 19:18:28 GMT");
-          }
-        }
+        runAllPlanetRiseSetTests(dataTestNoEphemeris, testDate);
       });
-    });
   });
 });

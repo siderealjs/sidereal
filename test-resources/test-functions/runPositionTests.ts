@@ -6,7 +6,7 @@ export const runAllPlanetPositionTests = (
   data: any,
   referenceBody: "sun" | "earth",
   useEphemeris: boolean,
-  testDate: Date
+  testDate: AstroDate
 ) => {
   for (const planetName in data) {
     if (
@@ -31,18 +31,18 @@ export const runSingleBodyPositionTests = (
   referenceBody: "sun" | "earth",
   useEphemeris: boolean,
   testDate: AstroDate,
-  entity = "planet"
+  entity: "sun" | "planet" | "earth" | "moon" = "planet"
 ) => {
   const expectedCoords = data[planetName].ecliptic[referenceBody].cartesian;
 
   const sid = new Sidereal();
   if (useEphemeris) {
-    const fkEphPlanet = new fixtureEphemeris(planetName);
-    const fkEphEarth = new fixtureEphemeris("earth");
+    const fkEphPlanet = new fixtureEphemeris(planetName, "sun");
+    const fkEphEarth = new fixtureEphemeris("earth", "sun");
     sid.useEphemeris([fkEphEarth, fkEphPlanet]);
   }
 
-  const planet = sid[entity as](planetName as any);
+  const planet = sid[entity](planetName as any);
   const { x, y, z } = planet
     .getPositionAtDate(testDate, referenceBody)
     .getEclipticCoords().cartesian;

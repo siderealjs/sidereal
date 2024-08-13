@@ -35,10 +35,8 @@ export function calcHourAngleAtDate(
   newDate.setUTCSeconds(newSecondsDate);
 
   const deltaT = (newDate.getTime() - prevDate.getTime()) / (1000 * 60 * 60);
-  console.log("det", deltaT);
 
   if (deltaT > 1) {
-    console.log("itero la cacca");
     newDate = calcHourAngleAtDate(celestialBody, newDate, UTnoon, isRise);
   }
 

@@ -9,7 +9,7 @@ const testDate = new AstroDate(2007, 3, 23, 0, 0);
 describe("Models:: Celestial Bodies:: Sun", () => {
   describe("getPositionAtDate", () => {
     describe("WITHOUT ephemeris", () => {
-      it("should return right Geocentric Position for the Sun", () => {
+      it("should return right Geocentric Position", () => {
         runSingleBodyPositionTests(
           "sun",
           dataTestNoEphemeris,
@@ -21,7 +21,7 @@ describe("Models:: Celestial Bodies:: Sun", () => {
       });
     });
     describe("WITH ephemeris", () => {
-      it("should return right Geocentric Position for the Sun", () => {
+      it("should return right Geocentric Position", () => {
         runSingleBodyPositionTests(
           "sun",
           dataTestEphemeris,
@@ -34,7 +34,7 @@ describe("Models:: Celestial Bodies:: Sun", () => {
     });
   });
 
-  describe("getRiseAndSetTimeAtDate", () => {
+  describe("getRiseAndSetTimeAtDate, WITHOUT ephemeris", () => {
     it("should predict rise and set times", () => {
       const sid = new Sidereal();
       const sun = sid.sun();

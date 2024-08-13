@@ -16,8 +16,7 @@ export const calcGMST0AtDate = (date: AstroDate) => {
 
 export const getUTNoon = (date: AstroDate, long: number) => {
   const GMST0 = calcGMST0AtDate(date);
-
-  console.log('INTERNO', GMST0)
+  
   const UTCnoon = new AstroDate(date).setNoon();
 
   const sun = new Sun();

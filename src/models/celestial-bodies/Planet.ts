@@ -20,14 +20,12 @@ export class Planet extends CelestialBody {
     date: AstroDate,
     coordinatesCenter: "sun" | "earth"
   ): Position {
-    const earthPosition = new Earth(this.ephemeris).getPositionAtDate(date);
-
     let planetPosition;
 
-    if (this.ephemeris[this.bodyName]) {
-      const planetEclipticCoords = this.ephemeris[
-        this.bodyName
-      ]!.getPositionAtDate(date.UTC());
+    const ephemeris = this.ephemeris[this.bodyName];
+
+    if (ephemeris) {
+      const planetEclipticCoords = ephemeris.getPositionAtDate(date.UTC());
 
       planetPosition = new Position().setEclipticCoords(planetEclipticCoords);
     } else {
@@ -37,6 +35,8 @@ export class Planet extends CelestialBody {
     }
 
     if (coordinatesCenter === "earth") {
+      const earthPosition = new Earth(this.ephemeris).getPositionAtDate(date);
+
       planetPosition.convertToGeocentric(earthPosition);
     }
 
@@ -81,8 +81,6 @@ export class Planet extends CelestialBody {
 
     const sunsetTime = calcHourAngleAtDate(this, UTCnoon, UTNoon, false);
     const sunriseTime = calcHourAngleAtDate(this, UTCnoon, UTNoon, true);
-    console.log("Sunrise", sunriseTime.UTC());
-    console.log("Sunset", sunsetTime.UTC());
 
     return {
       rise: sunriseTime,
