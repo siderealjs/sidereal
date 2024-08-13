@@ -2,9 +2,9 @@ import { CelestialBodyName, Ephemeris } from "@types";
 import { CelestialBody } from "@models/celestial-bodies/CelestialBody";
 import { Position } from "@models/position/Position";
 import { calcCoordsPolarAtDate } from "../../astronomy/coords";
-import { Angle } from "@models/position/Angle";
 import { AstroDate } from "@models/AstroDate";
-import { getGMST0AtDate } from "../../astronomy/gmst0";
+import { calcGMST0AtDate, getUTNoon } from "../../astronomy/gmst0";
+import { calcHourAngleAtDate } from "../../astronomy/riseSet";
 
 export class Sun extends CelestialBody {
   constructor(ephemeris?: Record<CelestialBodyName, Ephemeris>) {
@@ -21,39 +21,22 @@ export class Sun extends CelestialBody {
     return sunPosition;
   }
 
-  public getRiseAndSetTimeAtDate(date: AstroDate):  {rise: Angle, set: Angle} {
+  public getRiseAndSetTimeAtDate(date: AstroDate): {
+    rise: AstroDate;
+    set: AstroDate;
+  } {
     const long = 0;
 
-    const GMST0 = getGMST0AtDate(date);
+    const UTCnoon = new AstroDate(date).setNoon();
+    const UTNoon = getUTNoon(UTCnoon, long);
 
-    const UTCnoon = new AstroDate(date);
-    UTCnoon.setUTCHours(12);
-    UTCnoon.setUTCMinutes(0);
+    const sunsetTime = calcHourAngleAtDate(UTCnoon, UTNoon, false);
+    const sunriseTime = calcHourAngleAtDate(UTCnoon, UTNoon, true);
+    console.log("Sunrise", sunriseTime.UTC());
+    console.log("Sunset", sunsetTime.UTC());
 
-    const sunPositionNoon = this.getPositionAtDate(UTCnoon);
-    const { RA: RANoon, DEC: DECNoon } =
-      sunPositionNoon.getEquatorialCoords().spherical;
-
-    const UTNoon = RANoon.radians() - GMST0.radians() - long;
-
-    const sinh = Math.sin((-0.833 * 2 * Math.PI) / 360);
-    const sinDEC = Math.sin(DECNoon.radians());
-    const sinLat = Math.sin((51 * 2 * Math.PI) / 360);
-    const cosDEC = Math.cos(DECNoon.radians());
-    const cosLat = Math.cos((51 * 2 * Math.PI) / 360);
-
-    const cosLHA = (sinh - sinLat * sinDEC) / (cosLat * cosDEC);
-    const LHA_radians = Math.acos(cosLHA);
-
-    const sunriseTime = new Angle(UTNoon - LHA_radians).normalize();
-    const sunsetTime = new Angle(UTNoon + LHA_radians).normalize();
-
-    console.log("Sunrise", sunriseTime.HMS());
-    // console.log('Sunrtrans', new Angle(UTNoon * 24 / (2 * Math.PI)).normalize().HMS());
-    console.log("Sunset", sunsetTime.HMS());
-
-    console.log("Sunrise", sunriseTime.HMS());
-    console.log("Sunset", sunsetTime.HMS());
+    const GMST0 = calcGMST0AtDate(sunriseTime);
+    console.log('esterno', GMST0)
 
     return {
       rise: sunriseTime,

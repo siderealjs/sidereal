@@ -10,14 +10,13 @@ describe("Models:: Celestial Bodies:: Sun", () => {
   describe("getPositionAtDate", () => {
     describe("WITHOUT ephemeris", () => {
       it("should return right Geocentric Position for the Sun", () => {
-  
         runSingleBodyPositionTests(
           "sun",
           dataTestNoEphemeris,
           "earth",
           false,
           testDate,
-          'sun'
+          "sun"
         );
       });
     });
@@ -29,12 +28,11 @@ describe("Models:: Celestial Bodies:: Sun", () => {
           "earth",
           true,
           testDate,
-          'sun'
+          "sun"
         );
       });
     });
   });
-
 
   describe("getRiseAndSetTimeAtDate", () => {
     it("should predict rise and set times", () => {
@@ -43,8 +41,8 @@ describe("Models:: Celestial Bodies:: Sun", () => {
 
       const { rise, set } = sun.getRiseAndSetTimeAtDate(testDate);
 
-      expect(rise.radians()).toBe(1.5593039999686766);
-      expect(set.radians()).toBe(4.798206354048772);
+      expect(rise.toUTCString()).toBe("Fri, 23 Mar 2007 05:55:23 GMT");
+      expect(set.toUTCString()).toBe("Fri, 23 Mar 2007 18:18:12 GMT");
     });
   });
 });

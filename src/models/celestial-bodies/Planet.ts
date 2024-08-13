@@ -5,7 +5,7 @@ import { CelestialBody } from "@models/celestial-bodies/CelestialBody";
 import { Earth } from "@models/celestial-bodies/Earth";
 import { calcPhaseAngle, calculateQ } from "../../astronomy/magnitude";
 import { Angle } from "@models/position/Angle";
-import { getGMST0AtDate } from "../../astronomy/gmst0";
+import { calcGMST0AtDate } from "../../astronomy/gmst0";
 import { AstroDate } from "@models/AstroDate";
 
 export class Planet extends CelestialBody {
@@ -74,7 +74,7 @@ export class Planet extends CelestialBody {
   getRiseAndSetTimeAtDate = (date: AstroDate) : {rise: Angle, set: Angle} => {
     const long = 0;
 
-    const GMST0 = getGMST0AtDate(date);
+    const GMST0 = calcGMST0AtDate(date);
     const UTCnoon = new AstroDate(date);
     UTCnoon.setUTCHours(12);
     UTCnoon.setUTCMinutes(0);

@@ -34,6 +34,13 @@ export class AstroDate extends Date {
     return this;
   }
 
+  public setNoon() {
+    this.setHours(12);
+    this.setMinutes(0);
+
+    return this;
+  }
+
   // public creatCopy() {
   //   return new AstroDate(
   //     this.getUTCFullYear(),
