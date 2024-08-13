@@ -11,12 +11,21 @@ export class Sun extends CelestialBody {
     super("sun", ephemeris);
   }
 
-  public getPositionAtDate(date: AstroDate) {
-    const polarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
+  public getPositionAtDate(date: AstroDate): Position {
+    let sunPosition;
+    const ephemeris = this.ephemeris["sun"];
 
-    const sunPosition = new Position().setOrbitalCoords(polarCoords);
+    if (ephemeris) {
+      const sunEclipticCoords = ephemeris.getPositionAtDate(date);
 
-    sunPosition.convertOrbitalToEcliptic(this.orbitalParams);
+      sunPosition = new Position().setEclipticCoords(sunEclipticCoords);
+      sunPosition.convertEcliptictToOrbital(this.orbitalParams);
+    } else {
+      const sunPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
+
+      sunPosition = new Position().setOrbitalCoords(sunPolarCoords);
+      sunPosition.convertOrbitalToEcliptic(this.orbitalParams);
+    }
 
     return sunPosition;
   }
@@ -30,7 +39,7 @@ export class Sun extends CelestialBody {
     const UTCnoon = new AstroDate(date).setNoon();
     const UTNoon = getUTNoon(UTCnoon, long);
 
-    const sunsetTime = calcHourAngleAtDate( this, UTCnoon, UTNoon, false);
+    const sunsetTime = calcHourAngleAtDate(this, UTCnoon, UTNoon, false);
     const sunriseTime = calcHourAngleAtDate(this, UTCnoon, UTNoon, true);
     console.log("Sunrise", sunriseTime.UTC());
     console.log("Sunset", sunsetTime.UTC());

@@ -28,6 +28,7 @@ export class Planet extends CelestialBody {
       const planetEclipticCoords = ephemeris.getPositionAtDate(date.UTC());
 
       planetPosition = new Position().setEclipticCoords(planetEclipticCoords);
+      planetPosition.convertEcliptictToOrbital(this.orbitalParams);
     } else {
       const planetPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);
       planetPosition = new Position().setOrbitalCoords(planetPolarCoords);
@@ -43,7 +44,7 @@ export class Planet extends CelestialBody {
     return planetPosition;
   }
 
-  public getMagnitude(date: AstroDate) {
+  public getMagnitudeAtDate(date: AstroDate) {
     const earthPosition = new Earth().getPositionAtDate(date);
 
     const bodyPolarCoords = calcCoordsPolarAtDate(date, this.orbitalParams);

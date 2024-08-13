@@ -208,6 +208,37 @@ export function cartesianOrbitalToCartesianEcliptic(
   return { x: xEcl, y: yEcl, z: zEcl };
 }
 
+export function cartesianEclipticToCartesianOrbital(
+  eclipticCoords: Cartesian3DCoords,
+  { ω, Ω, i }: { ω: number; Ω: number; i: number }
+): Cartesian2DCoords {
+  const { x: xEcl, y: yEcl, z: zEcl } = eclipticCoords;
+
+  const cosω = Math.cos(ω);
+  const sinω = Math.sin(ω);
+  const cosi = Math.cos(i);
+  const sini = Math.sin(i);
+  const cosΩ = Math.cos(Ω);
+  const sinΩ = Math.sin(Ω);
+
+  // Inversion of the rotation around the z-axis by -Ω (ascending node)
+  const x2 = xEcl * cosΩ + yEcl * sinΩ;
+  const y2 = -xEcl * sinΩ + yEcl * cosΩ;
+  const z2 = zEcl; // z does not change during this rotation
+
+  // Inversion of the rotation around the x-axis by -i (inclination)
+  const x1 = x2;
+  const y1 = y2 * cosi + z2 * sini;
+
+  // Inversion of the rotation around the z-axis by -ω (argument of periapsis)
+  const xOrb = x1 * cosω + y1 * sinω;
+  const yOrb = -x1 * sinω + y1 * cosω;
+
+  
+  return { x: xOrb, y: yOrb };
+}
+
+
 export function polarOrbitalToSphericalEcliptic(
   polarCoords: PolarCoords,
   { ω, Ω, i }: { ω: number; Ω: number; i: number }

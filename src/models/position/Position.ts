@@ -8,6 +8,7 @@ import {
   sphericalEclipticToCartesianEcliptic,
   sphericalEquatorialToCartesianEquatorial,
   polarOrbitalToSphericalEcliptic,
+  cartesianEclipticToCartesianOrbital,
 } from "../../astronomy/coords";
 
 import {
@@ -139,16 +140,29 @@ export class Position {
 
     const { ω, Ω, i } = orbitalParams;
 
-    // const cartesianEclipticCoords = cartesianOrbitalToCartesianEcliptic(
-    //   this.orbitalCoords.getAll().cartesian,
-    //   { ω, Ω, i }
-    // );
     const cartesianEclipticCoords = polarOrbitalToSphericalEcliptic(
       this.orbitalCoords.getAll<OrbitalCoords>().polar,
       { ω, Ω, i }
     );
 
     this.setEclipticCoords(cartesianEclipticCoords);
+
+    return this;
+  };
+
+  public convertEcliptictToOrbital = (orbitalParams: OrbitalParams) => {
+    if (!this.eclipticCoords.isDefined()) {
+      throw new Error("ecliptic coords to convert are not found");
+    }
+
+    const { ω, Ω, i } = orbitalParams;
+
+    const cartesianOrbitalCoords = cartesianEclipticToCartesianOrbital(
+      this.eclipticCoords.getAll<EclipticCoords>().cartesian,
+      { ω, Ω, i }
+    );
+
+    this.setOrbitalCoords(cartesianOrbitalCoords);
 
     return this;
   };
