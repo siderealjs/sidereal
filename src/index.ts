@@ -1,3 +1,4 @@
+import { AstroDate } from '@models/AstroDate';
 import { Ephemeris, CelestialBodyName } from "@types";
 import { Earth } from "@models/celestial-bodies/Earth";
 import { Planet } from "@models/celestial-bodies/Planet";
@@ -9,6 +10,7 @@ export default class Sidereal {
   protected loadedEphemeris: Record<string, Ephemeris> = {};
 
   public Constants = Constants;
+  public AstroDate = AstroDate;
 
   public planet(planetName: CelestialBodyName): Planet {
     return new Planet(planetName, this.loadedEphemeris);
