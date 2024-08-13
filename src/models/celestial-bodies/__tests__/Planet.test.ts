@@ -35,14 +35,23 @@ describe("Models:: Celestial Bodies:: Planet", () => {
   });
 
   describe("getRiseAndSetTimeAtDate", () => {
-    it("should predict rise and set times for every planet", () => {
-      const sid = new Sidereal();
-      const venus = sid.planet("venus");
+    describe("WITH ephemeris", () => {
+      it("should predict rise and set times for every planet", () => {
+        for (const planetName in dataTestEphemeris) {
+          if (
+            planetName !== "earth" &&
+            planetName !== "moon" &&
+            planetName !== "sun"
+          ) {
+            const sid = new Sidereal();
+            const planet = sid.planet(planetName);
 
-      const { rise, set } = venus.getRiseAndSetTimeAtDate(testDate);
-
-      expect(rise.radians()).toBe(1.8998802803052328);
-      expect(set.radians()).toBe(5.613519010775988);
+            const { rise, set } = planet.getRiseAndSetTimeAtDate(testDate);
+            expect(rise.toUTCString()).toBe("Fri, 23 Mar 2007 04:55:18 GMT");
+            expect(set.toUTCString()).toBe("Fri, 23 Mar 2007 19:18:28 GMT");
+          }
+        }
+      });
     });
   });
 });

@@ -30,13 +30,10 @@ export class Sun extends CelestialBody {
     const UTCnoon = new AstroDate(date).setNoon();
     const UTNoon = getUTNoon(UTCnoon, long);
 
-    const sunsetTime = calcHourAngleAtDate(UTCnoon, UTNoon, false);
-    const sunriseTime = calcHourAngleAtDate(UTCnoon, UTNoon, true);
+    const sunsetTime = calcHourAngleAtDate( this, UTCnoon, UTNoon, false);
+    const sunriseTime = calcHourAngleAtDate(this, UTCnoon, UTNoon, true);
     console.log("Sunrise", sunriseTime.UTC());
     console.log("Sunset", sunsetTime.UTC());
-
-    const GMST0 = calcGMST0AtDate(sunriseTime);
-    console.log('esterno', GMST0)
 
     return {
       rise: sunriseTime,

@@ -4,9 +4,9 @@ import { Position } from "@models/position/Position";
 import { CelestialBody } from "@models/celestial-bodies/CelestialBody";
 import { Earth } from "@models/celestial-bodies/Earth";
 import { calcPhaseAngle, calculateQ } from "../../astronomy/magnitude";
-import { Angle } from "@models/position/Angle";
-import { calcGMST0AtDate } from "../../astronomy/gmst0";
+import { getUTNoon } from "../../astronomy/gmst0";
 import { AstroDate } from "@models/AstroDate";
+import { calcHourAngleAtDate } from "../../../src/astronomy/riseSet";
 
 export class Planet extends CelestialBody {
   constructor(
@@ -71,34 +71,18 @@ export class Planet extends CelestialBody {
     return apparentMagnitude;
   }
 
-  getRiseAndSetTimeAtDate = (date: AstroDate) : {rise: Angle, set: Angle} => {
+  getRiseAndSetTimeAtDate = (
+    date: AstroDate
+  ): { rise: AstroDate; set: AstroDate } => {
     const long = 0;
 
-    const GMST0 = calcGMST0AtDate(date);
-    const UTCnoon = new AstroDate(date);
-    UTCnoon.setUTCHours(12);
-    UTCnoon.setUTCMinutes(0);
+    const UTCnoon = new AstroDate(date).setNoon();
+    const UTNoon = getUTNoon(UTCnoon, long);
 
-    const planetPositionNoon = this.getPositionAtDate(UTCnoon, "earth");
-    const { RA: RANoon, DEC: DECNoon } =
-      planetPositionNoon.getEquatorialCoords().spherical;
-
-    const UTNoon = RANoon.radians() - GMST0.radians() - long;
-
-    const sinh = 0; // Math.sin(-0.833 * 2 * Math.PI / 360);
-    const sinDEC = Math.sin(DECNoon.radians());
-    const sinLat = Math.sin((51 * 2 * Math.PI) / 360);
-    const cosDEC = Math.cos(DECNoon.radians());
-    const cosLat = Math.cos((51 * 2 * Math.PI) / 360);
-
-    const cosLHA = (sinh - sinLat * sinDEC) / (cosLat * cosDEC);
-    const LHA_radians = Math.acos(cosLHA);
-
-    const sunriseTime = new Angle(UTNoon - LHA_radians).normalize();
-    const sunsetTime = new Angle(UTNoon + LHA_radians).normalize();
-
-    console.log("Sunrise", sunriseTime.HMS());
-    console.log("Sunset", sunsetTime.HMS());
+    const sunsetTime = calcHourAngleAtDate(this, UTCnoon, UTNoon, false);
+    const sunriseTime = calcHourAngleAtDate(this, UTCnoon, UTNoon, true);
+    console.log("Sunrise", sunriseTime.UTC());
+    console.log("Sunset", sunsetTime.UTC());
 
     return {
       rise: sunriseTime,
